@@ -1,0 +1,41 @@
+{
+  "name": "carteira_acoes",
+  "version": "1.0.0",
+  "description": "Criacao de aplicação de controle de ações",
+  "main": "index.js",
+  "dependencies": {
+    "argon2": "^0.27.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http-status": "^1.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.4.11",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "pg": "^8.3.2",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelcrx/carteira_acoes.git"
+  },
+  "keywords": [
+    "acoes",
+    "api",
+    "postgre",
+    "node",
+    "react"
+  ],
+  "author": "Samuel, Rodrigo, Caio e Igor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samuelcrx/carteira_acoes/issues"
+  },
+  "homepage": "https://github.com/samuelcrx/carteira_acoes#readme"
+}
