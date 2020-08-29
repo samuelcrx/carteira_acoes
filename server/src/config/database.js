@@ -6,6 +6,6 @@ module.exports = {
   database: 'carteira_acoes',
   define: {
     timestamps: true,
-    underscored: true,
+    underscored: true
   },
 };

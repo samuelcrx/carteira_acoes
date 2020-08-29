@@ -2,17 +2,17 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('ca_acoes_cotacoes', { 
+    return queryInterface.createTable('ca_carteira_itens', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      ca_usu_codigo: {
+      ca_crt_codigo: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'ca_usuarios', key: 'id' },
+        references: { model: 'ca_carteiras', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
@@ -23,26 +23,30 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      ca_acc_data: {
-        type: Sequelize.DATE,
+      ca_cri_quantidade: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      ca_acc_valor: {
+      ca_cri_valor_medio: {
         type: Sequelize.DOUBLE,
+        allowNull: false,
+      },
+      ca_cri_data_atualizacao: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false,
-      },
+        allowNull: true,
+      }
     });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('ca_acoes_cotacoes');
+    return queryInterface.dropTable('ca_carteira_itens');
   }
 };

@@ -1,0 +1,37 @@
+'use strict';
+
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('ca_log', { 
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      ca_usu_codigo: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'ca_usuarios', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      ca_log_ip: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      }
+    });
+  },
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('ca_log');
+  }
+};

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('ca_log', { 
+    return queryInterface.createTable('ca_carteiras', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -16,18 +16,26 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      ca_log_ip: {
-        type: Sequelize.STRING,
+      ca_crt_descricao: {
+        type: Sequelize.STRING(30),
+        allowNull: false,
+      },
+      ca_crt_ativo: {
+        type: Sequelize.BOOLEAN,
         allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
       }
     });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('ca_log');
+    return queryInterface.dropTable('ca_carteiras');
   }
 };
