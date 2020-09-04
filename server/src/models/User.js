@@ -7,7 +7,7 @@ class ca_usuarios extends Model {
       ca_usu_login: DataTypes.STRING,
       ca_usu_cripto: DataTypes.STRING
     }, {
-      sequelize,
+      sequelize
     })
     return this;
   }

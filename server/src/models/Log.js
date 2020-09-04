@@ -9,6 +9,7 @@ class ca_log extends Model {
       sequelize,
       tableName: 'ca_log'
     })
+    return this;
   }
 
   static associate(models) {

@@ -11,6 +11,7 @@ class ca_carteiras extends Model {
       sequelize,
       tableName: 'ca_carteiras'
     })
+    return this;
   }
 
   static associate(models) {
