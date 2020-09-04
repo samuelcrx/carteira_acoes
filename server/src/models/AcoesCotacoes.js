@@ -14,8 +14,8 @@ class ca_acoes_cotacoes extends Model {
     return this;
   }
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'ca_usu_codigo', as: 'ca_usu_codigo' });
-    this.belongsTo(models.Acoes, { foreignKey: 'ca_aco_codigo', as: 'ca_aco_codigo' });
+    this.belongsTo(models.ca_usuarios, { foreignKey: 'ca_usu_codigo', as: 'usuario_id' });
+    this.belongsTo(models.ca_acoes, { foreignKey: 'ca_aco_codigo', as: 'acao_id' });
   }
 }
 

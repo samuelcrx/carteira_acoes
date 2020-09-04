@@ -3,9 +3,11 @@ const { Model, DataTypes } = require('sequelize');
 class ca_carteira_itens extends Model {
   static init(sequelize) {
     super.init({
-      ca_usu_codigo: DataTypes.INTEGER, //Foreign Key 01
+      ca_crt_codigo: DataTypes.INTEGER, //Foreign Key 01
       ca_aco_codigo: DataTypes.INTEGER, // Foreign Key 02
-      ca_acc_data: DataTypes.DATE,
+      ca_cri_quantidade: DataTypes.INTEGER,
+      ca_cri_valor_medio: DataTypes.DOUBLE,
+      ca_cri_data_atualizacao: DataTypes.DATE,
       ca_acc_valor: DataTypes.DOUBLE,
     }, {
       sequelize,
@@ -14,8 +16,8 @@ class ca_carteira_itens extends Model {
     return this;
   }
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'ca_usu_codigo', as: 'ca_usu_codigo' });
-    this.belongsTo(models.Acoes, { foreignKey: 'ca_aco_codigo', as: 'ca_aco_codigo' });
+    this.belongsTo(models.ca_carteiras, { foreignKey: 'ca_crt_codigo', as: 'carteira_id' });
+    this.belongsTo(models.ca_acoes, { foreignKey: 'ca_aco_codigo', as: 'acao_id' });
   }
 }
 
