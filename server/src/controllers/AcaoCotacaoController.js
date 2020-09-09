@@ -1,44 +1,91 @@
-const AcaoCotacao = require('../models/AcoesCotacoes');
+const AcaoCotacao = require("../models/AcoesCotacoes");
+const User = require("../models/User");
+const Acao = require("../models/Acoes");
 
 module.exports = {
   async index(req, res) {
-    const acoesCotacoes = await Acao.findAll();
+    const acoesCotacoes = await AcaoCotacao.findAll({
+      include: [
+        {
+          model: User,
+          as: "usuario_id",
+          attributes: ["id", "ca_usu_nome"],
+        },
+        {
+          model: Acao,
+          as: "acao_id",
+          attributes: ["id", "ca_aco_ticker", "ca_aco_nome"]
+        },
+      ],
+    });
 
     return res.json(acoesCotacoes);
   },
 
   async store(req, res) {
-    const { ca_usu_codigo, ca_aco_codigo, ca_acc_data, ca_acc_valor } = req.body;
+    const {
+      ca_usu_codigo,
+      ca_aco_codigo,
+      ca_acc_data,
+      ca_acc_valor,
+    } = req.body;
 
-    const acaoCotacao = await AcaoCotacao.create({ ca_usu_codigo, ca_aco_codigo, ca_acc_data, ca_acc_valor });
+    const acaoCotacao = await AcaoCotacao.create({
+      ca_usu_codigo,
+      ca_aco_codigo,
+      ca_acc_data,
+      ca_acc_valor,
+    });
 
     return res.json(acaoCotacao);
   },
 
   async show(req, res) {
-    const { id } = req.params
-    const acaoCotacao = await AcaoCotacao.findByPk(id)
+    const { id } = req.params;
+    const acaoCotacao = await AcaoCotacao.findByPk(id);
+    if (acaoCotacao) {
+      const user = await User.findByPk(acaoCotacao.ca_usu_codigo);
 
-    res.json(acaoCotacao)
+      if (user) {
+        const { id, ca_usu_nome } = user;
+        acaoCotacao.ca_usu_codigo = { id, ca_usu_nome };
+      }
+
+      const acao = await Acao.findByPk(acaoCotacao.ca_aco_codigo);
+      if (acao) {
+        const { id, ca_aco_ticker, ca_aco_nome } = acao;
+        acaoCotacao.ca_aco_codigo = {
+          id,
+          ca_aco_ticker,
+          ca_aco_nome,
+        };
+      }
+      res.json(acaoCotacao);
+    } else {
+      res.json({});
+    }
   },
 
   async update(req, res) {
-    const { ca_acc_data, ca_acc_valor } = req.body;
-    const { id } = req.params
+    const { ca_aco_codigo, ca_acc_data, ca_acc_valor } = req.body;
+    const { id } = req.params;
 
-    const acaoCotacao = await AcaoCotacao.update({ ca_acc_data, ca_acc_valor }, { where: id })
-    
+    const acaoCotacao = await AcaoCotacao.update(
+      { ca_aco_codigo, ca_acc_data, ca_acc_valor },
+      { where: { id: id } }
+    );
+
     return res.json(acaoCotacao);
   },
 
   async delete(req, res) {
-    const { id } = req.params
+    const { id } = req.params;
 
     AcaoCotacao.destroy({
-      where: { id }
-    }).then(deletedAction => {
-      console.log(`Ação Cotação deletada ${deletedAction}`)
-      res.json(deletedAction)
-    })
-  }
+      where: { id },
+    }).then((deletedAction) => {
+      console.log(`Ação Cotação deletada ${deletedAction}`);
+      res.json(deletedAction);
+    });
+  },
 };

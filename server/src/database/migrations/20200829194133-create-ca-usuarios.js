@@ -7,7 +7,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
+        allowNull: true,
       },
       ca_usu_nome: {
         type: Sequelize.STRING,
@@ -16,10 +16,11 @@ module.exports = {
       ca_usu_login: {
         type: Sequelize.STRING,
         allowNull: true,
+        unique: true
       },
       ca_usu_cripto: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: true
       },
       created_at: {
         type: Sequelize.DATE,

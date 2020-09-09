@@ -6,20 +6,20 @@ module.exports = {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: false,
+        autoIncrement: true,
         allowNull: false,
       },
       ca_aco_ticker: {
         type: Sequelize.STRING(10),
-        allowNull: true,
+        allowNull: false,
       },
       ca_aco_nome: {
         type: Sequelize.STRING(100),
-        allowNull: true,
+        allowNull: false,
       },
       ca_aco_ativo: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,

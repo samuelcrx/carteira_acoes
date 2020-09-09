@@ -7,8 +7,6 @@ class ca_carteira_itens extends Model {
       ca_aco_codigo: DataTypes.INTEGER, // Foreign Key 02
       ca_cri_quantidade: DataTypes.INTEGER,
       ca_cri_valor_medio: DataTypes.DOUBLE,
-      ca_cri_data_atualizacao: DataTypes.DATE,
-      ca_acc_valor: DataTypes.DOUBLE,
     }, {
       sequelize,
       tableName: 'ca_carteira_itens'

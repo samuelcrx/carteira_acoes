@@ -2,9 +2,10 @@ const Carteiras = require('../models/Carteiras');
 
 module.exports = {
   async index(req, res) {
-    const users = await Carteiras.findAll();
+    console.log(Carteiras)
+    const carteiras = await Carteiras.findAll();
 
-    return res.json(users);
+    return res.json(carteiras);
   },
 
   async store(req, res) {
@@ -27,10 +28,10 @@ module.exports = {
     const { ca_crt_descricao, ca_crt_ativo } = req.body;
     const { id } = req.params
 
-    const acao = await Acao.update({ ca_crt_descricao, ca_crt_ativo }, 
-      { where: id })
+    const carteira = await Carteiras.update({ ca_crt_descricao, ca_crt_ativo }, 
+      { where: { id: id } })
     
-    return res.json(acao);
+    return res.json(carteira);
   },
 
   async delete(req, res) {

@@ -31,10 +31,6 @@ module.exports = {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      ca_cri_data_atualizacao: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: true,

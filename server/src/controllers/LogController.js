@@ -8,12 +8,9 @@ module.exports = {
   },
 
   async store(req, res) {
-    const { userId } = req.params
-    const { ca_log_ip } = req.body;
+    const { ca_usu_login, ca_usu_codigo } = req.body;
 
-    const ca_usu_codigo = userId
-
-    const log = await Log.create({ ca_usu_codigo, ca_log_ip });
+    const log = await Log.create({ ca_usu_codigo, ca_usu_login });
 
     return res.json(log);
   }

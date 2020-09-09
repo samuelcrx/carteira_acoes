@@ -11,6 +11,7 @@ module.exports = {
     const { ca_aco_ticker, ca_aco_nome, ca_aco_ativo } = req.body;
 
     const acao = await Acao.create({ ca_aco_ticker, ca_aco_nome, ca_aco_ativo });
+    console.log(acao)
 
     return res.json(acao);
   },
@@ -26,7 +27,7 @@ module.exports = {
     const { ca_aco_ticker, ca_aco_nome, ca_aco_ativo } = req.body;
     const { id } = req.params
 
-    const acao = await Acao.update({ ca_aco_ticker, ca_aco_nome, ca_aco_ativo }, { where: id })
+    const acao = await Acao.update({ ca_aco_ticker, ca_aco_nome, ca_aco_ativo }, { where: { id: id } })
     
     return res.json(acao);
   },
@@ -34,8 +35,8 @@ module.exports = {
   async delete(req, res) {
     const { id } = req.params
 
-    User.destroy({
-      where: { id }
+    Acao.destroy({
+      where: { id: id }
     }).then(deletedAction => {
       console.log(`Ação deletada ${deletedAction}`)
       res.json(deletedAction)
