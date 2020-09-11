@@ -1,0 +1,161 @@
+.Container{
+    width: 476px;
+    height: 616px;
+    background: #343A40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+    padding: 0px;
+}
+
+.SubContainer{
+    width: 452px;
+    height: 589px;
+    /* Fundo das Telas */
+    background: #37404A;
+    box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25);
+}
+
+.Logo{
+    width: 292px;
+    height: 179px;
+    background-color: antiquewhite;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 43px;
+}
+
+.TextLogin{
+    width: 60px;
+    height: 33px;
+
+    margin-left: 84px;
+    margin-top: 19px;
+
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 33px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    /* Label Campo Formulário */
+
+    color: #8492A6;
+}
+
+.TextPass{
+    /* Label Campo 02 */
+
+
+    width: 68px;
+    height: 33px;
+
+    margin-left: 84px;
+    margin-top: 19px;
+
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 33px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    /* Label Campo Formulário */
+
+    color: #8492A6;
+}
+
+.InputLogin{
+    /* Campo 01 */
+
+    padding: 0px;
+    margin: 0px;
+    width: 292px;
+    height: 40px;
+    color: white;
+    /* Fundo Campos */
+
+    background: #37404A;
+    border-radius: 4px;
+
+    margin-left: 80px;
+}
+
+.InputPass{
+    /* Campo 2 */
+
+    padding: 0px;
+    margin: 0px;
+    width: 292px;
+    height: 40px;
+    color: white;
+    /* Fundo Campos */
+
+    background: #37404A;
+    border-radius: 4px;
+
+    margin-left: 80px;
+}
+
+.ButtonLogin{
+    /* Botão Novo */
+
+
+    width: 292px;
+    height: 36px;
+    margin-top: 50px;
+    margin-left: 80px;
+    color: white;
+
+    /* Fundo Botão Salvar */
+
+    background: #0ACF97;
+    border-radius: 8px;
+}
+
+.ButtonLoginDisabled{
+    width: 292px;
+    height: 36px;
+    margin-top: 50px;
+    margin-left: 80px;
+    color: white;
+
+    /* Fundo Botão Salvar */
+
+    background: #747b85;
+    border-radius: 8px;
+}
+
+.TextSingin{
+    /* Label Campo 3 */
+
+
+left: 287px;
+top: 526px;
+
+font-family: Nunito;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+display: flex;
+align-items: center;
+text-align: center;
+text-decoration-line: underline;
+
+/* Label Campo Formulário */
+
+color: #8492A6;
+}
