@@ -7,6 +7,7 @@ const AcaoController = require('./controllers/AcaoController');
 const AcaoCotacaoController = require('./controllers/AcaoCotacaoController');
 const CarteiraItensController = require('./controllers/CarteiraItensController');
 const CarteiraMovimentoController = require('./controllers/CarteiraMovimentoController');
+const recoveryPassword = require('./controllers/recoveryPasswordController');
 
 
 const routes = express.Router();
@@ -62,5 +63,7 @@ routes.post('/movimentacao', CarteiraMovimentoController.store);
 routes.get('/movimentacao/:id', CarteiraMovimentoController.show);
 routes.put('/movimentacao/:id', CarteiraMovimentoController.update);
 routes.delete('/movimentacao/:id', CarteiraMovimentoController.delete);
+
+routes.put('/recuperacaoSenha', recoveryPassword.recovery);
 
 module.exports = routes;

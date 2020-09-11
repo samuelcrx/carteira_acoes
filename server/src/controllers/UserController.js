@@ -92,9 +92,7 @@ module.exports = {
     let ca_log_ip = req.connection.remoteAddress;
     let ca_usu_codigo = id;
     
-    const log = await Log.create({ ca_usu_codigo, ca_log_ip });
-
-    
+    const log = await Log.create({ ca_usu_codigo, ca_log_ip }); 
 
     return res.json({
       user: {
