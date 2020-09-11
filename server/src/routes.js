@@ -14,6 +14,8 @@ const routes = express.Router();
 
 routes.post("/auth", UserController.login);
 routes.post('/users', UserController.store);
+routes.put('/recuperacaoSenha', recoveryPassword.recovery);
+
 
 // Login
 routes.use("/", authMiddleware);
@@ -64,6 +66,5 @@ routes.get('/movimentacao/:id', CarteiraMovimentoController.show);
 routes.put('/movimentacao/:id', CarteiraMovimentoController.update);
 routes.delete('/movimentacao/:id', CarteiraMovimentoController.delete);
 
-routes.put('/recuperacaoSenha', recoveryPassword.recovery);
 
 module.exports = routes;
