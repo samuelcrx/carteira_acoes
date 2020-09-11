@@ -137,25 +137,23 @@
 }
 
 .TextSingin{
-    /* Label Campo 3 */
 
+    margin-top: 40px;
+    margin-left: 300px;
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 25px;
 
-left: 287px;
-top: 526px;
+    text-decoration-line: underline;
 
-font-family: Nunito;
-font-style: normal;
-font-weight: normal;
-font-size: 18px;
-line-height: 25px;
-/* identical to box height */
+    opacity: 1;
+    transition: opacity 300ms ease;   
 
-display: flex;
-align-items: center;
-text-align: center;
-text-decoration-line: underline;
+    color: #8492A6;
+}
 
-/* Label Campo Formulário */
-
-color: #8492A6;
+.TextSinginTouched{
+    opacity: 0.3;
 }

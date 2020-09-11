@@ -7,6 +7,7 @@ import './Login.css'
 const Login = () => {
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
+    const [singinTouched, setSinginTouched] = useState(false)
 
     const validateForm = () => {
         return login.length > 0 && password.length > 0
@@ -30,6 +31,8 @@ const Login = () => {
                         <FormControl className='InputPass' autoFocus type='password' value={password} onChange={event => setPassword(event.target.value)}/>
                     </FormGroup>
                     <Button className={validateForm() ? 'ButtonLogin' : 'ButtonLoginDisabled'} block bsSize='large' disabled={!validateForm()} type='submit'>Entrar</Button>
+                    <p className={singinTouched? 'TextSingin TextSinginTouched' : 'TextSingin'} onMouseUp={() => setSinginTouched(false)} onMouseDown={() => setSinginTouched(true)} onClick={() => alert('going to singin screen')}>Criar Conta</p>
+                    {/* <p className='TextSingin' onClick={() => alert('going to singin screen')}>Criar Conta</p> */}
                 </form>
                 {/* <p className='TextLogin'>Login</p>
                 <input className='InputLogin'/>
