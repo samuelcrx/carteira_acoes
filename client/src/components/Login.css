@@ -13,7 +13,7 @@
   /* Fundo das Telas */
   border-radius: 8px;
   margin: auto;
-  background-color: #032033;
+  background-color: #37404A;
   position: sticky;
   top: 50%;
 }
@@ -64,7 +64,7 @@
 
   /* Label Campo Formulário */
 
-  color: #cccfd3;
+  color: #8492A6;
 }
 
 .TextPass {
@@ -89,7 +89,7 @@
   padding-bottom: 5px;
   /* Label Campo Formulário */
 
-  color: #cccfd3;
+  color: #8492A6;
 }
 
 .InputLogin {
@@ -118,17 +118,16 @@
 }
 
 .ButtonLogin {
-  /* Botão Novo */
-
-  width: 292px;
+  width: 100%;
+  max-width: 292px;
   height: 36px;
-  margin-top: 50px;
+  margin-top: 28px;
   margin-left: 80px;
   color: white;
 
   /* Fundo Botão Salvar */
 
-  background: #0acf97;
+  background: #0ACF97;
   border-radius: 8px;
 }
 
@@ -142,7 +141,7 @@
 
   /* Fundo Botão Salvar */
 
-  background: #747b85a6;
+  background: #8492A6;
   border-radius: 8px;
 }
 
