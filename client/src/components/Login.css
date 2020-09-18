@@ -1,7 +1,7 @@
 .Container {
   height: 616px;
   background: #343a40;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
 }
@@ -13,9 +13,13 @@
   /* Fundo das Telas */
   border-radius: 8px;
   margin: auto;
-  background-color: #37404A;
-  position: sticky;
+  background-color: #37404a;
+  padding: 4px;
+}
+
+.posicaoLogin {
   top: 50%;
+  position: sticky;
 }
 
 .Formulario {
@@ -64,7 +68,7 @@
 
   /* Label Campo Formulário */
 
-  color: #8492A6;
+  color: #8492a6;
 }
 
 .TextPass {
@@ -89,14 +93,14 @@
   padding-bottom: 5px;
   /* Label Campo Formulário */
 
-  color: #8492A6;
+  color: #8492a6;
 }
 
 .InputLogin {
   /* Campo 01 */
   width: 292px;
   height: 35px;
-  color: white;
+  color: rgb(124, 121, 121);
   /* Fundo Campos */
 
   background: #37404a;
@@ -109,7 +113,7 @@
   /* Campo 2 */
   width: 292px;
   height: 35px;
-  color: white;
+  color: rgb(124, 121, 121);
   /* Fundo Campos */
 
   background: #37404a;
@@ -127,7 +131,7 @@
 
   /* Fundo Botão Salvar */
 
-  background: #0ACF97;
+  background: #0acf97;
   border-radius: 8px;
 }
 
@@ -141,12 +145,16 @@
 
   /* Fundo Botão Salvar */
 
-  background: #8492A6;
+  background: #8492a6;
   border-radius: 8px;
 }
 
+.LinkAuth {
+  text-align: end;
+}
+
 .TextSingin {
-  margin-left: 300px;
+  padding-right: 35px;
   font-family: Nunito;
   font-style: normal;
   font-weight: normal;

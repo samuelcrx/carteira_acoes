@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import authConfig from "../config/auth";
 
 const User = require("../models/User");
-const Log = require('../models/Log');
+const Log = require("../models/Log");
 
 module.exports = {
   async index(req, res) {
@@ -46,7 +46,7 @@ module.exports = {
     const { id } = req.params;
 
     const user = await User.update({ ca_usu_cripto }, { where: { id: id } });
-    console.log('uder ', user)
+    console.log("uder ", user);
     return res.json(user);
   },
 
@@ -72,10 +72,12 @@ module.exports = {
     }
 
     const { ca_usu_login, ca_usu_cripto } = req.body;
+    console.log("Login => ", ca_usu_login);
+    console.log("Pass => ", ca_usu_cripto);
 
     const user = await User.findOne({
       where: {
-        ca_usu_login
+        ca_usu_login,
       },
     });
 
@@ -84,22 +86,21 @@ module.exports = {
     }
 
     if (!(await user.checkPassword(ca_usu_cripto))) {
-      return res.status(401).json({ message: "Check your password" });
+      return res.status(400).json({ message: "Check your password" });
     }
 
     const { id, ca_usu_nome } = user;
 
     let ca_log_ip = req.connection.remoteAddress;
     let ca_usu_codigo = id;
-    
-    const log = await Log.create({ ca_usu_codigo, ca_log_ip }); 
+
+    const log = await Log.create({ ca_usu_codigo, ca_log_ip });
 
     return res.json({
       user: {
         id,
+        ca_usu_login,
         ca_usu_nome,
-        ca_usu_cripto,
-        log
       },
       // Primeiro parametro é o payload, o segundo é a assinatura
       token: jwt.sign({ id, ca_usu_nome }, authConfig.secret, {

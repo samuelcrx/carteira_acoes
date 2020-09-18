@@ -1,0 +1,15 @@
+.marginTop {
+  margin-top: 5%
+}
+
+.borderSubContainer {
+  width: 100%;
+  max-width: 482px;
+  height: auto;
+  /* Fundo das Telas */
+  border-radius: 8px;
+  margin: auto;
+  background-color: #37404A;
+  position: sticky;
+  top: 50%;
+}
