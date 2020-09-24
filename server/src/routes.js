@@ -19,7 +19,7 @@ routes.post("/users", UserController.store);
 routes.put("/recuperacaoSenha", recoveryPassword.recovery);
 
 // Login
-routes.use("/", authMiddleware);
+// routes.use("/", authMiddleware);
 
 // Rotas do usuario
 routes.get("/users", UserController.index);

@@ -72,8 +72,6 @@ module.exports = {
     }
 
     const { ca_usu_login, ca_usu_cripto } = req.body;
-    console.log("Login => ", ca_usu_login);
-    console.log("Pass => ", ca_usu_cripto);
 
     const user = await User.findOne({
       where: {

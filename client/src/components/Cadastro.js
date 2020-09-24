@@ -1,30 +1,27 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import "./Cadastro.css";
-import "./Login.css";
-
+import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { userActions } from "../redux/actions";
 
 const Logo = require("../assets/logo.jpg");
 
 const Cadastro = (props) => {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-  const [nome, setNome] = useState("");
   const [singinTouched, setSinginTouched] = useState(false);
 
   const { user, handleChangeUser, cadastro } = props;
+
+  const history = useHistory();
 
   const validateForm = () => {
     return user.ca_usu_login.length > 0 && user.ca_usu_cripto.length > 0;
   };
 
-  const onSubmit = () => {
-    cadastro(user)
+  const onSubmit = (e) => {
+    e.preventDefault();
+    cadastro(user);
+    history.push("/");
   };
-
 
   return (
     <div className="Container">
@@ -32,8 +29,8 @@ const Cadastro = (props) => {
         <div className="Logo">
           <img src={Logo} alt="Logo" className="imagemLogo" />
         </div>
-        <form className="formulario" onSubmit={() => onSubmit()}>
-          <FormGroup className="FormNome" controlId="nome" bsSize="large">
+        <form className="formulario" onSubmit={(e) => onSubmit(e)}>
+          <FormGroup className="FormNome" controlId="nome">
             <FormLabel className="TextLogin">Nome</FormLabel>
             <FormControl
               className="InputLogin"
@@ -46,35 +43,40 @@ const Cadastro = (props) => {
               }
             />
           </FormGroup>
-          <FormGroup className="FormLogin" controlId="login" bsSize="large">
+          <FormGroup className="FormLogin" controlId="login">
             <FormLabel className="TextLogin">Login</FormLabel>
             <FormControl
               className="InputLogin"
               type="email"
               placeholder="Digite seu E-mail"
               value={user.ca_usu_login}
-              onChange={e => handleChangeUser({ ...user, ca_usu_login: e.target.value })}
+              onChange={(e) =>
+                handleChangeUser({ ...user, ca_usu_login: e.target.value })
+              }
             />
           </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
+          <FormGroup controlId="password" className="FormNome">
             <FormLabel className="TextPass">Senha</FormLabel>
             <FormControl
               className="InputPass"
               type="password"
               placeholder="Digite sua Senha"
               value={user.ca_usu_cripto}
-              onChange={e => handleChangeUser({ ...user, ca_usu_cripto: e.target.value })}
+              onChange={(e) =>
+                handleChangeUser({ ...user, ca_usu_cripto: e.target.value })
+              }
             />
           </FormGroup>
-          <Button
-            className={validateForm() ? "ButtonLogin" : "ButtonLoginDisabled"}
-            block
-            bsSize="large"
-            disabled={!validateForm()}
-            type="submit"
-          >
-            Cadastrar
-          </Button>
+          <FormGroup className="FormNome">
+            <Button
+              className={validateForm() ? "ButtonLogin" : "ButtonLoginDisabled"}
+              block
+              disabled={!validateForm()}
+              type="submit"
+            >
+              Cadastrar
+            </Button>
+          </FormGroup>
           <Link className="LinkAuth" to="/">
             <p
               className={

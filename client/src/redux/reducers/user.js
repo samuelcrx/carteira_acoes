@@ -256,19 +256,13 @@ const user = (state = initialState, action = {}) => {
     //         loadingUser: false,
     //         fetchUsersError: action.error
     //       }
-    //     case ADD_USER:
-    //       return {
-    //         ...state,
-    //         loadingUsers: false,
-    //         loadingUser: false,
-    //         fetchUserError: false,
-    //         fetchUsersError: false,
-    //         users: [...state.users, action.user]
-    //       }
-    //     case RESET_STATE:
-    //       return initialState
-        default:
-          return state
+    case ADD_USER:
+      return {
+        ...state,
+        user: action.user,
+      };
+    default:
+      return state;
   }
 };
 

@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import { connect } from "react-redux";
 import { authActions } from "../redux/actions";
+import Typography from "@material-ui/core/Typography";
 const Logo = require("../assets/logo.jpg");
 
+const useStyles = makeStyles((theme) => ({
+  resetPassLink: {
+    margin: "16px 16px",
+  },
+}));
+
 const Login = (props) => {
+  const { token } = props;
+  const classes = useStyles();
+  const history = useHistory();
+
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [singinTouched, setSinginTouched] = useState(false);
@@ -17,11 +29,22 @@ const Login = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const ca_usu_login = login;
-    const ca_usu_cripto = password;
 
-    props.login({ ca_usu_login, ca_usu_cripto });
-    console.log('Dados', props)
+    if (login && password) {
+      const ca_usu_login = login;
+      const ca_usu_cripto = password;
+
+      props
+      .login({ ca_usu_login, ca_usu_cripto })
+      .then(response => {
+        if (token) {
+          history.push('/carteiras')
+        }
+      })
+      .catch(error => {
+        alert(error)
+      })
+    }
   };
 
   return (
@@ -31,7 +54,7 @@ const Login = (props) => {
           <img src={Logo} alt="Logo" className="imagemLogo" />
         </div>
         <form className="formulario" onSubmit={(e) => onSubmit(e)}>
-          <FormGroup className="FormLogin" controlId="login" bsSize="large">
+          <FormGroup className="FormLogin" controlId="login">
             <FormLabel className="TextLogin">Login</FormLabel>
             <FormControl
               className="InputLogin"
@@ -42,7 +65,7 @@ const Login = (props) => {
               onChange={(event) => setLogin(event.target.value)}
             />
           </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
+          <FormGroup controlId="password" className="FormNome">
             <FormLabel className="TextPass">Senha</FormLabel>
             <FormControl
               className="InputPass"
@@ -52,16 +75,17 @@ const Login = (props) => {
               onChange={(event) => setPassword(event.target.value)}
             />
           </FormGroup>
-          <Button
-            className={validateForm() ? "ButtonLogin" : "ButtonLoginDisabled"}
-            block
-            bsSize="large"
-            disabled={!validateForm()}
-            type="submit"
-          >
-            Entrar
-          </Button>
-          <Link className='LinkAuth' to="/cadastro">
+          <FormGroup className="FormNome">
+            <Button
+              className={validateForm() ? "ButtonLogin" : "ButtonLoginDisabled"}
+              block
+              disabled={!validateForm()}
+              type="submit"
+            >
+              Entrar
+            </Button>
+          </FormGroup>
+          <Link className="LinkAuth" to="/cadastro">
             <p
               className={
                 singinTouched ? "TextSingin TextSinginTouched" : "TextSingin"
@@ -71,6 +95,12 @@ const Login = (props) => {
             >
               Criar Conta
             </p>
+          </Link>
+
+          <Link to="/redefinir-senha">
+            <Typography className={classes.resetPassLink} color={"primary"}>
+              Esqueci minha senha
+            </Typography>
           </Link>
         </form>
         {/* <p className='TextLogin'>Login</p>

@@ -5,6 +5,7 @@ import { promisify } from "util"; // Transforma funcao de callback em async awai
 import authConfig from "../config/auth";
 
 export default async (req, res, next) => {
+  console.log('req ===', req)
   const authHeader = req.headers.authorization; // Recupero o token do usuário logado
 
   if (!authHeader) {

@@ -186,15 +186,14 @@ class ConnectionProxy {
    */
   updateInterceptor = () => {
     const {
-      auth: { token, refreshToken },
+      auth: { token },
     } = this.store.getState();
 
-    if (this.auth.token === token && this.auth.refreshToken === refreshToken)
+    if (this.auth.token === token)
       return false;
 
     this.auth = {
       token,
-      refreshToken,
     };
 
     // Atualiza interceptador
@@ -213,8 +212,7 @@ class ConnectionProxy {
         if (response.status === 403 || response.status === 401) {
           return this.handleAuthenticationError(
             error,
-            originalRequest,
-            refreshToken
+            originalRequest
           );
         }
         return Promise.reject(error);

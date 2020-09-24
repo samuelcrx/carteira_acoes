@@ -1,7 +1,6 @@
 import api from './connectionProxy'
 
 export const login = ({ ca_usu_login, ca_usu_cripto }) => {
-  console.log('ABATIDOS AGORA CARAIIIO ', ca_usu_login)
   return api.http.post('/auth', {
     ca_usu_login,
     ca_usu_cripto

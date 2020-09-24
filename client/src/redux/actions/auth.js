@@ -9,24 +9,18 @@ export const CLEAR_REFRESH_TOKEN = "CLEAR_REFRESH_TOKEN";
 export const AUTH_LOADING = "AUTH_LOADING";
 
 export const login = ({ ca_usu_login, ca_usu_cripto }) => {
-  console.log("Alou 01 ");
-
   return dispatch => {
-    console.log("Alou");
     dispatch({ type: LOADING_LOGIN });
     return API.auth
       .login({ ca_usu_login, ca_usu_cripto })
       .then(({ data, headers }) => {
-        console.log('data', data)
         const { token } = data;
         dispatch({
           type: AUTH_LOGIN,
           token: `Bearer ${token}`,
-          // refreshToken: headers['x-refresh-token']
         });
       })
       .catch((error) => {
-        console.log("Error ", error);
         const { response = {} } = error;
         const { status } = response;
         dispatch({
@@ -72,6 +66,7 @@ export const authLoading = (loading) => {
 };
 
 export const logout = () => {
+  console.log('AQUII CHEGOU O LOGOUT')
   return (dispatch) => {
     dispatch({ type: LOADING_LOGIN });
     return API.auth

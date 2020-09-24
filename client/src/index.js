@@ -4,6 +4,8 @@ import "./index.css";
 
 import Login from "./components/Login";
 import Cadastro from "./components/Cadastro";
+import Carteira from "./components/Carteiras/Carteira";
+import EditModal from "./components/Carteiras/EditModal";
 
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
@@ -21,6 +23,8 @@ ReactDOM.render(
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/cadastro" component={Cadastro} />
+            <Route path="/carteiras" component={Carteira} />
+            <Route path="/edita-carteira" component={EditModal} />
           </Switch>
         </BrowserRouter>
       </PersistGate>

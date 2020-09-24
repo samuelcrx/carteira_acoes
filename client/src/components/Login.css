@@ -12,7 +12,6 @@
   height: auto;
   /* Fundo das Telas */
   border-radius: 8px;
-  margin: auto;
   background-color: #37404a;
   padding: 4px;
 }
@@ -44,13 +43,14 @@
 .FormLogin {
   width: 100%;
   height: auto;
+  text-align: center;
 }
 
 .TextLogin {
   width: 60px;
   height: 33px;
 
-  margin-left: 84px;
+  margin-left: 80px;
   margin-top: 19px;
 
   font-family: Nunito;
@@ -77,7 +77,6 @@
   width: 68px;
   height: 33px;
 
-  margin-left: 84px;
   margin-top: 19px;
 
   font-family: Nunito;
@@ -92,21 +91,9 @@
   text-align: center;
   padding-bottom: 5px;
   /* Label Campo Formulário */
+  margin-left: 80px;
 
   color: #8492a6;
-}
-
-.InputLogin {
-  /* Campo 01 */
-  width: 292px;
-  height: 35px;
-  color: rgb(124, 121, 121);
-  /* Fundo Campos */
-
-  background: #37404a;
-  border-radius: 4px;
-
-  margin-left: 80px;
 }
 
 .InputPass {
@@ -118,7 +105,6 @@
 
   background: #37404a;
   border-radius: 4px;
-  margin-left: 80px;
 }
 
 .ButtonLogin {
@@ -126,8 +112,8 @@
   max-width: 292px;
   height: 36px;
   margin-top: 28px;
-  margin-left: 80px;
   color: white;
+  cursor: pointer;
 
   /* Fundo Botão Salvar */
 
@@ -140,7 +126,6 @@
   max-width: 292px;
   height: 36px;
   margin-top: 28px;
-  margin-left: 80px;
   color: white;
 
   /* Fundo Botão Salvar */

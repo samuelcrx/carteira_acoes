@@ -4,6 +4,7 @@ import { persistReducer } from "redux-persist";
 import Cookies from "cookies-js";
 
 import auth from "./auth";
+import carteira from "./carteira";
 import user from "./user";
 
 const persistConfig = {
@@ -19,5 +20,6 @@ const persistConfig = {
 
 export default combineReducers({
   auth: persistReducer(persistConfig, auth),
+  carteira,
   user
 });

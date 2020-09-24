@@ -2,6 +2,7 @@ const Carteiras = require('../models/Carteiras');
 
 module.exports = {
   async index(req, res) {
+    console.log(req)
     console.log(Carteiras)
     const carteiras = await Carteiras.findAll();
 
