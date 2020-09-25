@@ -4,6 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from "@material-ui/core/Button";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -82,19 +83,48 @@ const useStyles = makeStyles((theme) => ({
     border: '1px',
     boxSizing: 'border-box',
     boxShadow: 'inset 0px 0px 2px rgba(0, 0, 0, 0.25)',
-    width: '90%',
-    height: '40%'
+    width: 'auto',
+    marginLeft: '20px',
+    marginRight: '20px',
+    height: '40%',
+    marginTop: '60px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dataSubContainer:{
+    width: '80%',
+    height: '50%'
+  },
+  form:{
+
+  },
+  descForm:{
+    width: '100%',
+    height: 'auto',
+    textAlign: 'center'
+  },
+  descInput:{
+    width: '100%',
+    height: 'auto',
+    background: '#37404A',
+    borderRadius: '4px'
   },
   descriptionText: {
     fontFamily: 'Nunito',
     fontSize: '14px',
-    fontStyle: 'normal'
+    fontStyle: 'normal',
+    marginTop: '0px',
+    display: 'flex',
+    flexDirection: 'row',
+    color: '#8492A6'
   }
 }));
 
 export default function EditModal() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [desc, setDesc] = React.useState('')
 
   const handleOpen = () => {
     setOpen(true);
@@ -103,6 +133,10 @@ export default function EditModal() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const onSubmit = (event) => {
+    alert()
+  }
 
   return (
     <div>
@@ -134,7 +168,22 @@ export default function EditModal() {
                   <Button className={classes.btExclude}>Excluir</Button>
                 </div>
                 <div className={classes.dataContainer}>
-
+                  <div className={classes.dataSubContainer}>
+                    {/* <p className={classes.descriptionText}>Descrição</p> */}
+                    <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
+                      <FormGroup className={classes.descForm} controlId="desc">
+                      <FormLabel className={classes.descriptionText}>Descrição</FormLabel>
+                      <FormControl
+                        className={classes.descInput}
+                        autoFocus
+                        // type="email"
+                        placeholder="Digite o nome da carteira"
+                        value={desc}
+                        onChange={(event) => setDesc(event.target.value)}
+                      />
+                    </FormGroup>
+                  </form>
+                  </div>
                 </div>
               </div>
             </div>
