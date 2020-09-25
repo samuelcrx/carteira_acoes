@@ -118,6 +118,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     color: '#8492A6'
+  },
+  textCheckbox: {
+    paddingLeft: '15px'
   }
 }));
 
@@ -125,6 +128,7 @@ export default function EditModal() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [desc, setDesc] = React.useState('')
+  const [isActive, setIsActive] = React.useState(false)
 
   const handleOpen = () => {
     setOpen(true);
@@ -172,18 +176,25 @@ export default function EditModal() {
                     {/* <p className={classes.descriptionText}>Descrição</p> */}
                     <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
                       <FormGroup className={classes.descForm} controlId="desc">
-                      <FormLabel className={classes.descriptionText}>Descrição</FormLabel>
-                      <FormControl
-                        className={classes.descInput}
-                        autoFocus
-                        // type="email"
-                        placeholder="Digite o nome da carteira"
-                        value={desc}
-                        onChange={(event) => setDesc(event.target.value)}
-                      />
-                    </FormGroup>
-                  </form>
+                        <FormLabel className={classes.descriptionText}>Descrição</FormLabel>
+                        <FormControl
+                          className={classes.descInput}
+                          autoFocus
+                          // type="email"
+                          placeholder="Digite o nome da carteira"
+                          value={desc}
+                          onChange={(event) => setDesc(event.target.value)}
+                        />
+                      </FormGroup>
+                    </form>
                   </div>
+                  <p className={classes.textCheckbox}>Ativo</p>
+                  <input 
+                      name='Ativo'
+                      type='checkbox'
+                      checked={isActive}
+                      onChange={() => setIsActive(!isActive)}
+                    />
                 </div>
               </div>
             </div>
