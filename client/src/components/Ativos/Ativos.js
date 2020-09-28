@@ -21,28 +21,47 @@ import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
 import { carteiraActions } from "../../redux/actions";
 import EditModal from "./EditModal";
-import ClearIcon from "@material-ui/icons/Clear";
-import { fetchCarteira } from "../../redux/actions/carteiras";
 
 const columns = [
-  { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
-  { id: "valor_investido", label: "Valor Investido", minWidth: 100 },
+  { id: "code", label: "Ticker", minWidth: 60 },
+  { id: "name", label: "Empresa", minWidth: 135 },
   {
-    id: "valor_atual",
-    label: "Valor Atual",
-    minWidth: 100,
+    id: "population",
+    label: "Quantidade",
+    minWidth: 45,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "lucro_prejuizo",
-    label: "Lucro/Prejuízo",
+    id: "size",
+    label: "Valor Médio",
     minWidth: 75,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "evolucao",
+    id: "density",
+    label: "Valor Investido",
+    minWidth: 60,
+    align: "left",
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: "density",
+    label: "Valor Atual",
+    minWidth: 60,
+    align: "left",
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: "density",
+    label: "Lucro/Prejuízo",
+    minWidth: 60,
+    align: "left",
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: "density",
     label: "Evolução",
     minWidth: 60,
     align: "left",
@@ -50,29 +69,41 @@ const columns = [
   },
 ];
 
-function createData(
-  id,
-  ca_crt_descricao,
-  valor_investido,
-  valor_atual,
-  ca_crt_ativo
-) {
-  const lucro_prejuizo =
-    valor_atual && valor_investido ? valor_atual - valor_investido : " -- ";
-  const evolucao =
-    valor_atual && valor_investido
-      ? (valor_atual / valor_investido - 1) * 100
-      : " -- ";
-  return {
-    id,
-    ca_crt_descricao,
-    valor_investido,
-    valor_atual,
-    lucro_prejuizo,
-    evolucao,
-    ca_crt_ativo,
-  };
+function createData(name, code, population, size) {
+  const density = population / size;
+  return { name, code, population, size, density };
 }
+
+const rows = [
+  createData("India", "IN", 200, 11.8),
+  createData("China", "CN", 200, 9.87),
+  createData("Italy", "IT", 100, 5.98),
+  createData("United States", "US", 300, 10.35),
+  createData("Canada", "CA", 80, 14.0),
+  createData("Australia", "AU", 20, 20.14),
+  createData("Germany", "DE", 45, 12.45),
+  createData("India", "IN", 200, 11.8),
+  createData("China", "CN", 200, 9.87),
+  createData("Italy", "IT", 100, 5.98),
+  createData("United States", "US", 300, 10.35),
+  createData("Canada", "CA", 80, 14.0),
+  createData("Australia", "AU", 20, 20.14),
+  createData("Germany", "DE", 45, 12.45),
+  createData("India", "IN", 200, 11.8),
+  createData("China", "CN", 200, 9.87),
+  createData("Italy", "IT", 100, 5.98),
+  createData("United States", "US", 300, 10.35),
+  createData("Canada", "CA", 80, 14.0),
+  createData("Australia", "AU", 20, 20.14),
+  createData("Germany", "DE", 45, 12.45),
+  createData("India", "IN", 200, 11.8),
+  createData("China", "CN", 200, 9.87),
+  createData("Italy", "IT", 100, 5.98),
+  createData("United States", "US", 300, 10.35),
+  createData("Canada", "CA", 80, 14.0),
+  createData("Australia", "AU", 20, 20.14),
+  createData("Germany", "DE", 45, 12.45),
+];
 
 const useStyles = makeStyles({
   root: {
@@ -97,9 +128,6 @@ const useStyles = makeStyles({
   checkButton: {
     color: "#00ff3d !important",
   },
-  inactiveButton: {
-    color: "#ff0000 !important",
-  },
   newButtonIcon: {
     color: "#fff !important",
     maxWidth: 20,
@@ -108,52 +136,40 @@ const useStyles = makeStyles({
   },
 });
 
-const Carteira = (props) => {
+const AtivosTable = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const { openModal, modalOpen, loadingCarteiras } = props;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(event.target.value);
+    setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
-  const { fetchCarteiras, carteiras, user, deleteCarteira } = props;
+  const { fetchCarteiras, carteiras } = props;
 
   useEffect(() => {
-    fetchCarteiras(user.id);
-  }, [fetchCarteiras, user.id]);
+    // fetchCarteiras();
+  }, []);
 
-  const rows = (carteiras.data || []).map((item) => {
-    return createData(
-      item.id,
-      item.ca_crt_descricao,
-      item.valor_investido,
-      item.valor_atual,
-      item.ca_crt_ativo
-    );
-  });
+  console.log("fetch all ", carteiras);
 
   return (
     <>
-      <Header title={"Lista de carteiras de ações"} />
+      <Header title={"Lista de Ativos da carteira"} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
             variant="contained"
             style={{ marginTop: 20, marginBottom: 20 }}
             color="secondary"
-            onClick={() => {
-              openModal();
-            }}
+            onClick={() => {}}
           >
-            Novo
+            Novo Lançamento
           </Button>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -168,18 +184,16 @@ const Carteira = (props) => {
                   </TableCell>
                 ))}
                 <TableCell
-                  // key={column.id}
                   align="left"
                   // style={{ minWidth: column.minWidth }}
                 >
-                  {"Status"}
+                  {"Lançamentos"}
                 </TableCell>
                 <TableCell
-                  // key={column.id}
                   align="left"
                   // style={{ minWidth: column.minWidth }}
                 >
-                  {"Ações"}
+                  {"Cotações"}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -192,7 +206,7 @@ const Carteira = (props) => {
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.ca_crt_descricao}
+                      key={row.code}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];
@@ -205,11 +219,7 @@ const Carteira = (props) => {
                         );
                       })}
                       <TableCell align="left">
-                        {row.ca_crt_ativo ? (
-                          <CheckIcon className={classes.checkButton} />
-                        ) : (
-                          <ClearIcon className={classes.inactiveButton} />
-                        )}
+                        <CheckIcon className={classes.checkButton} />
                       </TableCell>
                       <TableCell align="left">
                         <IconButton>
@@ -220,21 +230,13 @@ const Carteira = (props) => {
 
                         <IconButton>
                           <Tooltip title="Editar">
-                            <EditIcon 
-                            onClick={() => {
-                              fetchCarteira(row.id)
-                            }}/>
+                            <EditIcon />
                           </Tooltip>
                         </IconButton>
 
                         <IconButton>
                           <Tooltip title="Deletar">
-                            <Delete
-                              onClick={() => {
-                                deleteCarteira(row.id, );
-                                fetchCarteiras(user.id);
-                              }}
-                            />
+                            <Delete />
                           </Tooltip>
                         </IconButton>
                       </TableCell>
@@ -245,10 +247,10 @@ const Carteira = (props) => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 15, 50]}
           component="div"
           count={rows.length}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={rowsPerPage ? rowsPerPage : 5}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
@@ -263,8 +265,6 @@ const mapStateToProps = (state) => ({
   carteiras: state.carteira.carteiras,
   carteira: state.carteira.carteira,
   modalOpen: state.carteira.modalOpen,
-  user: state.auth.user,
-  loadingCarteiras: state.carteira.loadingCarteiras,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,
@@ -275,8 +275,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchCarteira: (id) => {
       dispatch(carteiraActions.fetchCarteira(id));
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
+    fetchCarteiras: () => {
+      dispatch(carteiraActions.fetchCarteiras());
     },
     deleteCarteira: (id) => {
       dispatch(carteiraActions.deleteCarteira(id));
@@ -287,4 +287,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Carteira);
+export default connect(mapStateToProps, mapDispatchToProps)(AtivosTable);

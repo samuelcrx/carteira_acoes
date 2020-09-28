@@ -7,6 +7,7 @@ export const CHANGE_NEXT_PATH = "CHANGE_NEXT_PATH";
 export const CLEAR_NEXT_PATH = "CLEAR_NEXT_PATH";
 export const CLEAR_REFRESH_TOKEN = "CLEAR_REFRESH_TOKEN";
 export const AUTH_LOADING = "AUTH_LOADING";
+export const RECORD_USER = "RECORD_USER";
 
 export const login = ({ ca_usu_login, ca_usu_cripto }) => {
   return dispatch => {
@@ -14,10 +15,15 @@ export const login = ({ ca_usu_login, ca_usu_cripto }) => {
     return API.auth
       .login({ ca_usu_login, ca_usu_cripto })
       .then(({ data, headers }) => {
-        const { token } = data;
+        console.log('Data de login ', data)
+        const { token, user } = data;
         dispatch({
           type: AUTH_LOGIN,
           token: `Bearer ${token}`,
+        });
+        dispatch({
+          type: RECORD_USER,
+          user: user
         });
       })
       .catch((error) => {

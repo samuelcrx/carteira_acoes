@@ -29,9 +29,9 @@ routes.put("/updatePassword/:id", UserController.updatePassword);
 routes.delete("/users/:id", UserController.delete);
 
 // Rotas de carteiras
-routes.get("/carteiras", CarteiraController.index);
+routes.get("/carteiras/:userId", CarteiraController.index);
 routes.post("/carteiras/:ca_usu_codigo", CarteiraController.store);
-routes.get("/carteiras/:id", CarteiraController.show);
+routes.get("/carteira/:id", CarteiraController.show);
 routes.put("/carteiras/:id", CarteiraController.update);
 routes.delete("/carteiras/:id", CarteiraController.delete);
 
@@ -50,7 +50,7 @@ routes.put("/cotacoes/:id", AcaoCotacaoController.update);
 routes.delete("/cotacoes/:id", AcaoCotacaoController.delete);
 
 // Rotas de carteira itens
-routes.get("/itens", CarteiraItensController.index);
+routes.get("/itens/:carteiraId", CarteiraItensController.index);
 routes.post("/itens", CarteiraItensController.store);
 routes.get("/itens/:id", CarteiraItensController.show);
 routes.put("/itens/:id", CarteiraItensController.update);

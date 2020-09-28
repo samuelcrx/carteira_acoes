@@ -1,21 +1,28 @@
-import { authActions } from '../actions'
+import { authActions } from "../actions";
 
 const {
   AUTH_LOGIN,
-  // AUTH_LOGOUT,
+  RECORD_USER,
+  AUTH_LOGOUT,
   AUTH_ERROR,
   LOADING_LOGIN,
   // CHANGE_NEXT_PATH,
   // CLEAR_NEXT_PATH,
   // AUTH_LOADING,
   // CLEAR_REFRESH_TOKEN
-} = authActions
+} = authActions;
 
 const initialState = {
   loading: false,
-  token: '',
-  err: null
-}
+  token: "",
+  err: null,
+  user: {
+    ca_usu_nome: "",
+    ca_usu_login: "",
+    ca_usu_cripto: "",
+    id: null,
+  },
+};
 
 const auth = (state = initialState, action = {}) => {
   switch (action.type) {
@@ -24,10 +31,10 @@ const auth = (state = initialState, action = {}) => {
         ...state,
         loading: false,
         err: null,
-        token: action.token
-      }
-    // case AUTH_LOGOUT:
-    //   return { ...initialState }
+        token: action.token,
+      };
+    case AUTH_LOGOUT:
+      return { ...initialState };
     // case CLEAR_REFRESH_TOKEN:
     //   return {
     //     ...state,
@@ -37,8 +44,15 @@ const auth = (state = initialState, action = {}) => {
       return {
         ...state,
         err: null,
-        loading: true
-      }
+        loading: true,
+      };
+    case RECORD_USER:
+      // formSchemaType = action.user._id ? 'edit' : 'add'
+      return {
+        ...state,
+        user: action.user,
+        userFormTouched: false,
+      };
     // case CHANGE_NEXT_PATH:
     //   return {
     //     ...state,
@@ -53,16 +67,16 @@ const auth = (state = initialState, action = {}) => {
       return {
         ...state,
         err: action.err,
-        loading: false
-      }
+        loading: false,
+      };
     // case AUTH_LOADING:
     //   return {
     //     ...state,
     //     loading: action.loading
     //   }
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default auth
+export default auth;

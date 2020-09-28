@@ -1,14 +1,14 @@
 import { userActions } from "../actions";
 // import ValidateFormObject, { validates } from '../utils/ValidateFormObject'
 const {
-  // FETCH_USER,
-  // FETCHING_USER,
+  FETCH_USER,
+  FETCHING_USER,
   // FETCH_USER_ERROR,
   // FETCH_USERS,
   // FETCHING_USERS,
   // FETCH_USERS_ERROR,
-  // OPEN_MODAL,
-  // CLOSE_MODAL,
+  OPEN_MODAL,
+  CLOSE_MODAL,
   CHANGE_USER,
   // DELETE_USER,
   ADD_USER,
@@ -26,9 +26,9 @@ const {
 } = userActions;
 
 const initialState = {
-  // loadingUser: false,
-  // loadingUsers: false,
-  // fetchUserError: false,
+  loadingUser: false,
+  loadingUsers: false,
+  fetchUserError: false,
   fetchUsersError: false,
   users: [],
   // order: {
@@ -147,19 +147,15 @@ const user = (state = initialState, action = {}) => {
     //         ...state,
     //         modalOpen: false
     //       }
-    //     case FETCH_USER:
-    //       formSchemaType = action.user._id ? 'edit' : 'add'
-    //       return {
-    //         ...state,
-    //         user: action.user,
-    //         loadingUser: false,
-    //         fetchUserError: false,
-    //         userFormTouched: false,
-    //         userFormErrors: UserValidate.validate({
-    //           formObject: action.user,
-    //           formSchemaType
-    //         })
-    //       }
+        case FETCH_USER:
+          // formSchemaType = action.user._id ? 'edit' : 'add'
+          return {
+            ...state,
+            user: action.user,
+            loadingUser: false,
+            fetchUserError: false,
+            userFormTouched: false
+          }
     //     case CHANGE_ORDER_COLUMN:
     //       return {
     //         ...state,

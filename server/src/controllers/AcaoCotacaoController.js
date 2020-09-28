@@ -30,6 +30,8 @@ module.exports = {
       ca_acc_valor,
     } = req.body;
 
+    console.log(req.body)
+
     const acaoCotacao = await AcaoCotacao.create({
       ca_usu_codigo,
       ca_aco_codigo,

@@ -130,14 +130,31 @@ body {
   background: #0f7979;
 }
 
+.botao_verde_escuro:hover {
+  /* Funco do Botão */
+  background: #0f7979bd !important;
+  transition: background 0.2s !important;
+}
+
 .botao_roxo {
   /* Funco do Botão */
   background: #727cf5;
 }
 
+.botao_roxo:hover {
+  /* Funco do Botão */
+  background: #727cf5bd !important;
+  transition: background 0.2s !important;
+}
+
 .botao_vermelho {
   /* Funco do Botão */
   background: #fa5c7c;
+}
+.botao_vermelho:hover {
+  /* Funco do Botão */
+  background: #fa5c7cd0 !important;
+  transition: background 0.2s !important;
 }
 
 .telas_blocos {
@@ -285,4 +302,9 @@ body {
 
 .MuiTablePagination-root {
   color: rgb(255 255 255 / 87%) !important;
+}
+
+
+::-webkit-input-placeholder {
+  color: rgb(207, 203, 203);
 }

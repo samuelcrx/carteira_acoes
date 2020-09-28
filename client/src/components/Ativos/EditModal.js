@@ -7,9 +7,7 @@ import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
 import { carteiraActions } from "../../redux/actions";
-import classNames from "classnames";
-import Carteira from "./Carteira";
-import { addCarteira } from "../../api/carteira";
+import { openModal } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -113,11 +111,8 @@ const useStyles = makeStyles((theme) => ({
   descInput: {
     width: "100%",
     height: "auto",
-    maxHeight: 20,
     background: "#37404A",
-    borderRadius: 4,
-    padding: 4,
-    color: "rgb(207, 203, 203)",
+    borderRadius: "4px",
   },
   descriptionText: {
     fontFamily: "Nunito",
@@ -127,50 +122,22 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     color: "#8492A6",
-    // padding: 8,
   },
   textCheckbox: {
     paddingLeft: "15px",
-    display: "flex",
-    paddingRight: 8,
-    color: "rgb(207, 203, 203)",
-  },
-  inputCheck: {
-    height: "auto",
-    display: "flex !important",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  checkActive: {
-    paddingRight: 4,
-    marginRight: 5,
   },
 }));
 
 const EditModal = (props) => {
   const classes = useStyles();
+  const [desc, setDesc] = React.useState("");
+  const [isActive, setIsActive] = React.useState(false);
 
-  const {
-    modalOpen,
-    closeModal,
-    resetState,
-    carteira,
-    handleChangeCarteira,
-    user,
-    fetchCarteiras
-  } = props;
-
-  const onSubmit = (carteira, ca_usu_codigo) => {
-
-    addCarteira(carteira, ca_usu_codigo)
-      .then((data) => {
-        fetchCarteiras(ca_usu_codigo)
-        resetState();
-      })
-      .catch((err) => {
-        alert("EROU");
-      });
+  const onSubmit = (event) => {
+    alert();
   };
+
+  const { modalOpen, closeModal } = props;
 
   return (
     <div>
@@ -193,23 +160,11 @@ const EditModal = (props) => {
                 <p className={classes.titleText}>Carteira de Ações</p>
               </div>
               <div className={classes.btContainer}>
-                <Button
-                  className={classNames(classes.btBack, "botao_verde_escuro")}
-                  onClick={() => {
-                    closeModal();
-                  }}
-                >
+                <Button className={classes.btBack} onClick={() => closeModal()}>
                   Voltar
                 </Button>
-                <Button
-                  className={classNames(classes.btSave, "botao_roxo")}
-                  type="submit"
-                  onClick={() => {
-                    onSubmit(carteira, user.id);
-                  }}
-                >
-                  Salvar
-                </Button>
+                <Button className={classes.btSave}>Salvar</Button>
+                <Button className={classes.btExclude}>Excluir</Button>
               </div>
               <div className={classes.dataContainer}>
                 <div className={classes.dataSubContainer}>
@@ -219,38 +174,24 @@ const EditModal = (props) => {
                       <FormLabel className={classes.descriptionText}>
                         Descrição
                       </FormLabel>
-                      <div className={classes.inputCheck}>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="text"
-                          placeholder="Digite o nome da carteira"
-                          value={carteira.ca_crt_descricao}
-                          onChange={(e) =>
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_descricao: e.target.value,
-                            })
-                          }
-                        />
-                        <p className={classes.textCheckbox}>Ativo</p>
-                        <input
-                          name="Ativo"
-                          type="checkbox"
-                          className={classes.checkActive}
-                          checked={carteira.ca_crt_ativo}
-                          onChange={(e) => {
-                            // setIsActive(!isActive);
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_ativo: e.target.checked,
-                            });
-                          }}
-                        />
-                      </div>
+                      <FormControl
+                        className={classes.descInput}
+                        autoFocus
+                        // type="email"
+                        placeholder="Digite o nome da carteira"
+                        value={desc}
+                        onChange={(event) => setDesc(event.target.value)}
+                      />
                     </FormGroup>
                   </form>
                 </div>
+                <p className={classes.textCheckbox}>Ativo</p>
+                <input
+                  name="Ativo"
+                  type="checkbox"
+                  checked={isActive}
+                  onChange={() => setIsActive(!isActive)}
+                />
               </div>
             </div>
           </div>
@@ -263,8 +204,6 @@ const EditModal = (props) => {
 
 const mapStateToProps = (state) => ({
   modalOpen: state.carteira.modalOpen,
-  carteira: state.carteira.carteira,
-  user: state.auth.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -272,20 +211,11 @@ const mapDispatchToProps = (dispatch) => {
     fetchCarteira: (id) => {
       dispatch(carteiraActions.fetchCarteira(id));
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
-    },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
-    },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
+    openModal: () => {
+      dispatch(carteiraActions.openModal());
     },
     closeModal: () => {
       dispatch(carteiraActions.closeModal());
-    },
-    resetState: () => {
-      dispatch(carteiraActions.resetState());
     },
   };
 };

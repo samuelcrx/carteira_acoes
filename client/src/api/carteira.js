@@ -1,11 +1,12 @@
 import api from "./connectionProxy";
 
-export const getCarteiras = (params = {}) => {
-  return api.http.get("/carteiras");
+export const getCarteiras = (userId) => {
+  return api.http.get(`/carteiras/${userId}`);
 };
 
 export const getCarteira = (id) => {
-  return api.http.get(`/carteiras/${id}`);
+  console.log('api', id)
+  return api.http.get(`/carteira/${id}`);
 };
 
 export const deleteCarteira = (id) => {
@@ -16,8 +17,8 @@ export const editCarteira = (carteira) => {
   return api.http.put(`/carteiras/${carteira.id}`, carteira);
 };
 
-export const addCarteira = (carteira) => {
-  return api.http.post(`/carteiras/${carteira.ca_usu_codigo}`, carteira);
+export const addCarteira = (carteira, ca_usu_codigo) => {
+  return api.http.post(`/carteiras/${ca_usu_codigo}`, carteira);
 };
 
 export const updateCarteira = (carteira) => {
