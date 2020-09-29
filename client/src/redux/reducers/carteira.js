@@ -75,22 +75,17 @@ const initialState = {
 const carteira = (state = initialState, action = {}) => {
   switch (action.type) {
     case FETCH_CARTEIRA:
-      let formSchemaType = (action.carteira || {})._id ? "edit" : "add";
       return {
         ...state,
         carteira: action.carteira,
         loadingCarteira: false,
         fetchCarteiraError: false,
-        carteiraFormTouched: false,
-        // carteiraFormErrors: CarteiraValidate.validate({
-        //   formObject: action.subject,
-        //   formSchemaType
-        // })
+        carteiraFormTouched: false
       };
     case FETCHING_CARTEIRAS:
       return {
         ...state,
-        loadingCarteiras: false,
+        loadingCarteiras: true,
         fetchCarteiraError: false,
       };
     case FETCHING_CARTEIRA:

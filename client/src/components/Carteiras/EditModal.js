@@ -10,6 +10,7 @@ import { carteiraActions } from "../../redux/actions";
 import classNames from "classnames";
 import Carteira from "./Carteira";
 import { addCarteira } from "../../api/carteira";
+import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -157,19 +158,23 @@ const EditModal = (props) => {
     carteira,
     handleChangeCarteira,
     user,
-    fetchCarteiras
+    fetchCarteiras,
+    editCarteira,
   } = props;
 
   const onSubmit = (carteira, ca_usu_codigo) => {
-
-    addCarteira(carteira, ca_usu_codigo)
-      .then((data) => {
-        fetchCarteiras(ca_usu_codigo)
-        resetState();
-      })
-      .catch((err) => {
-        alert("EROU");
-      });
+    if (!carteira.id) {
+      addCarteira(carteira, ca_usu_codigo)
+        .then((data) => {
+          fetchCarteiras(ca_usu_codigo);
+        })
+        .catch((err) => {
+          alert("EROU");
+        });
+    } else {
+      editCarteira(carteira);
+      fetchCarteiras(ca_usu_codigo);
+    }
   };
 
   return (
@@ -203,9 +208,10 @@ const EditModal = (props) => {
                 </Button>
                 <Button
                   className={classNames(classes.btSave, "botao_roxo")}
-                  type="submit"
+                  type={"submit"}
                   onClick={() => {
                     onSubmit(carteira, user.id);
+                    resetState()
                   }}
                 >
                   Salvar
@@ -214,7 +220,7 @@ const EditModal = (props) => {
               <div className={classes.dataContainer}>
                 <div className={classes.dataSubContainer}>
                   {/* <p className={classes.descriptionText}>Descrição</p> */}
-                  <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
+                  <form className={classes.form}>
                     <FormGroup className={classes.descForm} controlId="desc">
                       <FormLabel className={classes.descriptionText}>
                         Descrição
@@ -280,6 +286,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addCarteira: (carteira, ca_usu_codigo) => {
       dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
+    },
+    editCarteira: (carteira) => {
+      dispatch(carteiraActions.editCarteira(carteira));
     },
     closeModal: () => {
       dispatch(carteiraActions.closeModal());

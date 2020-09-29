@@ -124,7 +124,7 @@ const Carteira = (props) => {
     setPage(0);
   };
 
-  const { fetchCarteiras, carteiras, user, deleteCarteira } = props;
+  const { fetchCarteiras, carteiras, user, deleteCarteira, carteira, fetchCarteira } = props;
 
   useEffect(() => {
     fetchCarteiras(user.id);
@@ -139,6 +139,8 @@ const Carteira = (props) => {
       item.ca_crt_ativo
     );
   });
+
+  console.log('achou ', carteira)
 
   return (
     <>
@@ -220,10 +222,11 @@ const Carteira = (props) => {
 
                         <IconButton>
                           <Tooltip title="Editar">
-                            <EditIcon 
-                            onClick={() => {
-                              fetchCarteira(row.id)
-                            }}/>
+                            <EditIcon
+                              onClick={() => {
+                                fetchCarteira(row.id);
+                              }}
+                            />
                           </Tooltip>
                         </IconButton>
 
@@ -231,7 +234,7 @@ const Carteira = (props) => {
                           <Tooltip title="Deletar">
                             <Delete
                               onClick={() => {
-                                deleteCarteira(row.id, );
+                                deleteCarteira(row.id);
                                 fetchCarteiras(user.id);
                               }}
                             />

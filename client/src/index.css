@@ -122,12 +122,13 @@ body {
 
 .botao_verde_claro {
   /* Funco do Botão */
-  background: #0acf97;
+  background: #0acf97 !important;
+  color: rgb(255, 248, 248) !important;
 }
 
 .botao_verde_escuro {
   /* Funco do Botão */
-  background: #0f7979;
+  background: #0f7979 !important;
 }
 
 .botao_verde_escuro:hover {

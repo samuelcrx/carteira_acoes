@@ -21,6 +21,7 @@ import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
 import { carteiraActions } from "../../redux/actions";
 import EditModal from "./EditModal";
+import classNames from 'classnames'
 
 const columns = [
   { id: "code", label: "Ticker", minWidth: 60 },
@@ -134,6 +135,9 @@ const useStyles = makeStyles({
     width: "100%",
     padding: 2,
   },
+  btnVoltar: {
+    color: '#fff'
+  }
 });
 
 const AtivosTable = (props) => {
@@ -150,7 +154,7 @@ const AtivosTable = (props) => {
     setPage(0);
   };
 
-  const { fetchCarteiras, carteiras } = props;
+  const { fetchCarteiras, carteiras, openModal } = props;
 
   useEffect(() => {
     // fetchCarteiras();
@@ -165,9 +169,23 @@ const AtivosTable = (props) => {
         <TableContainer className={classes.container}>
           <Button
             variant="contained"
-            style={{ marginTop: 20, marginBottom: 20 }}
-            color="secondary"
-            onClick={() => {}}
+            className={classNames(classes.btnVoltar, 'botao_verde_escuro')}
+            style={{
+              marginTop: 20,
+              marginBottom: 20,
+              marginLeft: 20,
+              float: "left",
+            }}
+          >
+            Voltar
+          </Button>
+          <Button
+            variant="contained"
+            style={{ marginTop: 20, marginBottom: 20, marginLeft: -20 }}
+            className='botao_verde_claro'
+            onClick={() => {
+              openModal();
+            }}
           >
             Novo Lançamento
           </Button>

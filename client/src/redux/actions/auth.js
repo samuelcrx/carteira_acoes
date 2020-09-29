@@ -72,7 +72,6 @@ export const authLoading = (loading) => {
 };
 
 export const logout = () => {
-  console.log('AQUII CHEGOU O LOGOUT')
   return (dispatch) => {
     dispatch({ type: LOADING_LOGIN });
     return API.auth

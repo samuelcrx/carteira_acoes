@@ -74,8 +74,7 @@ export const deleteCarteira = (id) => {
     dispatch({ type: FETCHING_CARTEIRAS });
     return API.carteira
       .deleteCarteira(id)
-      .then(({ data: carteira }) => {
-      })
+      .then(({ data: carteira }) => {})
       .catch((err) => {
         const { response = {} } = err;
         const { data = {} } = response;
@@ -179,7 +178,8 @@ export const editCarteira = (carteira) => {
     return API.carteira
       .editCarteira(carteira)
       .then(({ data }) => {
-        dispatch({ type: EDIT_CARTEIRA, carteira: data });
+        // dispatch({ type: EDIT_CARTEIRA, carteira: carteira });
+        dispatch({ type: CLOSE_MODAL });
       })
       .catch((err) => {
         const { response = {} } = err;
@@ -196,17 +196,18 @@ export const editCarteira = (carteira) => {
 };
 
 export const fetchCarteira = (id) => {
+  console.log("Abriu ", id);
   return (dispatch) => {
     dispatch({ type: FETCHING_CARTEIRA, clear: true });
     dispatch({ type: OPEN_MODAL });
     return API.carteira
       .getCarteira(id)
       .then(({ data }) => {
-        console.log('dataa ', data)
+        console.log("dataa ", data);
         dispatch({ type: FETCH_CARTEIRA, carteira: data });
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         const { response = {} } = err;
         const { data = {} } = response;
         const { message } = data;
