@@ -7,6 +7,7 @@ import Cadastro from "./components/Cadastro";
 import Carteira from "./components/Carteiras/Carteira";
 import EditModal from "./components/Carteiras/EditModal";
 import AtivosTable from "./components/Ativos/Ativos";
+import Acoes from "./components/Acoes/Acoes";
 
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
@@ -15,6 +16,11 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import LancamentoAtivos from "./components/LancamentoAtivos/LancamentoAtivos";
+import Cotacao from "./components/Cotacao/Cotacao";
+import Perfil from "./components/Perfil/Perfil";
+import TrocarSenha from "./components/Perfil/TrocarSenha";
+import RecuperarSenha from "./components/RecuperarSenha";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -27,6 +33,10 @@ ReactDOM.render(
             <Route path="/carteiras" component={Carteira} />
             <Route path="/edita-carteira" component={EditModal} />
             <Route path="/ativos" component={AtivosTable} />
+            <Route path="/acoes" component={Acoes} />
+            <Route path="/lancamentos-ativos" component={LancamentoAtivos} />
+            <Route path="/cotacao" component={Cotacao} />
+            <Route path="/recuperar-senha" component={RecuperarSenha} />
           </Switch>
         </BrowserRouter>
       </PersistGate>
