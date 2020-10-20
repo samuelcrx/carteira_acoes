@@ -12,6 +12,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { connect } from "react-redux";
 import { authActions } from "../../redux/actions";
 import { useHistory } from "react-router-dom";
+import Perfil from "../Perfil/Perfil";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +39,7 @@ const Header = (props) => {
     setAnchorEl(null);
   };
 
-  const { title, logout } = props;
+  const { title, logout, openModalProfile } = props;
 
   const history = useHistory();
 
@@ -52,8 +53,8 @@ const Header = (props) => {
             color="inherit"
             aria-label="menu"
             onClick={() => {
-              logout()
-              history.push("/")
+              logout();
+              history.push("/");
             }}
           >
             <ExitToAppIcon />
@@ -86,7 +87,7 @@ const Header = (props) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Perfil</MenuItem>
+              <MenuItem onClick={openModalProfile}>Perfil</MenuItem>
               <MenuItem onClick={handleClose}>Recuperar senha</MenuItem>
             </Menu>
           </div>
@@ -100,6 +101,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => {
       dispatch(authActions.logout());
+    },
+    openModalProfile: () => {
+      dispatch(authActions.openModalProfile());
+    },
+    closeModalProfile: () => {
+      dispatch(authActions.closeModalProfile());
     },
   };
 };

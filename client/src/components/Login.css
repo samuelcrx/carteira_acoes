@@ -20,6 +20,11 @@
   top: 50%;
   position: sticky;
 }
+.posicaoRec {
+  top: 10%;
+  text-align: center;
+  position: sticky;
+}
 
 .Formulario {
   text-align: center;
@@ -70,6 +75,49 @@
 
   color: #8492a6;
 }
+.TextRecSenha {
+  height: 33px;
+
+  margin-left: 80px;
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  padding-bottom: 5px;
+
+  /* Label Campo Formulário */
+
+  color: #8492a6;
+}
+.TextRecSenha2 {
+  height: 33px;
+
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  padding-bottom: 5px;
+
+  /* Label Campo Formulário */
+
+  color: #8492a6;
+}
 
 .TextPass {
   /* Label Campo 02 */
@@ -112,6 +160,18 @@
   max-width: 292px;
   height: 36px;
   margin-top: 28px;
+  color: white;
+  cursor: pointer;
+
+  /* Fundo Botão Salvar */
+
+  background: #0acf97;
+  border-radius: 8px;
+}
+.ButtonLogin02 {
+  width: 100%;
+  max-width: 292px;
+  height: 36px;
   color: white;
   cursor: pointer;
 

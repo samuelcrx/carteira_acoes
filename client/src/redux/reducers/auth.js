@@ -1,4 +1,4 @@
-import { authActions } from "../actions";
+import { authActions, userActions } from "../actions";
 
 const {
   AUTH_LOGIN,
@@ -6,13 +6,16 @@ const {
   AUTH_LOGOUT,
   AUTH_ERROR,
   LOADING_LOGIN,
-  // CHANGE_NEXT_PATH,
-  // CLEAR_NEXT_PATH,
-  // AUTH_LOADING,
-  // CLEAR_REFRESH_TOKEN
+  OPEN_PROFILE_MODAL,
+  CLOSE_PROFILE_MODAL,
 } = authActions;
 
+const {
+  EDIT_USER
+} = userActions
+
 const initialState = {
+  modalOpenProfile: false,
   loading: false,
   token: "",
   err: null,
@@ -53,27 +56,22 @@ const auth = (state = initialState, action = {}) => {
         user: action.user,
         userFormTouched: false,
       };
-    // case CHANGE_NEXT_PATH:
-    //   return {
-    //     ...state,
-    //     nextPath: action.path
-    //   }
-    // case CLEAR_NEXT_PATH:
-    //   return {
-    //     ...state,
-    //     nextPath: ''
-    //   }
     case AUTH_ERROR:
       return {
         ...state,
         err: action.err,
         loading: false,
       };
-    // case AUTH_LOADING:
-    //   return {
-    //     ...state,
-    //     loading: action.loading
-    //   }
+    case OPEN_PROFILE_MODAL:
+      return {
+        ...state,
+        modalOpenProfile: true,
+      };
+    case CLOSE_PROFILE_MODAL:
+      return {
+        ...state,
+        modalOpenProfile: false,
+      };
     default:
       return state;
   }

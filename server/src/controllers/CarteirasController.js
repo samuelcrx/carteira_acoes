@@ -11,6 +11,9 @@ module.exports = {
     const data = await Carteiras.findAll({ where: { ca_usu_codigo: userId } });
 
     for (let carteira of data) {
+      carteira.dataValues.valor_atual = 0;
+      carteira.dataValues.valor_investido = 0;
+      // console.log(carteira)
       const itens = await CarteiraItens.findAll({
         attributes: [
           "ca_crt_codigo",
@@ -20,8 +23,9 @@ module.exports = {
         ],
         where: { ca_crt_codigo: carteira.dataValues.id },
       });
-
-      if (itens.length) {
+      // console.log(itens);
+      if (itens) {
+        console.log("aqui mesmo");
         for (let item of itens) {
           const cotacoes = await AcoesCotacoes.findOne({
             attributes: ["ca_acc_valor", "ca_aco_codigo", "createdAt"],
@@ -29,26 +33,34 @@ module.exports = {
             order: [["createdAt", "DESC"]],
           });
 
-          item.dataValues.ca_cotacao = cotacoes.dataValues.ca_acc_valor;
-
-          if (item.dataValues.ca_cri_quantidade) {
-            carteira.dataValues.valor_atual =
-              item.dataValues.ca_cri_quantidade * item.dataValues.ca_cotacao;
-            carteira.dataValues.valor_investido =
-              item.dataValues.ca_cri_quantidade *
-              item.dataValues.ca_cri_valor_medio;
+          if (cotacoes) {
+            console.log("cotou ");
+            if (item != null) {
+              console.log("item nao é nulo");
+              if (cotacoes.dataValues.ca_acc_valor) {
+                item.dataValues.ca_cotacao = cotacoes.dataValues.ca_acc_valor;
+              } else {
+                item.dataValues.ca_cotacao = 0;
+              }
+            }
           } else {
-            carteira.dataValues.valor_atual = 0;
-            carteira.dataValues.valor_investido = 0;
+            item.dataValues.ca_cotacao = 0;
           }
 
-          console.log(carteira.dataValues);
+          if (item.dataValues.ca_cri_quantidade) {
+            // console.log('aqui foi cotaddd ', item.dataValues)
+            carteira.dataValues.valor_atual +=
+              item.dataValues.ca_cri_quantidade * item.dataValues.ca_cotacao;
+            console.log("PRINTAAA", carteira.dataValues);
+
+            carteira.dataValues.valor_investido +=
+              item.dataValues.ca_cri_quantidade *
+              item.dataValues.ca_cri_valor_medio;
+          }
         }
-      } else {
-        carteira.dataValues.valor_atual = 0;
-        carteira.dataValues.valor_investido = 0;
       }
     }
+    // console.log(data)
     return res.json(data);
   },
 

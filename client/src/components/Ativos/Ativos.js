@@ -19,92 +19,98 @@ import Delete from "@material-ui/icons/DeleteOutline";
 import Ativos from "@material-ui/icons/Assignment";
 import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
-import EditModal from "./EditModal";
-import classNames from 'classnames'
+import {
+  carteiraItensActions,
+  lancamentosActions,
+  cotacoesActions,
+} from "../../redux/actions";
+import EditModal from "../LancamentoAtivos/EditModal";
+import classNames from "classnames";
+import { useHistory } from "react-router-dom";
+import TrendingUpIcon from "@material-ui/icons/TrendingUp";
+import EqualizerIcon from "@material-ui/icons/Equalizer";
+import lancamentos from "../../redux/reducers/lancamentos";
 
 const columns = [
-  { id: "code", label: "Ticker", minWidth: 60 },
-  { id: "name", label: "Empresa", minWidth: 135 },
+  { id: "ticker", label: "Ticker", minWidth: 60 },
+  { id: "empresa", label: "Empresa", minWidth: 135 },
   {
-    id: "population",
+    id: "ca_cri_quantidade",
     label: "Quantidade",
     minWidth: 45,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "size",
+    id: "ca_cri_valor_medio",
     label: "Valor Médio",
     minWidth: 75,
     align: "left",
-    format: (value) => value.toLocaleString("en-US"),
+    format: (value) => "R$ " + value.toLocaleString("en-US"),
   },
   {
-    id: "density",
+    id: "valor_investido",
     label: "Valor Investido",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2),
+    format: (value) => {
+      value.toFixed(2);
+      return `R$ ${value}`;
+    },
   },
   {
-    id: "density",
+    id: "valor_atual",
     label: "Valor Atual",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2),
+    format: (value) => "R$ " + value.toFixed(2),
   },
   {
-    id: "density",
+    id: "lucro_prejuizo",
     label: "Lucro/Prejuízo",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2),
+    format: (value) => "R$ " + value.toFixed(2),
   },
   {
-    id: "density",
+    id: "evolucao",
     label: "Evolução",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2),
+    format: (value) => value.toFixed(2) + "%",
   },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
+function createData(
+  id,
+  ca_crt_codigo,
+  ca_aco_codigo,
+  ca_cri_quantidade,
+  ca_cri_valor_medio,
+  acao_id,
+  ca_cotacao
+) {
+  const ticker = acao_id.ca_aco_ticker;
+  const empresa = acao_id.ca_aco_nome;
+  const valor_investido = ca_cri_quantidade * ca_cri_valor_medio;
+  const valor_atual = ca_cri_quantidade * ca_cotacao;
+  const lucro_prejuizo = valor_atual ? valor_atual - valor_investido : 0;
+  const evolucao = valor_atual ? (valor_atual / valor_investido - 1) * 100 : 0;
 
-const rows = [
-  createData("India", "IN", 200, 11.8),
-  createData("China", "CN", 200, 9.87),
-  createData("Italy", "IT", 100, 5.98),
-  createData("United States", "US", 300, 10.35),
-  createData("Canada", "CA", 80, 14.0),
-  createData("Australia", "AU", 20, 20.14),
-  createData("Germany", "DE", 45, 12.45),
-  createData("India", "IN", 200, 11.8),
-  createData("China", "CN", 200, 9.87),
-  createData("Italy", "IT", 100, 5.98),
-  createData("United States", "US", 300, 10.35),
-  createData("Canada", "CA", 80, 14.0),
-  createData("Australia", "AU", 20, 20.14),
-  createData("Germany", "DE", 45, 12.45),
-  createData("India", "IN", 200, 11.8),
-  createData("China", "CN", 200, 9.87),
-  createData("Italy", "IT", 100, 5.98),
-  createData("United States", "US", 300, 10.35),
-  createData("Canada", "CA", 80, 14.0),
-  createData("Australia", "AU", 20, 20.14),
-  createData("Germany", "DE", 45, 12.45),
-  createData("India", "IN", 200, 11.8),
-  createData("China", "CN", 200, 9.87),
-  createData("Italy", "IT", 100, 5.98),
-  createData("United States", "US", 300, 10.35),
-  createData("Canada", "CA", 80, 14.0),
-  createData("Australia", "AU", 20, 20.14),
-  createData("Germany", "DE", 45, 12.45),
-];
+  return {
+    id,
+    ca_aco_codigo,
+    ticker,
+    empresa,
+    ca_cri_quantidade,
+    ca_cri_valor_medio,
+    valor_investido,
+    valor_atual,
+    lucro_prejuizo,
+    evolucao,
+    acao_id,
+  };
+}
 
 const useStyles = makeStyles({
   root: {
@@ -136,14 +142,22 @@ const useStyles = makeStyles({
     padding: 2,
   },
   btnVoltar: {
-    color: '#fff'
-  }
+    color: "#fff",
+  },
+  inativa: {
+    color: "#fff",
+    textAlign: "center",
+    padding: 8,
+  },
 });
 
 const AtivosTable = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const carteiraId = props.match.params.carteiraId;
+
+  const history = useHistory();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -154,13 +168,34 @@ const AtivosTable = (props) => {
     setPage(0);
   };
 
-  const { fetchCarteiras, carteiras, openModal } = props;
+  const {
+    fetchItens,
+    itens,
+    openModal,
+    handleChangeLancamento,
+    lancamento,
+    cotacao,
+    handleChangeCotacao,
+  } = props;
 
   useEffect(() => {
-    // fetchCarteiras();
-  }, []);
+    fetchItens(carteiraId);
+    handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
+  }, [carteiraId, fetchItens]);
 
-  console.log("fetch all ", carteiras);
+  console.log(lancamento);
+
+  const rows = (itens.data || []).map((item) => {
+    return createData(
+      item.id,
+      item.ca_crt_codigo,
+      item.ca_aco_codigo,
+      item.ca_cri_quantidade,
+      item.ca_cri_valor_medio,
+      item.acao_id,
+      item.ca_cotacao
+    );
+  });
 
   return (
     <>
@@ -169,12 +204,15 @@ const AtivosTable = (props) => {
         <TableContainer className={classes.container}>
           <Button
             variant="contained"
-            className={classNames(classes.btnVoltar, 'botao_verde_escuro')}
+            className={classNames(classes.btnVoltar, "botao_verde_escuro")}
             style={{
               marginTop: 20,
               marginBottom: 20,
               marginLeft: 20,
               float: "left",
+            }}
+            onClick={() => {
+              history.goBack("/carteiras");
             }}
           >
             Voltar
@@ -182,87 +220,98 @@ const AtivosTable = (props) => {
           <Button
             variant="contained"
             style={{ marginTop: 20, marginBottom: 20, marginLeft: -20 }}
-            className='botao_verde_claro'
+            className="botao_verde_claro"
             onClick={() => {
               openModal();
             }}
           >
             Novo Lançamento
           </Button>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-                <TableCell
-                  align="left"
-                  // style={{ minWidth: column.minWidth }}
-                >
-                  {"Lançamentos"}
-                </TableCell>
-                <TableCell
-                  align="left"
-                  // style={{ minWidth: column.minWidth }}
-                >
-                  {"Cotações"}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
+          {rows.length ? (
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth, textAlign: "center" }}
                     >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                      <TableCell align="left">
-                        <CheckIcon className={classes.checkButton} />
-                      </TableCell>
-                      <TableCell align="left">
-                        <IconButton>
-                          <Tooltip title="Ativos">
-                            <Ativos />
-                          </Tooltip>
-                        </IconButton>
+                      {column.label}
+                    </TableCell>
+                  ))}
+                  <TableCell style={{ textAlign: "center" }}>
+                    {"Ações"}
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.code}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ textAlign: "center" }}
+                            >
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell align="left">
+                          <IconButton
+                            onClick={() => {
+                              handleChangeLancamento({
+                                ...lancamento,
+                                acao_id: row.acao_id,
+                              });
+                              history.push(
+                                `/lancamentos-ativos/${carteiraId}/${row.ca_aco_codigo}`,
+                                { dados: row.acao_id }
+                              );
+                            }}
+                          >
+                            <Tooltip title="Lançamentos">
+                              <EqualizerIcon />
+                            </Tooltip>
+                          </IconButton>
 
-                        <IconButton>
-                          <Tooltip title="Editar">
-                            <EditIcon />
-                          </Tooltip>
-                        </IconButton>
-
-                        <IconButton>
-                          <Tooltip title="Deletar">
-                            <Delete />
-                          </Tooltip>
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
+                          <IconButton
+                            onClick={() => {
+                              handleChangeCotacao({
+                                ...cotacao,
+                                acao_id: row.acao_id,
+                              });
+                              history.push(
+                                `/cotacoes/${row.ca_aco_codigo}/${carteiraId}`
+                              );
+                            }}
+                          >
+                            <Tooltip title="Cotações">
+                              <TrendingUpIcon />
+                            </Tooltip>
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className={classes.inativa}>Carteiras ainda sem ativos</p>
+          )}
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 15, 50]}
@@ -280,9 +329,11 @@ const AtivosTable = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  carteiras: state.carteira.carteiras,
-  carteira: state.carteira.carteira,
-  modalOpen: state.carteira.modalOpen,
+  itens: state.itens.itens,
+  item: state.itens.item,
+  lancamento: state.lancamentos.lancamento,
+  cotacao: state.cotacao.cotacao,
+  modalOpen: state.itens.modalOpen,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,
@@ -290,17 +341,23 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
+    fetchItem: (id) => {
+      dispatch(carteiraItensActions.fetchItem(id));
     },
-    fetchCarteiras: () => {
-      dispatch(carteiraActions.fetchCarteiras());
+    fetchItens: (id) => {
+      dispatch(carteiraItensActions.fetchItens(id));
     },
-    deleteCarteira: (id) => {
-      dispatch(carteiraActions.deleteCarteira(id));
+    deleteItem: (id) => {
+      dispatch(carteiraItensActions.deleteItem(id));
     },
     openModal: () => {
-      dispatch(carteiraActions.openModal());
+      dispatch(carteiraItensActions.openModal());
+    },
+    handleChangeLancamento: (lancamento) => {
+      dispatch(lancamentosActions.handleChangeLancamento(lancamento));
+    },
+    handleChangeCotacao: (cotacao) => {
+      dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
   };
 };

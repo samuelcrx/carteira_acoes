@@ -1,6 +1,7 @@
 const CarteiraItens = require("../models/CarteiraItens");
 const Carteira = require("../models/Carteiras");
 const Acao = require("../models/Acoes");
+const AcoesCotacoes = require("../models/AcoesCotacoes");
 
 module.exports = {
   async index(req, res) {
@@ -22,11 +23,30 @@ module.exports = {
     });
 
     if (carteiraItens.length) {
+      for (let item of carteiraItens) {
+        const cotacoes = await AcoesCotacoes.findOne({
+          attributes: ["ca_acc_valor", "ca_aco_codigo", "createdAt"],
+          where: { ca_aco_codigo: item.dataValues.ca_aco_codigo },
+          order: [["createdAt", "DESC"]],
+        });
+
+        if (cotacoes) {
+          if (item != null) {
+            if (cotacoes.dataValues.ca_acc_valor) {
+              item.dataValues.ca_cotacao = cotacoes.dataValues.ca_acc_valor;
+            } else {
+              item.dataValues.ca_cotacao = 0;
+            }
+          }
+        } else {
+          item.dataValues.ca_cotacao = 0;
+        }
+      }
+
       return res.json(carteiraItens);
     } else {
-      return res.json({message: "Sem carteiras"})
+      return res.json(carteiraItens);
     }
-
   },
 
   async store(req, res) {

@@ -309,3 +309,24 @@ body {
 ::-webkit-input-placeholder {
   color: rgb(207, 203, 203);
 }
+
+.css-2b097c-container {
+  min-width: 140px;
+  max-width: 150px;
+  width: 100%;
+  /* color: rgb(207, 203, 203); */
+}
+
+.css-yk16xz-control {
+  background-color: #37404A !important;
+  color: black;
+}
+
+.css-2613qy-menu {
+  background-color: #37404A !important;
+  color: black;
+}
+
+.css-1uccc91-singleValue {
+  color: rgb(207, 203, 203) !important;
+}

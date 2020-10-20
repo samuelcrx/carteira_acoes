@@ -43,8 +43,8 @@ routes.put("/acoes/:id", AcaoController.update);
 routes.delete("/acoes/:id", AcaoController.delete);
 
 // Rotas de acoes cotações
-routes.get("/cotacoes", AcaoCotacaoController.index);
-routes.post("/cotacoes", AcaoCotacaoController.store);
+routes.get("/cotacoes/:userId/:acoCodigo", AcaoCotacaoController.index);
+routes.post("/cotacoes/:ca_usu_codigo", AcaoCotacaoController.store);
 routes.get("/cotacoes/:id", AcaoCotacaoController.show);
 routes.put("/cotacoes/:id", AcaoCotacaoController.update);
 routes.delete("/cotacoes/:id", AcaoCotacaoController.delete);
@@ -58,7 +58,7 @@ routes.put("/itensvalor/:id", CarteiraItensController.updateValor);
 routes.delete("/itens/:id", CarteiraItensController.delete);
 
 // Rotas de carteira movimentação
-routes.get("/movimentacao", CarteiraMovimentoController.index);
+routes.get("/movimentacao/:carteiraId/:acaoCodigo", CarteiraMovimentoController.index);
 routes.post("/movimentacao", CarteiraMovimentoController.store);
 routes.get("/movimentacao/:id", CarteiraMovimentoController.show);
 routes.put("/movimentacao/:id", CarteiraMovimentoController.update);

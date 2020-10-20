@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import { connect } from "react-redux";
-import { authActions } from "../redux/actions";
+import { authActions, messageActions } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
 const Logo = require("../assets/logo.jpg");
 
@@ -35,15 +35,26 @@ const Login = (props) => {
       const ca_usu_cripto = password;
 
       props
-      .login({ ca_usu_login, ca_usu_cripto })
-      .then(response => {
-        if (token) {
-          history.push('/carteiras')
-        }
-      })
-      .catch(error => {
-        alert(error)
-      })
+        .login({ ca_usu_login, ca_usu_cripto })
+        .then((response) => {
+          if (token) {
+            const message = "Usuário autenticado com sucesso.";
+            // changeMessage({ message });
+            history.push("/carteiras");
+          }
+        })
+        .catch((error) => {
+          const { response = {} } = error;
+          const { status } = response;
+          // const message =
+          //   status === 401
+          //     ? "E-mail e/ou senha inválidos."
+          //     : "Serviço indisponível.";
+          // changeMessage({
+          //   message,
+          //   anchorOrigin: { horizontal: "center", vertical: "top" },
+          // });
+        });
     }
   };
 
@@ -97,7 +108,7 @@ const Login = (props) => {
             </p>
           </Link>
 
-          <Link to="/redefinir-senha">
+          <Link to="/recuperar-senha">
             <Typography className={classes.resetPassLink} color={"primary"}>
               Esqueci minha senha
             </Typography>
@@ -125,6 +136,9 @@ const mapDispatchToProps = (dispatch) => {
     login: ({ ca_usu_login, ca_usu_cripto }) => {
       return dispatch(authActions.login({ ca_usu_login, ca_usu_cripto }));
     },
+    // /: ({ message, anchorOrigin }) => {
+    //   dispatch(messageAction({ message, anchorOrigin }));
+    // },
   };
 };
 

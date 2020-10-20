@@ -27,10 +27,6 @@ module.exports = {
           type: Sequelize.STRING(1),
           allowNull: true,
         },
-        ca_crm_data: {
-          type: Sequelize.DATE,
-          allowNull: true,
-        },
         ca_crm_valor: {
           type: Sequelize.DOUBLE,
           allowNull: false,

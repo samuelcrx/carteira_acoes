@@ -4,6 +4,8 @@ const Acao = require("../models/Acoes");
 
 module.exports = {
   async index(req, res) {
+    const { userId, acoCodigo } = req.params
+    
     const acoesCotacoes = await AcaoCotacao.findAll({
       include: [
         {
@@ -17,6 +19,7 @@ module.exports = {
           attributes: ["id", "ca_aco_ticker", "ca_aco_nome"]
         },
       ],
+      where: { ca_usu_codigo: userId, ca_aco_codigo: acoCodigo }
     });
 
     return res.json(acoesCotacoes);
@@ -24,22 +27,24 @@ module.exports = {
 
   async store(req, res) {
     const {
-      ca_usu_codigo,
-      ca_aco_codigo,
-      ca_acc_data,
+      acao_id,
       ca_acc_valor,
     } = req.body;
 
-    console.log(req.body)
+    const { ca_usu_codigo } = req.params
+
+    const ca_aco_codigo = acao_id.id
+
+    console.log('param', req.body)
+    console.log('id', req.params)
 
     const acaoCotacao = await AcaoCotacao.create({
       ca_usu_codigo,
       ca_aco_codigo,
-      ca_acc_data,
       ca_acc_valor,
     });
 
-    return res.json(acaoCotacao);
+    return res.json({});
   },
 
   async show(req, res) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -6,10 +6,20 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import { lancamentosActions, carteiraItensActions } from "../../redux/actions";
 import classNames from "classnames";
 import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import api from "../../api/connectionProxy";
+import ReactSelect from "react-select/async";
+import TextField from "@material-ui/core/TextField/TextField";
+import {
+  formatContentSelectValueSingle,
+  filterOptionsFunction,
+} from "../../utils";
+import * as API from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -21,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    // padding: theme.spacing(2, 4, 3),
   },
   container: {
     width: "730px",
@@ -92,10 +102,11 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: "border-box",
     boxShadow: "inset 0px 0px 2px rgba(0, 0, 0, 0.25)",
     width: "auto",
+    alignItems: "center",
     marginLeft: "20px",
     marginRight: "20px",
     height: "50%",
-    marginTop: "60px",
+    marginTop: "40px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -109,8 +120,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -125,7 +136,8 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Nunito",
     fontSize: "14px",
     fontStyle: "normal",
-    marginTop: "0px",
+    marginBottom: 4,
+    marginTop: 0,
     display: "flex",
     flexDirection: "row",
     color: "#8492A6",
@@ -138,8 +150,8 @@ const useStyles = makeStyles((theme) => ({
     color: "rgb(207, 203, 203)",
   },
   inputCheck: {
+    width: "100%",
     height: "auto",
-    display: "flex !important",
     flexDirection: "column",
     alignItems: "left",
   },
@@ -148,50 +160,110 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
   },
   empresa: {
-    marginLeft: '40px'
+    marginLeft: "40px",
   },
-  containerCheck:{
-    display: 'flex',
-    flexDirection: 'row'
+  containerCheck: {
+    display: "flex",
+    flexDirection: "row",
   },
-  containerQtdValor:{
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: '20px'
+  containerQtdValor: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: "20px",
   },
-  checks:{
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
+  checks: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginLeft: 70,
+  },
 }));
 
 const EditModal = (props) => {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState();
+  const [term, setTerm] = React.useState();
+
+  async function loadAcoes() {
+    const response = await api.http.get(`/acoes/${filter}`);
+
+    setFilter(response.data);
+
+    loadAcoes();
+  }
+
+  const loadAcoesBusca = useCallback(async (term) => {
+    const response = await api.http
+      .get("/acoes", {
+        params: {
+          term,
+        },
+      })
+      .then((acoes) => {
+        const options = acoes.data.map((acao) => ({
+          value: acao.id,
+          label: acao.ca_aco_ticker,
+        }));
+        return options;
+      })
+      .catch(() => {
+        console.log("Erro ao buscar niveis de ensino");
+      });
+    return response;
+  }, []);
+
+  const saveTerm = (selectedOption) => {
+    setTerm(selectedOption);
+    handleChangeLancamento({
+      ...lancamento,
+      ca_aco_codigo: selectedOption.value,
+      acao_id: {
+        id: selectedOption.value,
+        ca_aco_ticker: selectedOption.label,
+      },
+    });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const {
     modalOpen,
     closeModal,
     resetState,
-    carteira,
-    handleChangeCarteira,
+    lancamento,
+    handleChangeLancamento,
     user,
-    fetchCarteiras,
-    editCarteira,
+    fetchItens,
+    editLancamento,
+    addLancamento,
+    fetchLancamentos,
+    carteiraId,
+    acaoCodigo,
   } = props;
 
-  const onSubmit = (carteira, ca_usu_codigo) => {
-    if (!carteira.id) {
-      addCarteira(carteira, ca_usu_codigo)
+  console.log("aqui MODAR", acaoCodigo);
+
+  const onSubmit = async (lancamento) => {
+    if (!lancamento.id) {
+      addLancamento(lancamento)
         .then((data) => {
-          fetchCarteiras(ca_usu_codigo);
+          fetchItens(lancamento.ca_crt_codigo);
         })
         .catch((err) => {
-          alert("EROU");
+          alert("");
         });
     } else {
-      editCarteira(carteira);
-      fetchCarteiras(ca_usu_codigo);
+      const data = await editLancamento(lancamento);
+      if (data) {
+        fetchLancamentos(lancamento.ca_crt_codigo, lancamento.ca_aco_codigo);
+      }
     }
   };
 
@@ -219,6 +291,7 @@ const EditModal = (props) => {
                 <Button
                   className={classNames(classes.btBack, "botao_verde_escuro")}
                   onClick={() => {
+                    fetchLancamentos(carteiraId, acaoCodigo);
                     closeModal();
                   }}
                 >
@@ -228,8 +301,8 @@ const EditModal = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    onSubmit(carteira, user.id);
-                    resetState()
+                    onSubmit(lancamento, user.id);
+                    // resetState();
                   }}
                 >
                   Salvar
@@ -242,94 +315,94 @@ const EditModal = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.containerCheck}>
-                        <div>
-                          <FormLabel className={classes.descriptionText}>
-                            Ticker
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o Ticker"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                        <div className={classes.checks}>
-                          <p className={classes.textCheckbox}>Compra</p>
-                          <input
-                            name="Compra"
-                            type="checkbox"
-                            className={classes.checkActive}
-                            checked={carteira.ca_crt_ativo}
-                            onChange={(e) => {
-                              // setIsActive(!isActive);
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_ativo: e.target.checked,
-                              });
-                            }}
-                          />
-                          <p className={classes.textCheckbox}>Venda</p>
-                          <input
-                            name="Venda"
-                            type="checkbox"
-                            className={classes.checkActive}
-                            checked={carteira.ca_crt_ativo}
-                            onChange={(e) => {
-                              // setIsActive(!isActive);
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_ativo: e.target.checked,
-                              });
-                            }}
-                          />
-                        </div>
+                          <div>
+                            <FormLabel className={classes.descriptionText}>
+                              Ticker
+                            </FormLabel>
+                            <ReactSelect
+                              noOptionsMessage={() => "Nenhuma ação encontrada"}
+                              autoFocus
+                              loadOptions={loadAcoesBusca}
+                              name="Ticker"
+                              defaultOptions
+                              onChange={saveTerm}
+                              value={formatContentSelectValueSingle(
+                                lancamento.acao_id
+                              )}
+                              styles={{ maxWidth: "85px" }}
+                            ></ReactSelect>
+                          </div>
+                          <div className={classes.checks}>
+                            <InputLabel
+                              id="demo-controlled-open-select-label"
+                              className={classes.descriptionText}
+                            >
+                              Operação
+                            </InputLabel>
+                            <Select
+                              labelId="demo-controlled-open-select-label"
+                              id="demo-controlled-open-select"
+                              open={open}
+                              onClose={handleClose}
+                              onOpen={handleOpen}
+                              value={lancamento.ca_crm_compra_venda}
+                              style={{
+                                border: "1px solid #c5c6c6",
+                                padding: "2px",
+                                borderRadius: "4px",
+                                color: "#b5bfbe",
+                                fontFamily: "Nunito",
+                                marginTop: "2px",
+                              }}
+                              onChange={(e) => {
+                                console.log(e.target.value);
+                                handleChangeLancamento({
+                                  ...lancamento,
+                                  ca_crm_compra_venda: e.target.value,
+                                });
+                              }}
+                            >
+                              <MenuItem value={"C"}>Compra</MenuItem>
+                              <MenuItem value={"V"}>Venda</MenuItem>
+                            </Select>
+                          </div>
                         </div>
                         <div className={classes.containerQtdValor}>
-                        <div>
-                          <FormLabel className={classes.descriptionText}>
-                            Quantidade
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite a quantidade"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
+                          <div>
+                            <FormLabel className={classes.descriptionText}>
+                              Quantidade
+                            </FormLabel>
+                            <FormControl
+                              className={classes.descInput}
+                              type="number"
+                              placeholder="Digite a quantidade"
+                              value={lancamento.ca_crm_quantidade}
+                              onChange={(e) =>
+                                handleChangeLancamento({
+                                  ...lancamento,
+                                  ca_crm_quantidade: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                          <div className={classes.empresa}>
+                            <FormLabel className={classes.descriptionText}>
+                              Valor
+                            </FormLabel>
+                            <FormControl
+                              className={classes.descInput}
+                              type="number"
+                              placeholder="Digite o valor"
+                              value={lancamento.ca_crm_valor}
+                              onChange={(e) =>
+                                handleChangeLancamento({
+                                  ...lancamento,
+                                  ca_crm_valor: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
                         </div>
-                        <div className={classes.empresa}>
-                          <FormLabel className={classes.descriptionText}>
-                            Valor
-                      </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o valor"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                        </div>
-                        
                       </div>
                     </FormGroup>
                   </form>
@@ -345,33 +418,36 @@ const EditModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: state.carteira.modalOpen,
-  carteira: state.carteira.carteira,
+  modalOpen: state.lancamentos.modalOpen,
+  lancamento: state.lancamentos.lancamento,
   user: state.auth.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
+    fetchLancamento: (id) => {
+      dispatch(lancamentosActions.fetchLancamento(id));
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
+    fetchItens: (id) => {
+      dispatch(carteiraItensActions.fetchItens(id));
     },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
+    handleChangeLancamento: (lancamento) => {
+      dispatch(lancamentosActions.handleChangeLancamento(lancamento));
     },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
+    addLancamento: (lancamento) => {
+      dispatch(lancamentosActions.addLancamento(lancamento));
     },
-    editCarteira: (carteira) => {
-      dispatch(carteiraActions.editCarteira(carteira));
+    editLancamento: (lancamento) => {
+      dispatch(lancamentosActions.editLancamento(lancamento));
     },
     closeModal: () => {
-      dispatch(carteiraActions.closeModal());
+      dispatch(lancamentosActions.closeModal());
     },
     resetState: () => {
-      dispatch(carteiraActions.resetState());
+      dispatch(lancamentosActions.resetState());
+    },
+    fetchLancamentos: (carteiraId, acaoCodigo) => {
+      dispatch(lancamentosActions.fetchLancamentos(carteiraId, acaoCodigo));
     },
   };
 };

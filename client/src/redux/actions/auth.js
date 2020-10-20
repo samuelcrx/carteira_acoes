@@ -8,14 +8,16 @@ export const CLEAR_NEXT_PATH = "CLEAR_NEXT_PATH";
 export const CLEAR_REFRESH_TOKEN = "CLEAR_REFRESH_TOKEN";
 export const AUTH_LOADING = "AUTH_LOADING";
 export const RECORD_USER = "RECORD_USER";
+export const OPEN_PROFILE_MODAL = "OPEN_PROFILE_MODAL";
+export const CLOSE_PROFILE_MODAL = "CLOSE_PROFILE_MODAL";
 
 export const login = ({ ca_usu_login, ca_usu_cripto }) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({ type: LOADING_LOGIN });
     return API.auth
       .login({ ca_usu_login, ca_usu_cripto })
       .then(({ data, headers }) => {
-        console.log('Data de login ', data)
+        console.log("Data de login ", data);
         const { token, user } = data;
         dispatch({
           type: AUTH_LOGIN,
@@ -23,7 +25,7 @@ export const login = ({ ca_usu_login, ca_usu_cripto }) => {
         });
         dispatch({
           type: RECORD_USER,
-          user: user
+          user: user,
         });
       })
       .catch((error) => {
@@ -53,17 +55,16 @@ export const resetPasswordByEmail = (email) => {
   };
 };
 
-// export const handleRequestNewPassword = ({ senha, token }) => {
-//   return dispatch => {
-//     return API.auth.resetPassword({ senha, token }).catch(error => {
-//       dispatch({
-//         type: AUTH_ERROR,
-//         err: 'Falha na redefinição de senha.'
-//       })
-//       return Promise.reject(error)
-//     })
-//   }
-// }
+export const openModalProfile = () => {
+  return (dispatch) => {
+    dispatch({ type: OPEN_PROFILE_MODAL });
+  };
+};
+export const closeModalProfile = () => {
+  return (dispatch) => {
+    dispatch({ type: CLOSE_PROFILE_MODAL });
+  };
+};
 
 export const authLoading = (loading) => {
   return (dispatch) => {

@@ -3,7 +3,7 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
-import './RecuperarSenha.css'
+import "./RecuperarSenha.css";
 import { connect } from "react-redux";
 import { authActions } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
@@ -20,66 +20,85 @@ const RecuperarSenha = (props) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [sended, setSended] = useState(false);
 
   const validateForm = () => {
-    return login.length > 0;
+    return email.length > 3;
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (login) {
-      const ca_usu_login = login;
-
-      props
-      .login({ ca_usu_login })
-      .then(response => {
-        if (token) {
-          history.push('/carteiras')
-        }
-      })
-      .catch(error => {
-        alert(error)
-      })
+    if (email) {
+      try {
+        const emails = await props.resetPasswordByEmail(email);
+        setSended(true);
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
   return (
     <div className="Container">
-      <div className="SubContainer posicaoLogin">
+      <div className="SubContainer posicaoRec">
         <div className="Logo">
           <img src={Logo} alt="Logo" className="imagemLogo" />
         </div>
-        <form className="formulario" onSubmit={(e) => onSubmit(e)}>
-          <FormGroup className="FormLogin" controlId="login">
-            <FormLabel className="TextLogin">Login</FormLabel>
-            <FormControl
-              className="InputLogin"
-              autoFocus
-              type="email"
-              placeholder="Digite seu E-mail"
-              value={login}
-              onChange={(event) => setLogin(event.target.value)}
-            />
-          </FormGroup>
-          <FormGroup className="FormNome">
+        {!sended ? (
+          <form className="formulario" onSubmit={(e) => onSubmit(e)}>
+            <FormGroup className="FormLogin" controlId="login">
+              <FormLabel className="TextRecSenha">Nova senha</FormLabel>
+              <FormControl
+                className="InputLogin"
+                autoFocus
+                type="email"
+                placeholder="Digite seu E-mail"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </FormGroup>
+            <FormGroup className="FormNome">
+              <Button
+                className={
+                  validateForm()
+                    ? "ButtonLogin ButtonRec"
+                    : "ButtonLoginDisabled ButtonRec"
+                }
+                block
+                disabled={!validateForm()}
+                type="submit"
+              >
+                Recuperar minha Senha
+              </Button>
+              <Button
+                className={"ButtonLogin02 ButtonRec"}
+                block
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                Voltar
+              </Button>
+            </FormGroup>
+          </form>
+        ) : (
+          <>
+            <p className="TextRecSenha2">
+              Uma nova senha foi enviada para o email inserido.
+            </p>
             <Button
-              className={validateForm() ? "ButtonLogin ButtonRec" : "ButtonLoginDisabled ButtonRec"}
+              className={"ButtonLogin ButtonRec"}
               block
-              disabled={!validateForm()}
-              type="submit"
+              onClick={() => {
+                history.push("/");
+              }}
             >
-              Entrar
+              Voltar
             </Button>
-          </FormGroup>
-        </form>
-        {/* <p className='TextLogin'>Login</p>
-                <input className='InputLogin'/>
-                <p className='TextPass'>Senha</p>
-                <input className='InputPass'/>
-                <button className='ButtonLogin'>Entrar</button>
-                <p onClick={() => alert('ueeeeeee')} className='TextSingin'>Criar Conta</p> */}
+          </>
+        )}
       </div>
     </div>
   );
@@ -93,8 +112,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: ({ ca_usu_login, ca_usu_cripto }) => {
-      return dispatch(authActions.login({ ca_usu_login, ca_usu_cripto }));
+    resetPasswordByEmail: (email) => {
+      return dispatch(authActions.resetPasswordByEmail(email));
     },
   };
 };

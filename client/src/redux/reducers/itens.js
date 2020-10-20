@@ -8,7 +8,6 @@ const {
   FETCH_ITENS,
   FETCHING_ITENS,
   FETCH_ITENS_ERROR,
-  CHANGE_PAGE,
   OPEN_MODAL,
   CLOSE_MODAL,
   CHANGE_ITEM,
@@ -18,9 +17,6 @@ const {
   FORM_TOUCHED,
   NEW_FORM_ITEM,
   ITEM_FORM_ERROR,
-  CHANGE_PER_PAGE,
-  CHANGE_ORDER_COLUMN,
-  CHANGE_ORDER_DIRECTION,
   RESET_STATE,
 } = carteiraItensActions;
 
@@ -29,18 +25,19 @@ const initialState = {
   loadingCarteiras: false,
   fetchCarteiraError: false,
   fetchCarteirasError: false,
-  carteiras: [],
-  order: {
-    column: "nome",
-    direction: 1,
-  },
+  itens: [],
+  // order: {
+  //   column: "nome",
+  //   direction: 1,
+  // },
   item: {
+    id: '',
     ca_crt_codigo: '',
     ca_aco_codigo: '',
-    ca_cri_quantidade: '',
+    ca_cri_quantidade: 0,
     ca_cri_valor_medio: '',
     acao_id: '',
-    carteira_id: ''
+    ca_cotacao: 0
   },
   subjectFormErrors: {},
   subjectFormTouched: false,
@@ -72,16 +69,16 @@ const initialState = {
 
 // const SubjectValidate = new ValidateFormObject(carteiraschema)
 
-const carteira = (state = initialState, action = {}) => {
+const itens = (state = initialState, action = {}) => {
   switch (action.type) {
     case FETCH_ITEM:
-      let formSchemaType = (action.carteira || {})._id ? "edit" : "add";
+      // let formSchemaType = (action.carteira || {})._id ? "edit" : "add";
       return {
         ...state,
-        carteira: action.carteira,
-        loadingCarteira: false,
-        fetchCarteiraError: false,
-        carteiraFormTouched: false,
+        item: action.item,
+        loadingItem: false,
+        fetchItemError: false,
+        ItemFormTouched: false,
         // carteiraFormErrors: CarteiraValidate.validate({
         //   formObject: action.subject,
         //   formSchemaType
@@ -90,79 +87,74 @@ const carteira = (state = initialState, action = {}) => {
     case FETCHING_ITENS:
       return {
         ...state,
-        loadingCarteiras: true,
-        fetchCarteiraError: false,
+        loadingItens: true,
+        fetchItemError: false,
       };
     case FETCHING_ITEM:
       return {
         ...state,
-        loadingCarteira: true,
-        fetchCarteiraError: false,
+        loadingItem: true,
+        fetchItemError: false,
       };
-    case CHANGE_ORDER_COLUMN:
-      return {
-        ...state,
-        order: {
-          direction: 1,
-          column: action.column,
-        },
-      };
-    case CHANGE_ORDER_DIRECTION:
-      return {
-        ...state,
-        order: {
-          ...state.order,
-          direction: action.direction,
-        },
-      };
-    case CHANGE_PAGE:
-      return {
-        ...state,
-        carteirasPagination: {
-          ...state.carteirasPagination,
-          page: action.page,
-        },
-      };
-    case CHANGE_PER_PAGE:
-      return {
-        ...state,
-        carteirasPagination: {
-          ...state.carteirasPagination,
-          rowsPerPage: action.perPage,
-        },
-      };
+    // case CHANGE_ORDER_COLUMN:
+    //   return {
+    //     ...state,
+    //     order: {
+    //       direction: 1,
+    //       column: action.column,
+    //     },
+    //   };
+    // case CHANGE_ORDER_DIRECTION:
+    //   return {
+    //     ...state,
+    //     order: {
+    //       ...state.order,
+    //       direction: action.direction,
+    //     },
+    //   };
+    // case CHANGE_PAGE:
+    //   return {
+    //     ...state,
+    //     carteirasPagination: {
+    //       ...state.carteirasPagination,
+    //       page: action.page,
+    //     },
+    //   };
+    // case CHANGE_PER_PAGE:
+    //   return {
+    //     ...state,
+    //     carteirasPagination: {
+    //       ...state.carteirasPagination,
+    //       rowsPerPage: action.perPage,
+    //     },
+    //   };
     case FETCH_ITENS:
       return {
         ...state,
-        loadingCarteiras: false,
-        carteiras: action.carteiras,
-        fetchCarteirasError: false,
+        loadingItens: false,
+        itens: action.itens,
+        fetchItensError: false,
         // order: action.order
       };
     case FETCH_ITEM_ERROR:
       return {
         ...state,
-        loadingCarteira: false,
-        carteira: { ...initialState.carteira },
-        fetchCarteiraError: action.error,
+        loadingItem: false,
+        item: { ...initialState.item },
+        fetchItemError: action.error,
       };
     case FETCH_ITENS_ERROR:
       return {
         ...state,
-        loadingCarteira: false,
-        fetchCarteiraError: action.error,
-        loadingCarteiras: false,
+        loadingItem: false,
+        fetchItemError: action.error,
+        loadingItens: false,
       };
     case CHANGE_ITEM:
       // formSchemaType = action.subject._id ? 'edit' : 'add'
       return {
         ...state,
-        carteira: action.carteira,
-
-        // subjectFormErrors: SubjectValidate.validate({
-        //   formObject: action.subject,
-        //   formSchemaType
-        // })
+        item: action.item
       };
     case ITEM_FORM_ERROR:
       const formErrors = {};
@@ -179,43 +171,43 @@ const carteira = (state = initialState, action = {}) => {
     case NEW_FORM_ITEM:
       return {
         ...state,
-        carteira: { ...initialState.carteira },
+        item: { ...initialState.item },
         // carteiraFormErrors: SubjectValidate.validate({}),
         // subjectFormTouched: false
       };
     case DELETE_ITEM:
       return {
         ...state,
-        loadingCarteiras: false,
-        fetchCarteiraError: false,
-        carteiras: state.carteiras.map((carteira) => {
-          if (carteira.id === (action.carteira || {})._id) {
-            return action.carteira;
+        loadingItens: false,
+        fetchItemError: false,
+        itens: state.itens.map((item) => {
+          if (item.id === (action.item || {}).id) {
+            return action.item;
           }
-          return carteira;
+          return item;
         }),
       };
     case ADD_ITEM:
       return {
         ...state,
-        loadingCarteiras: false,
-        fetchCarteiraError: false,
-        loadingCarteira: false,
-        carteiras: [...state.carteiras, action.carteira],
+        loadingItens: false,
+        fetchItemError: false,
+        loadingItem: false,
+        itens: [...state.itens, action.item],
       };
     case EDIT_ITEM:
       return {
         ...state,
-        carteiras: state.carteiras.map((carteira) => {
-          if (carteira.id === action.carteira.id) {
-            return action.carteira;
+        itens: state.itens.map((item) => {
+          if (item.id === action.item.id) {
+            return action.item;
           }
-          return carteira;
+          return item;
         }),
-        loadingCarteiras: false,
-        fetchCarteiraError: false,
-        loadingCarteira: false,
-        fetchCarteirasError: false,
+        loadingItens: false,
+        fetchItemError: false,
+        loadingItem: false,
+        fetchItensError: false,
       };
     case FORM_TOUCHED:
       return {
@@ -239,4 +231,4 @@ const carteira = (state = initialState, action = {}) => {
   }
 };
 
-export default carteira;
+export default itens;

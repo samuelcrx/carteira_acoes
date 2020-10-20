@@ -6,10 +6,9 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import { authActions, carteiraActions, userActions } from "../../redux/actions";
 import classNames from "classnames";
-import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -109,8 +108,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -147,38 +146,34 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 4,
     marginRight: 5,
   },
-  empresa:{
-    marginLeft: '40px'
-  }
+  empresa: {
+    marginLeft: "40px",
+  },
 }));
 
 const Perfil = (props) => {
   const classes = useStyles();
 
   const {
-    modalOpen,
-    closeModal,
     resetState,
     carteira,
     handleChangeCarteira,
     user,
-    fetchCarteiras,
-    editCarteira,
+    editUser,
+    modalOpenProfile,
+    closeModalProfile,
   } = props;
 
-  const onSubmit = (carteira, ca_usu_codigo) => {
-    if (!carteira.id) {
-      addCarteira(carteira, ca_usu_codigo)
-        .then((data) => {
-          fetchCarteiras(ca_usu_codigo);
-        })
-        .catch((err) => {
-          alert("EROU");
-        });
-    } else {
-      editCarteira(carteira);
-      fetchCarteiras(ca_usu_codigo);
-    }
+  console.log(props.usuario)
+  
+  const onSubmit = (user) => {
+    editUser(user)
+      .then((user) => {
+        alert("Usuario alterado com sucesso");
+      })
+      .catch((err) => {
+        alert("Erou");
+      });
   };
 
   return (
@@ -187,14 +182,14 @@ const Perfil = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={modalOpen}
+        open={modalOpenProfile}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={modalOpen}>
+        <Fade in={modalOpenProfile}>
           {/* <div className={classes.paper}> */}
           <div className={classes.container}>
             <div className={classes.subContainer}>
@@ -205,7 +200,7 @@ const Perfil = (props) => {
                 <Button
                   className={classNames(classes.btBack, "botao_verde_escuro")}
                   onClick={() => {
-                    closeModal();
+                    closeModalProfile();
                   }}
                 >
                   Voltar
@@ -214,8 +209,8 @@ const Perfil = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    onSubmit(carteira, user.id);
-                    resetState()
+                    onSubmit(user);
+                    resetState();
                   }}
                 >
                   Salvar
@@ -228,40 +223,40 @@ const Perfil = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.ticker}>
-                        <FormLabel className={classes.descriptionText}>
-                          Nome
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="text"
-                          placeholder="Digite o nome"
-                          value={carteira.ca_crt_descricao}
-                          onChange={(e) =>
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_descricao: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Nome
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="text"
+                            placeholder="Digite o nome"
+                            value={user.ca_usu_nome}
+                            onChange={(e) =>
+                              handleChangeCarteira({
+                                ...user,
+                                ca_usu_nome: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                         <div className={classes.empresa}>
-                        <FormLabel className={classes.descriptionText}>
-                          Login
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="text"
-                          placeholder="Digite o login"
-                          value={carteira.ca_crt_descricao}
-                          onChange={(e) =>
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_descricao: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Login
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="text"
+                            placeholder="Digite o login"
+                            value={user.ca_usu_login}
+                            onChange={(e) =>
+                              handleChangeCarteira({
+                                ...carteira,
+                                ca_crt_descricao: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                       </div>
                     </FormGroup>
@@ -278,9 +273,10 @@ const Perfil = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: true,//state.carteira.modalOpen,
+  modalOpenProfile: state.auth.modalOpenProfile,
   carteira: state.carteira.carteira,
   user: state.auth.user,
+  usuario: state.user.user
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -297,11 +293,11 @@ const mapDispatchToProps = (dispatch) => {
     addCarteira: (carteira, ca_usu_codigo) => {
       dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
     },
-    editCarteira: (carteira) => {
-      dispatch(carteiraActions.editCarteira(carteira));
+    editUser: (user) => {
+      dispatch(userActions.editUser(user));
     },
-    closeModal: () => {
-      dispatch(carteiraActions.closeModal());
+    closeModalProfile: () => {
+      dispatch(authActions.closeModalProfile());
     },
     resetState: () => {
       dispatch(carteiraActions.resetState());

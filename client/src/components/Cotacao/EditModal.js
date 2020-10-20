@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -6,10 +6,24 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import {
+  lancamentosActions,
+  carteiraItensActions,
+  cotacoesActions,
+} from "../../redux/actions";
 import classNames from "classnames";
 import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import api from "../../api/connectionProxy";
+import ReactSelect from "react-select/async";
+import TextField from "@material-ui/core/TextField/TextField";
+import {
+  formatContentSelectValueSingle,
+  filterOptionsFunction,
+} from "../../utils";
+import * as API from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -21,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    // padding: theme.spacing(2, 4, 3),
   },
   container: {
     width: "730px",
@@ -92,10 +106,11 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: "border-box",
     boxShadow: "inset 0px 0px 2px rgba(0, 0, 0, 0.25)",
     width: "auto",
+    alignItems: "center",
     marginLeft: "20px",
     marginRight: "20px",
     height: "50%",
-    marginTop: "60px",
+    marginTop: "40px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -109,8 +124,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -125,7 +140,8 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Nunito",
     fontSize: "14px",
     fontStyle: "normal",
-    marginTop: "0px",
+    marginBottom: 4,
+    marginTop: 0,
     display: "flex",
     flexDirection: "row",
     color: "#8492A6",
@@ -138,8 +154,8 @@ const useStyles = makeStyles((theme) => ({
     color: "rgb(207, 203, 203)",
   },
   inputCheck: {
+    width: "100%",
     height: "auto",
-    display: "flex !important",
     flexDirection: "column",
     alignItems: "left",
   },
@@ -148,50 +164,108 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
   },
   empresa: {
-    marginLeft: '40px'
+    marginLeft: "40px",
   },
-  containerCheck:{
-    display: 'flex',
-    flexDirection: 'row'
+  containerCheck: {
+    display: "flex",
+    flexDirection: "row",
   },
-  containerQtdValor:{
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: '20px'
+  containerQtdValor: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: "20px",
   },
-  checks:{
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
+  checks: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginLeft: 70,
+  },
 }));
 
 const EditModal = (props) => {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState();
+  const [term, setTerm] = React.useState();
+
+  async function loadAcoes() {
+    const response = await api.http.get(`/acoes/${filter}`);
+
+    setFilter(response.data);
+
+    loadAcoes();
+  }
+
+
+  const loadAcoesBusca = useCallback(async (term) => {
+    const response = await api.http
+      .get("/acoes", {
+        params: {
+          term,
+        },
+      })
+      .then((acoes) => {
+        const options = acoes.data.map((acao) => ({
+          value: acao.id,
+          label: acao.ca_aco_ticker,
+        }));
+        return options;
+      })
+      .catch(() => {
+        console.log("Erro ao buscar niveis de ensino");
+      });
+    return response;
+  }, []);
+
+  const saveTerm = (selectedOption) => {
+    setTerm(selectedOption);
+    handleChangeCotacao({
+      ...cotacao,
+      ca_aco_codigo: selectedOption.value,
+      acao_id: {
+        id: selectedOption.value,
+        ca_aco_ticker: selectedOption.label,
+      },
+    });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const {
     modalOpen,
     closeModal,
     resetState,
-    carteira,
-    handleChangeCarteira,
-    user,
-    fetchCarteiras,
-    editCarteira,
+    cotacao,
+    fetchCotacoes,
+    handleChangeCotacao,
+    editLancamento,
+    addCotacao,
+    userId,
+    acoCodigo,
   } = props;
 
-  const onSubmit = (carteira, ca_usu_codigo) => {
-    if (!carteira.id) {
-      addCarteira(carteira, ca_usu_codigo)
+  const onSubmit = (cotacao) => {
+    if (!cotacao.id) {
+
+      addCotacao(cotacao, userId)
         .then((data) => {
-          fetchCarteiras(ca_usu_codigo);
+          fetchCotacoes(userId, acoCodigo);
         })
         .catch((err) => {
-          alert("EROU");
+          alert(err);
         });
     } else {
-      editCarteira(carteira);
-      fetchCarteiras(ca_usu_codigo);
+      editLancamento(cotacao).then((data) => {
+        fetchCotacoes(userId, acoCodigo);
+        closeModal();
+      });
     }
   };
 
@@ -213,12 +287,16 @@ const EditModal = (props) => {
           <div className={classes.container}>
             <div className={classes.subContainer}>
               <div className={classes.titleContainer}>
-                <p className={classes.titleText}>Cotações do Ativo</p>
+                <p className={classes.titleText}>
+                  {cotacao.id ? "Editar Cotação" : "Nova Cotação"}
+                </p>
               </div>
               <div className={classes.btContainer}>
                 <Button
                   className={classNames(classes.btBack, "botao_verde_escuro")}
                   onClick={() => {
+                    resetState();
+                    fetchCotacoes(userId, acoCodigo);
                     closeModal();
                   }}
                 >
@@ -228,8 +306,9 @@ const EditModal = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    onSubmit(carteira, user.id);
-                    resetState()
+                    handleChangeCotacao({...cotacao, ca_aco_codigo: cotacao.acao_id.id})
+                    onSubmit(cotacao);
+                    // resetState();
                   }}
                 >
                   Salvar
@@ -242,64 +321,42 @@ const EditModal = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.containerCheck}>
-                        <div>
-                          <FormLabel className={classes.descriptionText}>
-                            Ticker
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o Ticker"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
+                          <div>
+                            <FormLabel className={classes.descriptionText}>
+                              Ticker
+                            </FormLabel>
+                            <ReactSelect
+                              noOptionsMessage={() => "Nenhuma ação encontrada"}
+                              autoFocus
+                              loadOptions={loadAcoesBusca}
+                              name="Ticker"
+                              defaultOptions
+                              onChange={saveTerm}
+                              value={formatContentSelectValueSingle(
+                                cotacao.acao_id
+                              )}
+                              styles={{ maxWidth: "85px" }}
+                            ></ReactSelect>
+                          </div>
+                          <div className={classes.empresa}>
+                            <FormLabel className={classes.descriptionText}>
+                              Valor
+                            </FormLabel>
+                            <FormControl
+                              className={classes.descInput}
+                              type="Number"
+                              placeholder="Digite o valor"
+                              onChange={(e) => {
+                                console.log('VALOOR ', typeof e.target.value)
+                                handleChangeCotacao({
+                                  ...cotacao,
+                                  ca_acc_valor: e.target.value,
+                                });
+                              }}
+                              value={cotacao.ca_acc_valor}
+                            />
+                          </div>
                         </div>
-                        </div>
-                        <div className={classes.containerQtdValor}>
-                        <div>
-                          <FormLabel className={classes.descriptionText}>
-                            Data
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite a data"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                        <div className={classes.empresa}>
-                          <FormLabel className={classes.descriptionText}>
-                            Valor
-                      </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o valor"
-                            value={carteira.ca_crt_descricao}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                        </div>
-                        
                       </div>
                     </FormGroup>
                   </form>
@@ -315,33 +372,33 @@ const EditModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: state.carteira.modalOpen,
-  carteira: state.carteira.carteira,
+  modalOpen: state.cotacao.modalOpen,
+  cotacao: state.cotacao.cotacao,
   user: state.auth.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
+    fetchItens: (id) => {
+      dispatch(carteiraItensActions.fetchItens(id));
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
+    handleChangeCotacao: (cotacao) => {
+      dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
+    addCotacao: (cotacao, ca_usu_codigo) => {
+      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo));
     },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
-    },
-    editCarteira: (carteira) => {
-      dispatch(carteiraActions.editCarteira(carteira));
+    editLancamento: (lancamento) => {
+      dispatch(lancamentosActions.editLancamento(lancamento));
     },
     closeModal: () => {
-      dispatch(carteiraActions.closeModal());
+      dispatch(cotacoesActions.closeModal());
     },
     resetState: () => {
-      dispatch(carteiraActions.resetState());
+      dispatch(cotacoesActions.resetState());
+    },
+    fetchCotacoes: (userId, acoCodigo) => {
+      dispatch(cotacoesActions.fetchCotacoes(userId, acoCodigo));
     },
   };
 };

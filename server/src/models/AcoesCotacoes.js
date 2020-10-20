@@ -5,7 +5,6 @@ class ca_acoes_cotacoes extends Model {
     super.init({
       ca_usu_codigo: DataTypes.INTEGER, //Foreign Key 01
       ca_aco_codigo: DataTypes.INTEGER, // Foreign Key 02
-      ca_acc_data: DataTypes.DATE,
       ca_acc_valor: DataTypes.DOUBLE,
     }, {
       sequelize,

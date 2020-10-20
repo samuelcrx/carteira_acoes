@@ -19,10 +19,12 @@ import Delete from "@material-ui/icons/DeleteOutline";
 import Ativos from "@material-ui/icons/Assignment";
 import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import { carteiraActions, lancamentosActions } from "../../redux/actions";
 import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fetchCarteira } from "../../redux/actions/carteiras";
+import { useHistory } from "react-router-dom";
+import Perfil from "../Perfil/Perfil";
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
@@ -112,6 +114,7 @@ const Carteira = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const history = useHistory();
 
   const { openModal, modalOpen, loadingCarteiras } = props;
 
@@ -124,7 +127,16 @@ const Carteira = (props) => {
     setPage(0);
   };
 
-  const { fetchCarteiras, carteiras, user, deleteCarteira, carteira, fetchCarteira } = props;
+  const {
+    fetchCarteiras,
+    carteiras,
+    user,
+    deleteCarteira,
+    carteira,
+    fetchCarteira,
+    lancamento,
+    handleChangeLancamento,
+  } = props;
 
   useEffect(() => {
     fetchCarteiras(user.id);
@@ -140,10 +152,11 @@ const Carteira = (props) => {
     );
   });
 
-  console.log('achou ', carteira)
+  console.log("achou ", carteira);
 
   return (
     <>
+      <Perfil />
       <Header title={"Lista de carteiras de ações"} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
@@ -177,9 +190,7 @@ const Carteira = (props) => {
                   {"Status"}
                 </TableCell>
                 <TableCell
-                  // key={column.id}
                   align="left"
-                  // style={{ minWidth: column.minWidth }}
                 >
                   {"Ações"}
                 </TableCell>
@@ -216,7 +227,15 @@ const Carteira = (props) => {
                       <TableCell align="left">
                         <IconButton>
                           <Tooltip title="Ativos">
-                            <Ativos />
+                            <Ativos
+                              onClick={() => {
+                                handleChangeLancamento({
+                                  ...lancamento,
+                                  ca_crt_codigo: row.id,
+                                });
+                                history.push(`/ativos/${row.id}`);
+                              }}
+                            />
                           </Tooltip>
                         </IconButton>
 
@@ -265,6 +284,7 @@ const Carteira = (props) => {
 const mapStateToProps = (state) => ({
   carteiras: state.carteira.carteiras,
   carteira: state.carteira.carteira,
+  lancamento: state.lancamentos.lancamento,
   modalOpen: state.carteira.modalOpen,
   user: state.auth.user,
   loadingCarteiras: state.carteira.loadingCarteiras,
@@ -286,6 +306,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     openModal: () => {
       dispatch(carteiraActions.openModal());
+    },
+    handleChangeLancamento: (lancamento) => {
+      dispatch(lancamentosActions.handleChangeLancamento(lancamento));
     },
   };
 };

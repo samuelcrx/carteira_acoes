@@ -32,10 +32,13 @@ ReactDOM.render(
             <Route path="/cadastro" component={Cadastro} />
             <Route path="/carteiras" component={Carteira} />
             <Route path="/edita-carteira" component={EditModal} />
-            <Route path="/ativos" component={AtivosTable} />
+            <Route path="/ativos/:carteiraId" component={AtivosTable} />
             <Route path="/acoes" component={Acoes} />
-            <Route path="/lancamentos-ativos" component={LancamentoAtivos} />
-            <Route path="/cotacao" component={Cotacao} />
+            <Route
+              path="/lancamentos-ativos/:carteiraId/:acaoCodigo"
+              component={LancamentoAtivos}
+            />
+            <Route path="/cotacoes/:acoCodigo/:carteiraId" component={Cotacao} />
             <Route path="/recuperar-senha" component={RecuperarSenha} />
           </Switch>
         </BrowserRouter>
