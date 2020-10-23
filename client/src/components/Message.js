@@ -8,6 +8,10 @@ class Message extends Component {
     const { message, clearMessage, messageDuration = 5000, anchorOrigin = {} } = this.props
     const { vertical = 'top' } = anchorOrigin
     const { horizontal = 'center' } = anchorOrigin
+    
+    if(message == "")
+      return null
+
     clearTimeout(window.manoleMessage)
     window.manoleMessage = setTimeout(() => {
       clearMessage()
@@ -30,7 +34,7 @@ const mapStateToProps = state => {
   return {
     message: state.message.message,
     messageDuration: state.message.messageDuration,
-    anchorOrigin: state.message.anchorOrigin
+    anchorOrigin: state.message.anchorOrigin,
   }
 }
 

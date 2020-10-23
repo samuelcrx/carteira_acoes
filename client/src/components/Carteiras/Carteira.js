@@ -25,6 +25,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import { fetchCarteira } from "../../redux/actions/carteiras";
 import { useHistory } from "react-router-dom";
 import Perfil from "../Perfil/Perfil";
+import Message from '../Message'
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
@@ -111,6 +112,7 @@ const useStyles = makeStyles({
 });
 
 const Carteira = (props) => {
+  console.log(props.message)
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -277,6 +279,7 @@ const Carteira = (props) => {
         />
       </Paper>
       <EditModal />
+      <Message/>
     </>
   );
 };
@@ -291,6 +294,7 @@ const mapStateToProps = (state) => ({
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,
+  message: state.message.message,
 });
 
 const mapDispatchToProps = (dispatch) => {

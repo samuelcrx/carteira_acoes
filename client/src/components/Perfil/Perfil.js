@@ -8,6 +8,7 @@ import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
 import { authActions, carteiraActions, userActions } from "../../redux/actions";
 import classNames from "classnames";
+import { changeMessage } from "../../redux/actions/message";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -169,10 +170,12 @@ const Perfil = (props) => {
   const onSubmit = (user) => {
     editUser(user)
       .then((user) => {
-        alert("Usuario alterado com sucesso");
+        // alert("Usuario alterado com sucesso");
+        props.changeMessage({message: "Usuario alterado com sucesso"})
       })
       .catch((err) => {
-        alert("Erou");
+        // alert("Erou");
+        props.changeMessage({message: "Erro ao alterar o usuário"})
       });
   };
 
@@ -302,6 +305,7 @@ const mapDispatchToProps = (dispatch) => {
     resetState: () => {
       dispatch(carteiraActions.resetState());
     },
+    changeMessage: (message) => dispatch(changeMessage(message))
   };
 };
 

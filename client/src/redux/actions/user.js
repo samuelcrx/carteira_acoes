@@ -1,4 +1,5 @@
 import * as API from '../../api'
+import {CHANGE_MESSAGE} from './message'
 export const FETCH_USER = 'FETCH_USER'
 export const FETCHING_USER = 'FETCHING_USER'
 export const FETCH_USER_ERROR = 'FETCH_USER_ERROR'
@@ -179,6 +180,7 @@ export const addUser = user => {
         const { data } = response
         if (data) {
           dispatch({ type: ADD_USER, user: data })
+          dispatch({type: CHANGE_MESSAGE, message: "Usuário criado com sucesso!"})
         }
       })
       .catch(err => {
@@ -186,6 +188,7 @@ export const addUser = user => {
         const { data = {} } = response
         const { message } = data
         handleUserError(response, dispatch)
+        dispatch({type: CHANGE_MESSAGE, message: "Erro ao criar o usuário"})
         dispatch({
           type: FETCH_USERS_ERROR,
           err: message || 'Serviço indisponível'

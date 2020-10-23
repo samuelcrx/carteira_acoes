@@ -6,6 +6,8 @@ import "./Login.css";
 import { connect } from "react-redux";
 import { authActions, messageActions } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
+import Message from './Message'
+import {changeMessage} from '../redux/actions/message'
 const Logo = require("../assets/logo.jpg");
 
 const useStyles = makeStyles((theme) => ({
@@ -29,6 +31,10 @@ const Login = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    // const message = "Usuário autenticado com sucesso.";
+    // props.changeMessage({ message });
+    // history.push('/carteiras')
+    // return
 
     if (login && password) {
       const ca_usu_login = login;
@@ -39,21 +45,21 @@ const Login = (props) => {
         .then((response) => {
           if (token) {
             const message = "Usuário autenticado com sucesso.";
-            // changeMessage({ message });
+            props.changeMessage({ message });
             history.push("/carteiras");
           }
         })
         .catch((error) => {
           const { response = {} } = error;
           const { status } = response;
-          // const message =
-          //   status === 401
-          //     ? "E-mail e/ou senha inválidos."
-          //     : "Serviço indisponível.";
-          // changeMessage({
-          //   message,
-          //   anchorOrigin: { horizontal: "center", vertical: "top" },
-          // });
+          const message =
+            status === 401
+              ? "E-mail e/ou senha inválidos."
+              : "Serviço indisponível.";
+          props.changeMessage({
+            message,
+            anchorOrigin: { horizontal: "center", vertical: "top" },
+          });
         });
     }
   };
@@ -121,6 +127,7 @@ const Login = (props) => {
                 <button className='ButtonLogin'>Entrar</button>
                 <p onClick={() => alert('ueeeeeee')} className='TextSingin'>Criar Conta</p> */}
       </div>
+      <Message/>
     </div>
   );
 };
@@ -136,9 +143,9 @@ const mapDispatchToProps = (dispatch) => {
     login: ({ ca_usu_login, ca_usu_cripto }) => {
       return dispatch(authActions.login({ ca_usu_login, ca_usu_cripto }));
     },
-    // /: ({ message, anchorOrigin }) => {
-    //   dispatch(messageAction({ message, anchorOrigin }));
-    // },
+    changeMessage : ({ message, anchorOrigin }) => {
+      dispatch(changeMessage({ message, anchorOrigin }));
+    },
   };
 };
 

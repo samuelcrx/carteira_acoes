@@ -3,6 +3,7 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { userActions } from "../redux/actions";
+import Message from './Message'
 
 const Logo = require("../assets/logo.jpg");
 
@@ -90,6 +91,7 @@ const Cadastro = (props) => {
           </Link>
         </form>
       </div>
+      <Message/>
     </div>
   );
 };
