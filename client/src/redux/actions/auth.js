@@ -17,7 +17,6 @@ export const login = ({ ca_usu_login, ca_usu_cripto }) => {
     return API.auth
       .login({ ca_usu_login, ca_usu_cripto })
       .then(({ data, headers }) => {
-        console.log("Data de login ", data);
         const { token, user } = data;
         dispatch({
           type: AUTH_LOGIN,
@@ -27,6 +26,7 @@ export const login = ({ ca_usu_login, ca_usu_cripto }) => {
           type: RECORD_USER,
           user: user,
         });
+        return data;
       })
       .catch((error) => {
         const { response = {} } = error;

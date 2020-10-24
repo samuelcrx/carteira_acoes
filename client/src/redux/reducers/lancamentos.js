@@ -148,11 +148,7 @@ const lancamentos = (state = initialState, action = {}) => {
       };
     case ADD_LANCAMENTO:
       return {
-        ...state,
-        loadingLancamentos: false,
-        fetchLancamentoError: false,
-        loadingLancamento: false,
-        lancamentos: [...state.lancamentos, action.lancamento],
+        ...state
       };
     case EDIT_LANCAMENTO:
       return {

@@ -117,7 +117,7 @@ const cotacao = (state = initialState, action = {}) => {
         loadingCotacoes: false,
         fetchCotacaoError: false,
         loadingCotacao: false,
-        cotacoes: [...state.cotacoes, action.cotacao],
+        // cotacoes: [...state.cotacoes, action.cotacao],
       };
     case EDIT_COTACAO:
       return {

@@ -150,7 +150,6 @@ const AtivosTable = (props) => {
     resetState,
     modalOpen,
   } = props;
-  console.log("Chegou isso ", lancamento);
 
   useEffect(() => {
     fetchLancamentos(carteiraId, acaoCodigo);
@@ -247,7 +246,6 @@ const AtivosTable = (props) => {
                           <IconButton
                             onClick={() => {
                               fetchLancamento(row.id);
-                              console.log(lancamento);
                             }}
                           >
                             <Tooltip title="Editar">

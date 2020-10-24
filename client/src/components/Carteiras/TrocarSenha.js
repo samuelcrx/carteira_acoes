@@ -6,9 +6,10 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { authActions, carteiraActions, userActions } from "../../redux/actions";
+import { carteiraActions, userActions } from "../../redux/actions";
 import classNames from "classnames";
-
+import { addCarteira } from "../../api/carteira";
+import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -108,8 +109,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row'
   },
   descInput: {
     width: "auto",
@@ -146,32 +147,44 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 4,
     marginRight: 5,
   },
-  empresa: {
-    marginLeft: "40px",
-  },
+  empresa:{
+    marginLeft: '40px'
+  }
 }));
 
-const Perfil = (props) => {
+const TrocarSenha = (props) => {
   const classes = useStyles();
+  const [pass, setPass] = React.useState("");
+
+  const handleNewPassword = (pass) => {
+    setPass(pass);
+  };
 
   const {
+    modalOpen,
+    closeModal,
     resetState,
     carteira,
-    handleChangeCarteira,
+    handleChangeUser,
     user,
-    editUser,
-    modalOpenProfile,
-    closeModalProfile,
+    fetchCarteiras,
+    editCarteira,
+    updatePassword
   } = props;
+
+  const onSubmit = async (user) => {
+    if (user.ca_usu_cripto === pass) {
+      try {
+        const reset = await updatePassword(user);
+        closeModal();
   
-  const onSubmit = (user) => {
-    editUser(user)
-      .then((user) => {
-        alert("Usuario alterado com sucesso");
-      })
-      .catch((err) => {
-        alert("Erou");
-      });
+      } catch (error) {
+        alert(error)
+        
+      }
+    } else {
+      alert("Senhas diferentes");
+    }
   };
 
   return (
@@ -180,35 +193,26 @@ const Perfil = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={modalOpenProfile}
+        open={modalOpen}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={modalOpenProfile}>
+        <Fade in={modalOpen}>
           {/* <div className={classes.paper}> */}
           <div className={classes.container}>
             <div className={classes.subContainer}>
               <div className={classes.titleContainer}>
-                <p className={classes.titleText}>Perfil do Usuário</p>
+                <p className={classes.titleText}>Trocar Senha</p>
               </div>
               <div className={classes.btContainer}>
-                <Button
-                  className={classNames(classes.btBack, "botao_verde_escuro")}
-                  onClick={() => {
-                    closeModalProfile();
-                  }}
-                >
-                  Voltar
-                </Button>
                 <Button
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
                     onSubmit(user);
-                    resetState();
                   }}
                 >
                   Salvar
@@ -221,40 +225,37 @@ const Perfil = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.ticker}>
-                          <FormLabel className={classes.descriptionText}>
-                            Nome
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o nome"
-                            value={user.ca_usu_nome}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...user,
-                                ca_usu_nome: e.target.value,
-                              })
-                            }
-                          />
+                        <FormLabel className={classes.descriptionText}>
+                          Nova Senha
+                      </FormLabel>
+                        <FormControl
+                          className={classes.descInput}
+                          autoFocus
+                          type="password"
+                          placeholder="Digite nova senha"
+                          value={user.ca_usu_cripto}
+                          onChange={(e) =>
+                            handleChangeUser({
+                              ...user,
+                              ca_usu_cripto: e.target.value,
+                            })
+                          }
+                        />
                         </div>
                         <div className={classes.empresa}>
-                          <FormLabel className={classes.descriptionText}>
-                            Login
-                          </FormLabel>
-                          <FormControl
-                            className={classes.descInput}
-                            autoFocus
-                            type="text"
-                            placeholder="Digite o login"
-                            value={user.ca_usu_login}
-                            onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
-                              })
-                            }
-                          />
+                        <FormLabel className={classes.descriptionText}>
+                          Confirmar nova senha
+                      </FormLabel>
+                        <FormControl
+                          className={classes.descInput}
+                          autoFocus
+                          type="password"
+                          placeholder="Confirme a nova senha"
+                          value={pass}
+                          onChange={(e) =>
+                            handleNewPassword(e.target.value)
+                          }
+                        />
                         </div>
                       </div>
                     </FormGroup>
@@ -271,10 +272,8 @@ const Perfil = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpenProfile: state.auth.modalOpenProfile,
-  carteira: state.carteira.carteira,
-  user: state.auth.user,
-  usuario: state.user.user
+  modalOpen: state.user.modalOpen,
+  user: state.user.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -285,17 +284,17 @@ const mapDispatchToProps = (dispatch) => {
     fetchCarteiras: (userId) => {
       dispatch(carteiraActions.fetchCarteiras(userId));
     },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
+    handleChangeUser: (user) => {
+      dispatch(userActions.handleChangeUser(user));
     },
     addCarteira: (carteira, ca_usu_codigo) => {
       dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
     },
-    editUser: (user) => {
-      dispatch(userActions.editUser(user));
+    updatePassword: (user) => {
+      dispatch(userActions.updatePassword(user));
     },
-    closeModalProfile: () => {
-      dispatch(authActions.closeModalProfile());
+    closeModal: () => {
+      dispatch(userActions.closeModal());
     },
     resetState: () => {
       dispatch(carteiraActions.resetState());
@@ -303,4 +302,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Perfil);
+export default connect(mapStateToProps, mapDispatchToProps)(TrocarSenha);

@@ -44,9 +44,12 @@ module.exports = {
   async updatePassword(req, res) {
     const { ca_usu_cripto } = req.body;
     const { id } = req.params;
+    const reset_password = false;
 
-    const user = await User.update({ ca_usu_cripto }, { where: { id: id } });
-    console.log("uder ", user);
+    const user = await User.update(
+      { ca_usu_cripto, reset_password },
+      { where: { id: id } }
+    );
     return res.json(user);
   },
 
@@ -87,7 +90,7 @@ module.exports = {
       return res.status(400).json({ message: "Check your password" });
     }
 
-    const { id, ca_usu_nome } = user;
+    const { id, ca_usu_nome, reset_password } = user;
 
     let ca_log_ip = req.connection.remoteAddress;
     let ca_usu_codigo = id;
@@ -99,6 +102,7 @@ module.exports = {
         id,
         ca_usu_login,
         ca_usu_nome,
+        reset_password,
       },
       // Primeiro parametro é o payload, o segundo é a assinatura
       token: jwt.sign({ id, ca_usu_nome }, authConfig.secret, {

@@ -196,18 +196,15 @@ export const editCarteira = (carteira) => {
 };
 
 export const fetchCarteira = (id) => {
-  console.log("Abriu ", id);
   return (dispatch) => {
     dispatch({ type: FETCHING_CARTEIRA, clear: true });
     dispatch({ type: OPEN_MODAL });
     return API.carteira
       .getCarteira(id)
       .then(({ data }) => {
-        console.log("dataa ", data);
         dispatch({ type: FETCH_CARTEIRA, carteira: data });
       })
       .catch((err) => {
-        console.log(err);
         const { response = {} } = err;
         const { data = {} } = response;
         const { message } = data;

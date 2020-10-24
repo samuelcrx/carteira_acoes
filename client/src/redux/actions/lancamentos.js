@@ -141,8 +141,8 @@ export const addLancamento = (lancamento) => {
     return API.lancamentos
       .addLancamento(lancamento)
       .then(({ data }) => {
-        console.log('retorno ', data)
         dispatch({ type: ADD_LANCAMENTO, lancamento: data })
+        return data
       })
       .catch(err => {
         const { response = {} } = err

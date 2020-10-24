@@ -102,9 +102,9 @@ export const changeUpdatePasswordForm = updatePasswordForm => {
   }
 }
 
-export const updatePassword = ({ id, params }) => {
+export const updatePassword = (user) => {
   return dispatch => {
-    return API.user.updatePassword({ id, params })
+    return API.user.updatePassword(user)
   }
 }
 

@@ -38,7 +38,10 @@ ReactDOM.render(
               path="/lancamentos-ativos/:carteiraId/:acaoCodigo"
               component={LancamentoAtivos}
             />
-            <Route path="/cotacoes/:acoCodigo/:carteiraId" component={Cotacao} />
+            <Route
+              path="/cotacoes/:acoCodigo/:carteiraId"
+              component={Cotacao}
+            />
             <Route path="/recuperar-senha" component={RecuperarSenha} />
           </Switch>
         </BrowserRouter>

@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import { connect } from "react-redux";
-import { authActions, messageActions } from "../redux/actions";
+import { authActions, userActions } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
 const Logo = require("../assets/logo.jpg");
 
@@ -27,34 +27,28 @@ const Login = (props) => {
     return login.length > 0 && password.length > 0;
   };
 
-  const onSubmit = (e) => {
+  const { userLogin, user, openModalSenha } = props;
+
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (login && password) {
       const ca_usu_login = login;
       const ca_usu_cripto = password;
 
-      props
-        .login({ ca_usu_login, ca_usu_cripto })
-        .then((response) => {
-          if (token) {
-            const message = "Usuário autenticado com sucesso.";
-            // changeMessage({ message });
-            history.push("/carteiras");
+      try {
+        const data = await userLogin({ ca_usu_login, ca_usu_cripto });
+        if (data.token) {
+          if(data.user.reset_password){
+            console.log('Aqui')
+            openModalSenha();
           }
-        })
-        .catch((error) => {
-          const { response = {} } = error;
-          const { status } = response;
-          // const message =
-          //   status === 401
-          //     ? "E-mail e/ou senha inválidos."
-          //     : "Serviço indisponível.";
-          // changeMessage({
-          //   message,
-          //   anchorOrigin: { horizontal: "center", vertical: "top" },
-          // });
-        });
+          history.push("/carteiras");
+        }
+      } catch (error) {
+        alert(error)
+        
+      }
     }
   };
 
@@ -126,6 +120,7 @@ const Login = (props) => {
 };
 
 const mapStateToProps = (state) => ({
+  user: state.user.user,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,
@@ -133,10 +128,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: ({ ca_usu_login, ca_usu_cripto }) => {
+    userLogin: ({ ca_usu_login, ca_usu_cripto }) => {
       return dispatch(authActions.login({ ca_usu_login, ca_usu_cripto }));
     },
-    // /: ({ message, anchorOrigin }) => {
+    openModalSenha: () => {
+      dispatch(userActions.openModal());
+    },
+    // changeMessage: ({ message, anchorOrigin }) => {
     //   dispatch(messageAction({ message, anchorOrigin }));
     // },
   };

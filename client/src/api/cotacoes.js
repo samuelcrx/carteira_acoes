@@ -5,7 +5,7 @@ export const getCotacoes = (userId, acoCodigo) => {
 };
 
 export const getCotacao = (id) => {
-  return api.http.get(`/cotacoes/${id}`);
+  return api.http.get(`/cotacao/${id}`);
 };
 
 export const editCotacao = (cotacao) => {
@@ -13,8 +13,6 @@ export const editCotacao = (cotacao) => {
 };
 
 export const addCotacao = (cotacao, ca_usu_codigo) => {
-  console.log('API Criação ', cotacao)
-  console.log('API Criação ', ca_usu_codigo)
   return api.http.post(`/cotacoes/${ca_usu_codigo}`, cotacao);
 };
 

@@ -248,23 +248,46 @@ const EditModal = (props) => {
     acaoCodigo,
   } = props;
 
-  console.log("aqui MODAR", acaoCodigo);
-
   const onSubmit = async (lancamento) => {
+
     if (!lancamento.id) {
-      addLancamento(lancamento)
-        .then((data) => {
-          fetchItens(lancamento.ca_crt_codigo);
-        })
-        .catch((err) => {
-          alert("");
-        });
+      try {
+
+        const lancou = await addLancamento(lancamento);
+
+        console.log('Lançou dados', lancamento)
+        const itens = await fetchItens(lancamento.acao_id.id);
+        closeModal()
+
+      } catch (error) {
+        alert(error)
+        
+      }
+
     } else {
       const data = await editLancamento(lancamento);
       if (data) {
         fetchLancamentos(lancamento.ca_crt_codigo, lancamento.ca_aco_codigo);
       }
     }
+
+
+
+    // if (!lancamento.id) {
+    //   addLancamento(lancamento)
+    //     .then((data) => {
+    //       console.log(data)
+    //       fetchItens(lancamento.ca_crt_codigo);
+    //     })
+    //     .catch((err) => {
+    //       alert("");
+    //     });
+    // } else {
+    //   const data = await editLancamento(lancamento);
+    //   if (data) {
+    //     fetchLancamentos(lancamento.ca_crt_codigo, lancamento.ca_aco_codigo);
+    //   }
+    // }
   };
 
   return (
@@ -355,7 +378,6 @@ const EditModal = (props) => {
                                 marginTop: "2px",
                               }}
                               onChange={(e) => {
-                                console.log(e.target.value);
                                 handleChangeLancamento({
                                   ...lancamento,
                                   ca_crm_compra_venda: e.target.value,
@@ -380,7 +402,7 @@ const EditModal = (props) => {
                               onChange={(e) =>
                                 handleChangeLancamento({
                                   ...lancamento,
-                                  ca_crm_quantidade: e.target.value,
+                                  ca_crm_quantidade: parseInt(e.target.value, 10),
                                 })
                               }
                             />
@@ -394,12 +416,12 @@ const EditModal = (props) => {
                               type="number"
                               placeholder="Digite o valor"
                               value={lancamento.ca_crm_valor}
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 handleChangeLancamento({
                                   ...lancamento,
-                                  ca_crm_valor: e.target.value,
+                                  ca_crm_valor: parseFloat(e.target.value),
                                 })
-                              }
+                              }}
                             />
                           </div>
                         </div>

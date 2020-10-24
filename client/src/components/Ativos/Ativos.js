@@ -178,12 +178,15 @@ const AtivosTable = (props) => {
     handleChangeCotacao,
   } = props;
 
+  // useEffect(() => {
+  //   fetchItens(carteiraId);
+  //   handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
+  // }, [carteiraId, fetchItens, handleChangeLancamento, lancamento]);
+
   useEffect(() => {
     fetchItens(carteiraId);
-    handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
+    // handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
   }, [carteiraId, fetchItens]);
-
-  console.log(lancamento);
 
   const rows = (itens.data || []).map((item) => {
     return createData(
@@ -290,12 +293,13 @@ const AtivosTable = (props) => {
 
                           <IconButton
                             onClick={() => {
-                              handleChangeCotacao({
-                                ...cotacao,
-                                acao_id: row.acao_id,
-                              });
+                              // handleChangeCotacao({
+                              //   ...cotacao,
+                              //   acao_id: row.acao_id,
+                              // });
                               history.push(
-                                `/cotacoes/${row.ca_aco_codigo}/${carteiraId}`
+                                `/cotacoes/${row.ca_aco_codigo}/${carteiraId}`,
+                                { acao_id: row.acao_id }
                               );
                             }}
                           >
@@ -323,7 +327,7 @@ const AtivosTable = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <EditModal />
+      {/* <EditModal /> */}
     </>
   );
 };

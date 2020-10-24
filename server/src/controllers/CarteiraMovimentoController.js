@@ -37,11 +37,15 @@ module.exports = {
   async store(req, res) {
     const {
       ca_crt_codigo,
-      ca_aco_codigo,
       ca_crm_compra_venda,
       ca_crm_quantidade,
       ca_crm_valor,
+      acao_id
     } = req.body;
+
+    console.log('Ativo ', req.body)
+
+    const ca_aco_codigo = acao_id.id;
 
     let valor_medio = 0;
     let qtdEmCarteira = 0;
@@ -79,6 +83,8 @@ module.exports = {
       const ca_cri_quantidade = qtdEmCarteira;
       const ca_cri_valor_medio = valor_medio;
 
+      console.log('Ativo ', ativo)
+
       const updateAtivo = await CarteiraItens.update(
         { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio },
         { where: { id: ativo.dataValues.id } }
@@ -86,12 +92,15 @@ module.exports = {
     } else {
       const ca_cri_quantidade = qtdEmCarteira;
       const ca_cri_valor_medio = valor_medio;
+
       const ativo = await CarteiraItens.create({
         ca_crt_codigo,
         ca_aco_codigo,
         ca_cri_quantidade,
         ca_cri_valor_medio,
       });
+
+      console.log('Ativo ', ativo)
     }
 
     return res.json(carteiraMovimentada);

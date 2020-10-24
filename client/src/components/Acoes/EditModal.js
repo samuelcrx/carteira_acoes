@@ -10,7 +10,6 @@ import { carteiraActions } from "../../redux/actions";
 import classNames from "classnames";
 import Carteira from "./Acoes";
 import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {

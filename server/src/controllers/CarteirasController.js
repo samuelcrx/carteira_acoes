@@ -13,7 +13,6 @@ module.exports = {
     for (let carteira of data) {
       carteira.dataValues.valor_atual = 0;
       carteira.dataValues.valor_investido = 0;
-      // console.log(carteira)
       const itens = await CarteiraItens.findAll({
         attributes: [
           "ca_crt_codigo",
@@ -23,7 +22,6 @@ module.exports = {
         ],
         where: { ca_crt_codigo: carteira.dataValues.id },
       });
-      // console.log(itens);
       if (itens) {
         console.log("aqui mesmo");
         for (let item of itens) {
@@ -51,7 +49,6 @@ module.exports = {
             // console.log('aqui foi cotaddd ', item.dataValues)
             carteira.dataValues.valor_atual +=
               item.dataValues.ca_cri_quantidade * item.dataValues.ca_cotacao;
-            console.log("PRINTAAA", carteira.dataValues);
 
             carteira.dataValues.valor_investido +=
               item.dataValues.ca_cri_quantidade *

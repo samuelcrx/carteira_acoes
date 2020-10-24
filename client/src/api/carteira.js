@@ -5,7 +5,6 @@ export const getCarteiras = (userId) => {
 };
 
 export const getCarteira = (id) => {
-  console.log('api', id)
   return api.http.get(`/carteira/${id}`);
 };
 

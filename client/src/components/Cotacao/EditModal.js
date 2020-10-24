@@ -197,7 +197,6 @@ const EditModal = (props) => {
     loadAcoes();
   }
 
-
   const loadAcoesBusca = useCallback(async (term) => {
     const response = await api.http
       .get("/acoes", {
@@ -213,7 +212,6 @@ const EditModal = (props) => {
         return options;
       })
       .catch(() => {
-        console.log("Erro ao buscar niveis de ensino");
       });
     return response;
   }, []);
@@ -245,27 +243,34 @@ const EditModal = (props) => {
     cotacao,
     fetchCotacoes,
     handleChangeCotacao,
-    editLancamento,
+    editCotacao,
     addCotacao,
     userId,
     acoCodigo,
   } = props;
 
-  const onSubmit = (cotacao) => {
+  const onSubmit = async (cotacao) => {
     if (!cotacao.id) {
+      try {
+        const data = await addCotacao(cotacao, userId);
 
-      addCotacao(cotacao, userId)
-        .then((data) => {
-          fetchCotacoes(userId, acoCodigo);
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
-      editLancamento(cotacao).then((data) => {
         fetchCotacoes(userId, acoCodigo);
+
         closeModal();
-      });
+      } catch (error) {
+        alert(error);
+      }
+    } else {
+      try {
+        const data = await editCotacao(cotacao);
+        if (data) {
+          fetchCotacoes(userId, acoCodigo).then((data) => {
+            closeModal();
+          });
+        }
+      } catch (error) {
+        alert(error);
+      }
     }
   };
 
@@ -306,7 +311,10 @@ const EditModal = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    handleChangeCotacao({...cotacao, ca_aco_codigo: cotacao.acao_id.id})
+                    handleChangeCotacao({
+                      ...cotacao,
+                      ca_aco_codigo: cotacao.acao_id.id,
+                    });
                     onSubmit(cotacao);
                     // resetState();
                   }}
@@ -347,10 +355,10 @@ const EditModal = (props) => {
                               type="Number"
                               placeholder="Digite o valor"
                               onChange={(e) => {
-                                console.log('VALOOR ', typeof e.target.value)
                                 handleChangeCotacao({
                                   ...cotacao,
-                                  ca_acc_valor: e.target.value,
+                                  ca_acc_valor:
+                                    parseFloat(e.target.value) || 0.0,
                                 });
                               }}
                               value={cotacao.ca_acc_valor}
@@ -388,8 +396,8 @@ const mapDispatchToProps = (dispatch) => {
     addCotacao: (cotacao, ca_usu_codigo) => {
       dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo));
     },
-    editLancamento: (lancamento) => {
-      dispatch(lancamentosActions.editLancamento(lancamento));
+    editCotacao: (cotacao) => {
+      dispatch(cotacoesActions.editCotacao(cotacao));
     },
     closeModal: () => {
       dispatch(cotacoesActions.closeModal());

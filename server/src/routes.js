@@ -45,7 +45,7 @@ routes.delete("/acoes/:id", AcaoController.delete);
 // Rotas de acoes cotações
 routes.get("/cotacoes/:userId/:acoCodigo", AcaoCotacaoController.index);
 routes.post("/cotacoes/:ca_usu_codigo", AcaoCotacaoController.store);
-routes.get("/cotacoes/:id", AcaoCotacaoController.show);
+routes.get("/cotacao/:id", AcaoCotacaoController.show);
 routes.put("/cotacoes/:id", AcaoCotacaoController.update);
 routes.delete("/cotacoes/:id", AcaoCotacaoController.delete);
 

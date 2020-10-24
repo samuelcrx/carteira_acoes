@@ -24,34 +24,32 @@ import { cotacoesActions } from "../../redux/actions";
 import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import classNames from "classnames";
+import moment from "moment";
 
 const columns = [
-  { id: "ticker", label: "Ticker", minWidth: 100 },
+  { id: "ca_aco_ticker", label: "Ticker", minWidth: 100 },
   { id: "data", label: "Data", minWidth: 100 },
-  { id: "valor", label: "Valor", minWidth: 100 },
+  { id: "ca_acc_valor", label: "Valor", minWidth: 100 },
 ];
 
 function createData(
   id,
-  ca_crt_descricao,
-  valor_investido,
-  valor_atual,
-  ca_crt_ativo
+  acao_id,
+  createdAt,
+  ca_acc_valor,
+  ca_usu_codigo,
+  ca_aco_codigo
 ) {
-  const lucro_prejuizo =
-    valor_atual && valor_investido ? valor_atual - valor_investido : " -- ";
-  const evolucao =
-    valor_atual && valor_investido
-      ? (valor_atual / valor_investido - 1) * 100
-      : " -- ";
+  const data = moment(createdAt).format("l");
+  const ca_aco_ticker = acao_id.ca_aco_ticker;
   return {
     id,
-    ca_crt_descricao,
-    valor_investido,
-    valor_atual,
-    lucro_prejuizo,
-    evolucao,
-    ca_crt_ativo,
+    acao_id,
+    ca_aco_ticker,
+    data,
+    ca_acc_valor,
+    ca_usu_codigo,
+    ca_aco_codigo,
   };
 }
 
@@ -106,26 +104,33 @@ const Cotacao = (props) => {
     setPage(0);
   };
 
-  const { fetchCotacoes, cotacoes, user, fetchCotacao } = props;
+  const {
+    fetchCotacoes,
+    cotacoes,
+    user,
+    fetchCotacao,
+    handleChangeCotacao,
+  } = props;
+  
   const { acoCodigo, carteiraId } = props.match.params;
+  const { acao_id } = props.location.state;
 
   useEffect(() => {
-    fetchCotacoes(user.id, acoCodigo);
-  }, []);
 
-  console.log(cotacoes);
+    fetchCotacoes(user.id, acoCodigo);
+
+  }, [acoCodigo, fetchCotacoes, user.id]);
 
   const rows = (cotacoes.data || []).map((item) => {
     return createData(
       item.id,
-      item.ca_crt_descricao,
-      item.valor_investido,
-      item.valor_atual,
-      item.ca_crt_ativo
+      item.acao_id,
+      item.createdAt,
+      item.ca_acc_valor,
+      item.ca_usu_codigo,
+      item.ca_aco_codigo
     );
   });
-
-  console.log("cotações ", cotacao);
 
   return (
     <>
@@ -153,6 +158,10 @@ const Cotacao = (props) => {
             style={{ marginTop: 20, marginBottom: 20 }}
             color="secondary"
             onClick={() => {
+              handleChangeCotacao({
+                ...cotacao,
+                acao_id: acao_id,
+              });
               openModal();
             }}
           >
@@ -164,13 +173,13 @@ const Cotacao = (props) => {
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    align={column.align}
+                    align={"center"}
                     style={{ minWidth: column.minWidth }}
                   >
                     {column.label}
                   </TableCell>
                 ))}
-                <TableCell align="left">{"Ações"}</TableCell>
+                <TableCell align="center">{"Ações"}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -182,19 +191,19 @@ const Cotacao = (props) => {
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.ca_crt_descricao}
+                      key={row.ca_aco_ticker}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
-                          <TableCell key={column.id} align={column.align}>
+                          <TableCell key={column.id} align={"center"}>
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
                           </TableCell>
                         );
                       })}
-                      <TableCell align="left">
+                      <TableCell align="center">
                         <IconButton>
                           <Tooltip title="Editar">
                             <EditIcon
@@ -253,6 +262,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(cotacoesActions.resetState());
+    },
+    handleChangeCotacao: (cotacao) => {
+      dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
   };
 };

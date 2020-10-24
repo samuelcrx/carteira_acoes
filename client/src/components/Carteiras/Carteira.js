@@ -19,12 +19,17 @@ import Delete from "@material-ui/icons/DeleteOutline";
 import Ativos from "@material-ui/icons/Assignment";
 import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
-import { carteiraActions, lancamentosActions } from "../../redux/actions";
+import {
+  carteiraActions,
+  lancamentosActions,
+  userActions,
+} from "../../redux/actions";
 import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fetchCarteira } from "../../redux/actions/carteiras";
 import { useHistory } from "react-router-dom";
 import Perfil from "../Perfil/Perfil";
+import TrocarSenhar from "./TrocarSenha";
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
@@ -116,7 +121,7 @@ const Carteira = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const history = useHistory();
 
-  const { openModal, modalOpen, loadingCarteiras } = props;
+  const { openModal, modalOpen, loadingCarteiras, user2 } = props;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -136,6 +141,7 @@ const Carteira = (props) => {
     fetchCarteira,
     lancamento,
     handleChangeLancamento,
+    openModalSenha,
   } = props;
 
   useEffect(() => {
@@ -151,8 +157,6 @@ const Carteira = (props) => {
       item.ca_crt_ativo
     );
   });
-
-  console.log("achou ", carteira);
 
   return (
     <>
@@ -189,11 +193,7 @@ const Carteira = (props) => {
                 >
                   {"Status"}
                 </TableCell>
-                <TableCell
-                  align="left"
-                >
-                  {"Ações"}
-                </TableCell>
+                <TableCell align="left">{"Ações"}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -225,38 +225,38 @@ const Carteira = (props) => {
                         )}
                       </TableCell>
                       <TableCell align="left">
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            handleChangeLancamento({
+                              ...lancamento,
+                              ca_crt_codigo: row.id,
+                            });
+                            history.push(`/ativos/${row.id}`);
+                          }}
+                        >
                           <Tooltip title="Ativos">
-                            <Ativos
-                              onClick={() => {
-                                handleChangeLancamento({
-                                  ...lancamento,
-                                  ca_crt_codigo: row.id,
-                                });
-                                history.push(`/ativos/${row.id}`);
-                              }}
-                            />
+                            <Ativos />
                           </Tooltip>
                         </IconButton>
 
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            fetchCarteira(row.id);
+                          }}
+                        >
                           <Tooltip title="Editar">
-                            <EditIcon
-                              onClick={() => {
-                                fetchCarteira(row.id);
-                              }}
-                            />
+                            <EditIcon />
                           </Tooltip>
                         </IconButton>
 
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            deleteCarteira(row.id);
+                            fetchCarteiras(user.id);
+                          }}
+                        >
                           <Tooltip title="Deletar">
-                            <Delete
-                              onClick={() => {
-                                deleteCarteira(row.id);
-                                fetchCarteiras(user.id);
-                              }}
-                            />
+                            <Delete />
                           </Tooltip>
                         </IconButton>
                       </TableCell>
@@ -277,6 +277,7 @@ const Carteira = (props) => {
         />
       </Paper>
       <EditModal />
+      <TrocarSenhar />
     </>
   );
 };
@@ -287,6 +288,7 @@ const mapStateToProps = (state) => ({
   lancamento: state.lancamentos.lancamento,
   modalOpen: state.carteira.modalOpen,
   user: state.auth.user,
+  user2: state.user.user,
   loadingCarteiras: state.carteira.loadingCarteiras,
   token: state.auth.token,
   err: state.auth.err,

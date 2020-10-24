@@ -33,6 +33,6 @@ export const addUser = (user) => {
   return api.http.post("/users", user);
 };
 
-export const updatePassword = ({ id, params }) => {
-  return api.http.post(`/users/${id}/update_password`, params);
+export const updatePassword = (user) => {
+  return api.http.put(`/updatePassword/${user.id}`, user);
 };
