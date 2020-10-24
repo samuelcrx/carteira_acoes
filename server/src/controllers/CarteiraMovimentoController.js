@@ -29,6 +29,7 @@ module.exports = {
         "updatedAt",
       ],
       where: { ca_crt_codigo: carteiraId, ca_aco_codigo: acaoCodigo },
+      order: [["id", "ASC"], ["createdAt", "ASC"]]
     });
 
     return res.json(carteiraMovimentos);
@@ -42,8 +43,6 @@ module.exports = {
       ca_crm_valor,
       acao_id
     } = req.body;
-
-    console.log('Ativo ', req.body)
 
     const ca_aco_codigo = acao_id.id;
 
@@ -60,7 +59,7 @@ module.exports = {
 
     const percorreMovimentacao = await CarteiraMovimento.findAll({
       where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
-      order: [["createdAt", "ASC"]],
+      order: [["id", "ASC"], ["createdAt", "ASC"]],
     });
 
     for (let movimento of percorreMovimentacao) {
@@ -74,6 +73,8 @@ module.exports = {
         qtdEmCarteira = qtdEmCarteira - ca_crm_quantidade;
       }
     }
+    console.log('Valor Médio ', valor_medio)
+    console.log('Quantidade ', qtdEmCarteira)
 
     const ativo = await CarteiraItens.findOne({
       where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
@@ -173,6 +174,9 @@ module.exports = {
         qtdEmCarteira = qtdEmCarteira - ca_crm_quantidade;
       }
     }
+
+    console.log('Valor Médio ', valor_medio)
+    console.log('Quantidade ', qtdEmCarteira)
 
     const ativo = await CarteiraItens.findOne({
       where: { ca_crt_codigo, ca_aco_codigo: acao_id.id },

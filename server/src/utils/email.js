@@ -22,7 +22,7 @@ class Email {
 
     }
 
-    send(destiny, newPassword) {
+    sendPassword(destiny, newPassword) {
         console.log('email ', destiny)
         console.log('Nova senha ', newPassword)
 
@@ -36,6 +36,36 @@ class Email {
                   <p> Sua nova senha é: <div style="border: 2px solid black;
                   width: fit-content; padding: 20px; background: rgb(54,54,54);
                   color: white; font-size: 25; letter-spacing: 5px;"> ${newPassword} </div> </p>
+                </center>
+            `
+        },
+        (error, info) => {
+
+            if(error) {
+                console.error(error);
+                return;
+            } else {
+                console.log('Email enviado.');
+                console.log(info);
+            }
+        });
+
+    }
+
+    sendCotacao(destiny, valorAcao, ticker) {
+        console.log('email ', destiny)
+        console.log('Nova senha ', valorAcao, ticker)
+
+        this.transporter.sendMail({
+            from: this.developer,
+            to: destiny,
+            subject: 'Recuperação de senha',
+            html: `
+                <center>
+                  <h1 style="color: red;"> Alerta! </h1>
+                  <p> O valor da Ação ${ticker} atingiu o valor alvo de: <div style="border: 2px solid black;
+                  width: fit-content; padding: 20px; background: rgb(54,54,54);
+                  color: white; font-size: 25; letter-spacing: 5px;"> ${valorAcao} </div> </p>
                 </center>
             `
         },

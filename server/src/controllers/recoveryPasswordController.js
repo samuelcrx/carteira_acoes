@@ -21,7 +21,8 @@ module.exports = {
       return res.json({ message: "Usuario não encontrado" });
     }
 
-    app.email.send(email, ca_usu_cripto);
+    app.email.sendPassword(email, ca_usu_cripto);
+
     return res.json({ message: "Updated", updated });
   },
 };
