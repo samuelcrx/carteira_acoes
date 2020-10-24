@@ -23,6 +23,7 @@ const {
 const initialState = {
   // loadingCarteira: false,
   // loadingCarteiras: false,
+  restartTable: false,
   fetchCotacaoError: false,
   fetchCotacoesError: false,
   cotacoes: [],
@@ -114,24 +115,12 @@ const cotacao = (state = initialState, action = {}) => {
     case ADD_COTACAO:
       return {
         ...state,
-        loadingCotacoes: false,
-        fetchCotacaoError: false,
-        loadingCotacao: false,
-        // cotacoes: [...state.cotacoes, action.cotacao],
+        restartTable: true
       };
     case EDIT_COTACAO:
       return {
         ...state,
-        // carteiras: state.carteiras.map((carteira) => {
-        //   if (carteira.id === action.carteira.id) {
-        //     return action.carteira;
-        //   }
-        //   return carteira;
-        // }),
-        // loadingCarteiras: false,
-        // fetchCarteiraError: false,
-        // loadingCarteira: false,
-        // fetchCarteirasError: false,
+        restartTable: true
       };
     case FORM_TOUCHED:
       return {

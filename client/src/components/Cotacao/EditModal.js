@@ -252,10 +252,8 @@ const EditModal = (props) => {
   const onSubmit = async (cotacao) => {
     if (!cotacao.id) {
       try {
-        const data = await addCotacao(cotacao, userId);
-
-        fetchCotacoes(userId, acoCodigo);
-
+        await addCotacao(cotacao, userId);
+        handleChangeCotacao({ ...cotacao, ca_acc_valor: 0 });
         closeModal();
       } catch (error) {
         alert(error);
@@ -263,11 +261,7 @@ const EditModal = (props) => {
     } else {
       try {
         const data = await editCotacao(cotacao);
-        if (data) {
-          fetchCotacoes(userId, acoCodigo).then((data) => {
-            closeModal();
-          });
-        }
+          resetState();
       } catch (error) {
         alert(error);
       }

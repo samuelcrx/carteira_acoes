@@ -135,24 +135,29 @@ module.exports = {
 
   async update(req, res) {
     const {
-      ca_aco_codigo,
-      ca_crt_codigo,
       ca_crm_compra_venda,
-      ca_crm_data,
+      ca_crt_codigo,
+      ca_crm_quantidade,
       ca_crm_valor,
+      acao_id     
     } = req.body;
     const { id } = req.params;
+
+    console.log(req.body);
+    // console.log(carteira_id);
 
     let valor_medio = 0;
     let qtdEmCarteira = 0;
 
     const updateMovimento = await CarteiraMovimento.update(
-      { ca_aco_codigo, ca_crm_compra_venda, ca_crm_data, ca_crm_valor },
+      { ca_crm_compra_venda, ca_crm_quantidade, ca_crm_valor },
       { where: { id: id } }
     );
 
+    console.log(updateMovimento);
+
     const percorreMovimentacao = await CarteiraMovimento.findAll({
-      where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
+      where: { ca_crt_codigo, ca_aco_codigo: acao_id.id },
       order: [["createdAt", "ASC"]],
     });
 
@@ -170,7 +175,7 @@ module.exports = {
     }
 
     const ativo = await CarteiraItens.findOne({
-      where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
+      where: { ca_crt_codigo, ca_aco_codigo: acao_id.id },
     });
 
     if (ativo) {
@@ -178,7 +183,7 @@ module.exports = {
       const ca_cri_valor_medio = valor_medio;
 
       const updateAtivo = await CarteiraItens.update(
-        { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio },
+        { ca_aco_codigo: acao_id.id, ca_cri_quantidade, ca_cri_valor_medio },
         { where: { id: ativo.dataValues.id } }
       );
     } else {
@@ -186,7 +191,7 @@ module.exports = {
       const ca_cri_valor_medio = valor_medio;
       const ativo = await CarteiraItens.create({
         ca_crt_codigo,
-        ca_aco_codigo,
+        ca_aco_codigo: acao_id.id,
         ca_cri_quantidade,
         ca_cri_valor_medio,
       });

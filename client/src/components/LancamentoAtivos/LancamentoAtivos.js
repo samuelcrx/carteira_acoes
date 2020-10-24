@@ -149,11 +149,12 @@ const AtivosTable = (props) => {
     fetchLancamento,
     resetState,
     modalOpen,
+    status
   } = props;
 
   useEffect(() => {
     fetchLancamentos(carteiraId, acaoCodigo);
-  }, [acaoCodigo, carteiraId, fetchLancamentos]);
+  }, [acaoCodigo, carteiraId, fetchLancamentos, status]);
 
   const rows = (lancamentos.data || []).map((lancamento) => {
     return createData(
@@ -285,7 +286,7 @@ const AtivosTable = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <EditModal carteiraId={carteiraId} acaoCodigo={acaoCodigo}/>
+      <EditModal carteiraId={carteiraId} acaoCodigo={acaoCodigo} edit={false} />
     </>
   );
 };
@@ -294,6 +295,7 @@ const mapStateToProps = (state) => ({
   lancamentos: state.lancamentos.lancamentos,
   lancamento: state.lancamentos.lancamento,
   modalOpen: state.lancamentos.modalOpen,
+  status: state.lancamentos.refreshAtivos,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,

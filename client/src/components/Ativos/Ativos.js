@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -156,6 +156,7 @@ const AtivosTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const carteiraId = props.match.params.carteiraId;
+  // const [status, setStatus] = useState(false)
 
   const history = useHistory();
 
@@ -176,17 +177,13 @@ const AtivosTable = (props) => {
     lancamento,
     cotacao,
     handleChangeCotacao,
+    status
   } = props;
-
-  // useEffect(() => {
-  //   fetchItens(carteiraId);
-  //   handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
-  // }, [carteiraId, fetchItens, handleChangeLancamento, lancamento]);
 
   useEffect(() => {
     fetchItens(carteiraId);
     // handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
-  }, [carteiraId, fetchItens]);
+  }, [carteiraId, fetchItens, status]);
 
   const rows = (itens.data || []).map((item) => {
     return createData(
@@ -327,7 +324,7 @@ const AtivosTable = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <EditModal /> */}
+      <EditModal carteiraId={carteiraId} edit={true}/>
     </>
   );
 };
@@ -336,6 +333,7 @@ const mapStateToProps = (state) => ({
   itens: state.itens.itens,
   item: state.itens.item,
   lancamento: state.lancamentos.lancamento,
+  status: state.lancamentos.refreshAtivos,
   cotacao: state.cotacao.cotacao,
   modalOpen: state.itens.modalOpen,
   token: state.auth.token,

@@ -110,6 +110,7 @@ const Cotacao = (props) => {
     user,
     fetchCotacao,
     handleChangeCotacao,
+    restartTable
   } = props;
   
   const { acoCodigo, carteiraId } = props.match.params;
@@ -119,7 +120,7 @@ const Cotacao = (props) => {
 
     fetchCotacoes(user.id, acoCodigo);
 
-  }, [acoCodigo, fetchCotacoes, user.id]);
+  }, [acoCodigo, fetchCotacoes, user.id, restartTable]);
 
   const rows = (cotacoes.data || []).map((item) => {
     return createData(
@@ -239,6 +240,7 @@ const mapStateToProps = (state) => ({
   cotacoes: state.cotacao.cotacoes,
   cotacao: state.cotacao.cotacao,
   modalOpen: state.carteira.modalOpen,
+  restartTable: state.cotacao.restartTable,
   user: state.auth.user,
   loadingCarteiras: state.carteira.loadingCarteiras,
   token: state.auth.token,

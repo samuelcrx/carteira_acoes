@@ -21,6 +21,7 @@ const {
 } = lancamentosActions;
 
 const initialState = {
+  refreshAtivos: false,
   loadingLancamneto: false,
   loadingLancamentos: false,
   fetchLancamnetoError: false,
@@ -148,21 +149,13 @@ const lancamentos = (state = initialState, action = {}) => {
       };
     case ADD_LANCAMENTO:
       return {
-        ...state
+        ...state,
+        refreshAtivos: true
       };
     case EDIT_LANCAMENTO:
       return {
         ...state,
-        lancamentos: state.lancamentos.map((lancamento) => {
-          if (lancamento.id === action.lancamento.id) {
-            return action.lancamento;
-          }
-          return lancamento;
-        }),
-        loadingLancamentos: false,
-        fetchLancamentoError: false,
-        loadingLancamento: false,
-        fetchLancamentosError: false,
+        refreshAtivos: true
       };
     // case FORM_TOUCHED:
     //   return {

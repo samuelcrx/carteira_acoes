@@ -38,7 +38,7 @@ const initialState = {
     id: "",
     ca_usu_codigo: "",
     ca_crt_descricao: "",
-    ca_crt_ativo: false,
+    ca_crt_ativo: true,
     valor_investido: 0.0,
     valor_atual: 0.0,
   },

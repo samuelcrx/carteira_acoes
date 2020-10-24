@@ -61,12 +61,12 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { acao_id, ca_acc_data, ca_acc_valor } = req.body;
+    const { acao_id, ca_acc_valor } = req.body;
     const { id } = req.params;
     const ca_aco_codigo = acao_id.id;
 
     const acaoCotacao = await AcaoCotacao.update(
-      { ca_aco_codigo, ca_acc_data, ca_acc_valor },
+      { ca_aco_codigo, ca_acc_valor },
       { where: { id: id } }
     );
 

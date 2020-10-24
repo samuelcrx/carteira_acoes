@@ -27,6 +27,10 @@ module.exports = {
           type: Sequelize.STRING(1),
           allowNull: true,
         },
+        ca_crm_quantidade: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
         ca_crm_valor: {
           type: Sequelize.DOUBLE,
           allowNull: false,

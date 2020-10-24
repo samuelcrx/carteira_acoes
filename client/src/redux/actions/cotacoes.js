@@ -104,7 +104,7 @@ export const addCotacao = (cotacao, ca_usu_codigo) => {
     return API.cotacoes
       .addCotacao(cotacao, ca_usu_codigo)
       .then(({ data }) => {
-        dispatch({ type: ADD_COTACAO, cotacao: data });
+        dispatch({ type: ADD_COTACAO });
       })
       .catch((err) => {
         const { response = {} } = err;
@@ -127,8 +127,8 @@ export const editCotacao = (cotacao) => {
     return API.cotacoes
       .editCotacao(cotacao)
       .then(({ data }) => {
-        // dispatch({ type: EDIT_CARTEIRA, carteira: carteira });
-        dispatch({ type: CLOSE_MODAL });
+        dispatch({ type: EDIT_COTACAO });
+        // dispatch({ type: CLOSE_MODAL });
       })
       .catch((err) => {
         const { response = {} } = err;

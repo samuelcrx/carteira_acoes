@@ -140,8 +140,9 @@ export const addLancamento = (lancamento) => {
     dispatch({ type: FETCHING_LANCAMENTO })
     return API.lancamentos
       .addLancamento(lancamento)
-      .then(({ data }) => {
-        dispatch({ type: ADD_LANCAMENTO, lancamento: data })
+      .then((data) => {
+        console.log('Recebi Lanc ', data)
+        dispatch({ type: ADD_LANCAMENTO })
         return data
       })
       .catch(err => {
@@ -165,7 +166,7 @@ export const editLancamento = lancamento => {
     return API.lancamentos
       .editLancamento(lancamento)
       .then(({ data }) => {
-        dispatch({ type: EDIT_LANCAMENTO, lancamento: data })
+        dispatch({ type: EDIT_LANCAMENTO })
       })
       .catch(err => {
         const { response = {} } = err

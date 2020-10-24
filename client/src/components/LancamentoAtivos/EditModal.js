@@ -246,48 +246,35 @@ const EditModal = (props) => {
     fetchLancamentos,
     carteiraId,
     acaoCodigo,
+    edit
   } = props;
 
   const onSubmit = async (lancamento) => {
+    console.log(lancamento)
 
     if (!lancamento.id) {
       try {
-
-        const lancou = await addLancamento(lancamento);
-
-        console.log('Lançou dados', lancamento)
-        const itens = await fetchItens(lancamento.acao_id.id);
+        handleChangeLancamento({...lancamento, ca_crt_codigo: props.carteiraId});
+        await addLancamento(lancamento);
+        if (edit) {
+          resetState()
+        } else {
+          handleChangeLancamento({...lancamento, ca_crm_compra_venda: "", ca_crm_quantidade: 0, ca_crm_valor: 0})
+        }
         closeModal()
-
       } catch (error) {
         alert(error)
         
       }
 
     } else {
-      const data = await editLancamento(lancamento);
-      if (data) {
-        fetchLancamentos(lancamento.ca_crt_codigo, lancamento.ca_aco_codigo);
+
+      handleChangeLancamento({...lancamento, ca_crt_codigo: props.carteiraId});
+      console.log(lancamento)
+      await editLancamento(lancamento);
+      // const refresh = await fetchLancamentos(lancamento.ca_crt_codigo, lancamento.acao_id.id);
+        closeModal()
       }
-    }
-
-
-
-    // if (!lancamento.id) {
-    //   addLancamento(lancamento)
-    //     .then((data) => {
-    //       console.log(data)
-    //       fetchItens(lancamento.ca_crt_codigo);
-    //     })
-    //     .catch((err) => {
-    //       alert("");
-    //     });
-    // } else {
-    //   const data = await editLancamento(lancamento);
-    //   if (data) {
-    //     fetchLancamentos(lancamento.ca_crt_codigo, lancamento.ca_aco_codigo);
-    //   }
-    // }
   };
 
   return (

@@ -277,7 +277,7 @@ const Carteira = (props) => {
         />
       </Paper>
       <EditModal />
-      <TrocarSenhar />
+      {/* <TrocarSenhar /> */}
     </>
   );
 };

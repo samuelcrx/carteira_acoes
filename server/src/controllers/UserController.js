@@ -65,9 +65,10 @@ module.exports = {
   },
 
   async login(req, res) {
+    
     const schema = Yup.object().shape({
       ca_usu_login: Yup.string().email().required(),
-      ca_usu_cripto: Yup.string().required().min(6),
+      ca_usu_cripto: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
