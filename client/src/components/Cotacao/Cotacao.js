@@ -26,6 +26,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import classNames from "classnames";
 import moment from "moment";
 import apiAcoes from '../../api/apiAcoes';
+import { json } from "body-parser";
 
 const columns = [
   { id: "ca_aco_ticker", label: "Ticker", minWidth: 100 },
@@ -192,43 +193,48 @@ const Cotacao = (props) => {
             style={{ margin: 10 }}
             className="botao_verde_claro"
             onClick={async () => {
-              console.log("aqui");
+              
+              // Primeira forma   
+                // API HG Brasil
+                // const response = await apiAcoes.get(acao_id.ca_aco_ticker);
 
-              console.log(acao_id.ca_aco_ticker);
+                // API Via CEP
+                const response = await apiAcoes.get('13870377/json/');    
+                console.log(response.data.logradouro);
 
-              // Primeira forma   Usa o apiAcoes
-              // const response = await apiAcoes.get('itsa4');
-              // const response = await apiAcoes.get(acao_id.ca_aco_ticker);
-              const response = await apiAcoes.get('13874089/json/');
-              console.log(response.data.logradouro);
+                // API GITHUB
+                // const response = await apiAcoes.get('rtorru');    
+                // console.log(response.data.id);
               // Primeira forma
 
               // Segunda Forma
-              // const request = require('request');
-              // request('https://api.hgbrasil.com/finance/stock_price?key=02100a87&symbol=itsa4', { json: true }, (err, res, body) => {
-              //   if (err) { return console.log(err); }
-              //   console.log(body.length);
-              //   console.log(res.id);
-              // });
-              // console.log(request);
+                // const request = require('request');
+                // request('https://api.hgbrasil.com/finance/stock_price?key=02100a87&symbol=itsa4', { json: true }, (err, res, body) => {
+                //   if (err) { return console.log(err); }
+                //   console.log(body.length);
+                //   console.log(res.id);
+                // });
+                // console.log(request);
               // Segunda Forma
             
+              // ###########################################################################
+              // Insere a resposta da cotação no banco
+                // console.log(cotacao);
+                // const valorCotacao  = 32;
+                // cotacao.ca_usu_codigo = user.id
+                // cotacao.acao_id       = acao_id
+                // cotacao.ca_acc_valor  = parseFloat(valorCotacao) || 0
 
-              // console.log(cotacao);
-
-              // await handleChangeCotacao({
-              //   ...cotacao,
-              //   ca_usu_codigo: user.id,
-              //   ca_aco_codigo: acao_id.id,
-              //   ca_acc_valor: parseFloat(response.data.price) || 0.0,
-              // });
-              // try{
-              //   await addCotacao(cotacao, user.id);
-              // }catch(error) {
-              //   alert(error);
-              // }
-
-              // console.log(cotacao);
+                // // console.log(cotacao);
+                // try {
+                //   await addCotacao(cotacao, user.id);
+                //   resetState();
+                // } catch (error) {
+                //   alert(error);
+                // }
+                // console.log(cotacao);
+              // Insere a resposta da cotação no banco
+              // ###########################################################################
 
             }}
           >

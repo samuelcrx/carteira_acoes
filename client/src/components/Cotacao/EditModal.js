@@ -135,6 +135,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     padding: 4,
     color: "rgb(207, 203, 203)",
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   descriptionText: {
     fontFamily: "Nunito",
