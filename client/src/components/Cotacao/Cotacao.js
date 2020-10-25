@@ -127,7 +127,8 @@ const Cotacao = (props) => {
     user,
     fetchCotacao,
     handleChangeCotacao,
-    restartTable
+    restartTable,
+    addCotacao
   } = props;
   
   const { acoCodigo, carteiraId } = props.match.params;
@@ -193,8 +194,11 @@ const Cotacao = (props) => {
             onClick={async () => {
               console.log("aqui");
 
+              console.log(acao_id.ca_aco_ticker);
+
               // Primeira forma   Usa o apiAcoes
-              //const response = await apiAcoes.get('itsa4');
+              // const response = await apiAcoes.get('itsa4');
+              // const response = await apiAcoes.get(acao_id.ca_aco_ticker);
               const response = await apiAcoes.get('13874089/json/');
               console.log(response.data.logradouro);
               // Primeira forma
@@ -208,7 +212,24 @@ const Cotacao = (props) => {
               // });
               // console.log(request);
               // Segunda Forma
-              
+            
+
+              // console.log(cotacao);
+
+              // await handleChangeCotacao({
+              //   ...cotacao,
+              //   ca_usu_codigo: user.id,
+              //   ca_aco_codigo: acao_id.id,
+              //   ca_acc_valor: parseFloat(response.data.price) || 0.0,
+              // });
+              // try{
+              //   await addCotacao(cotacao, user.id);
+              // }catch(error) {
+              //   alert(error);
+              // }
+
+              // console.log(cotacao);
+
             }}
           >
             Busca Automática
@@ -313,6 +334,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeCotacao: (cotacao) => {
       dispatch(cotacoesActions.handleChangeCotacao(cotacao));
+    },
+    addCotacao: (cotacao, ca_usu_codigo) => {
+      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo));
     },
   };
 };
