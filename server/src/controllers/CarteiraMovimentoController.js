@@ -46,9 +46,6 @@ module.exports = {
 
     const ca_aco_codigo = acao_id.id;
 
-    let valor_medio = 0;
-    let qtdEmCarteira = 0;
-
     const carteiraMovimentada = await CarteiraMovimento.create({
       ca_crt_codigo,
       ca_aco_codigo,
@@ -62,19 +59,17 @@ module.exports = {
       order: [["id", "ASC"], ["createdAt", "ASC"]],
     });
 
+    let valor_medio   = 0;
+    let qtdEmCarteira = 0;
     for (let movimento of percorreMovimentacao) {
+      console.log(movimento.dataValues);
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
-        valor_medio =
-          (valor_medio * qtdEmCarteira + ca_crm_quantidade * ca_crm_valor) /
-          (qtdEmCarteira + ca_crm_quantidade);
-
-        qtdEmCarteira = qtdEmCarteira + ca_crm_quantidade;
+        valor_medio   = (valor_medio * qtdEmCarteira + movimento.ca_crm_quantidade * movimento.ca_crm_valor) / (qtdEmCarteira + movimento.ca_crm_quantidade);
+        qtdEmCarteira = qtdEmCarteira + movimento.ca_crm_quantidade;
       } else {
-        qtdEmCarteira = qtdEmCarteira - ca_crm_quantidade;
+        qtdEmCarteira = qtdEmCarteira - movimento.ca_crm_quantidade;
       }
     }
-    console.log('Valor Médio ', valor_medio)
-    console.log('Quantidade ', qtdEmCarteira)
 
     const ativo = await CarteiraItens.findOne({
       where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
@@ -147,9 +142,6 @@ module.exports = {
     console.log(req.body);
     // console.log(carteira_id);
 
-    let valor_medio = 0;
-    let qtdEmCarteira = 0;
-
     const updateMovimento = await CarteiraMovimento.update(
       { ca_crm_compra_venda, ca_crm_quantidade, ca_crm_valor },
       { where: { id: id } }
@@ -162,21 +154,16 @@ module.exports = {
       order: [["createdAt", "ASC"]],
     });
 
-    for (let movimento of percorreMovimentacao) {
-      console.log(movimento.dataValues);
+    let valor_medio   = 0;
+    let qtdEmCarteira = 0;
+    for (let movimento of percorreMovimentacao) {      
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
-        valor_medio =
-          (valor_medio * qtdEmCarteira + ca_crm_quantidade * ca_crm_valor) /
-          (qtdEmCarteira + ca_crm_quantidade);
-
-        qtdEmCarteira = qtdEmCarteira + ca_crm_quantidade;
+        valor_medio   = (valor_medio * qtdEmCarteira + movimento.ca_crm_quantidade * movimento.ca_crm_valor) / (qtdEmCarteira + movimento.ca_crm_quantidade);
+        qtdEmCarteira = qtdEmCarteira + movimento.ca_crm_quantidade;
       } else {
-        qtdEmCarteira = qtdEmCarteira - ca_crm_quantidade;
+        qtdEmCarteira = qtdEmCarteira - movimento.ca_crm_quantidade;
       }
     }
-
-    console.log('Valor Médio ', valor_medio)
-    console.log('Quantidade ', qtdEmCarteira)
 
     const ativo = await CarteiraItens.findOne({
       where: { ca_crt_codigo, ca_aco_codigo: acao_id.id },

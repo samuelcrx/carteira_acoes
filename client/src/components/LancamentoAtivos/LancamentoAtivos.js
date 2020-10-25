@@ -51,10 +51,11 @@ const columns = [
     label: "Valor",
     minWidth: 60,
     align: "left",
-    format: (value) => {
-      value.toFixed(2);
-      return `R$ ${value}`;
-    },
+    // format: (value) => {
+    //   value.toFixed(2);
+    //   return `R$ ${value}`;    
+    //},
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
 ];
 

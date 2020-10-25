@@ -31,7 +31,7 @@ module.exports = {
     const { ca_usu_codigo } = req.params;
 
     const ca_aco_codigo = acao_id.id;
-
+  
     console.log("param", req.body);
     console.log("id", req.params);
 

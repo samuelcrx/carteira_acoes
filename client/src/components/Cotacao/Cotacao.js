@@ -25,11 +25,28 @@ import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import classNames from "classnames";
 import moment from "moment";
+import apiAcoes from '../../api/apiAcoes';
 
 const columns = [
   { id: "ca_aco_ticker", label: "Ticker", minWidth: 100 },
-  { id: "data", label: "Data", minWidth: 100 },
-  { id: "ca_acc_valor", label: "Valor", minWidth: 100 },
+  // { id: "data", label: "Data", minWidth: 100 },
+  // { id: "ca_acc_valor", label: "Valor", minWidth: 100 },
+
+  { 
+    id: "data", 
+    label: "Data", 
+    minWidth: 100,
+    //format: (value) => value.toLocaleString("pt-BR"),
+    //format: (value) => Intl.DateTimeFormat("pt-BR").format(value),
+    format: (value) => new Intl.DateTimeFormat('pt-br').format(new Date(value), ),
+   },
+  { 
+    id: "ca_acc_valor", 
+    label: "Valor", 
+    minWidth: 100, 
+    align: "left",
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+  },    
 ];
 
 function createData(
@@ -157,7 +174,7 @@ const Cotacao = (props) => {
           <Button
             variant="contained"
             style={{ marginTop: 20, marginBottom: 20 }}
-            color="secondary"
+            className="botao_verde_claro"
             onClick={() => {
               handleChangeCotacao({
                 ...cotacao,
@@ -168,6 +185,35 @@ const Cotacao = (props) => {
           >
             Novo
           </Button>
+
+          <Button
+            variant="contained"
+            style={{ margin: 10 }}
+            className="botao_verde_claro"
+            onClick={async () => {
+              console.log("aqui");
+
+              // Primeira forma   Usa o apiAcoes
+              //const response = await apiAcoes.get('itsa4');
+              const response = await apiAcoes.get('13874089/json/');
+              console.log(response.data.logradouro);
+              // Primeira forma
+
+              // Segunda Forma
+              // const request = require('request');
+              // request('https://api.hgbrasil.com/finance/stock_price?key=02100a87&symbol=itsa4', { json: true }, (err, res, body) => {
+              //   if (err) { return console.log(err); }
+              //   console.log(body.length);
+              //   console.log(res.id);
+              // });
+              // console.log(request);
+              // Segunda Forma
+              
+            }}
+          >
+            Busca Automática
+          </Button>
+
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>

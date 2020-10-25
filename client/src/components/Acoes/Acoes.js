@@ -129,6 +129,7 @@ const Acoes = (props) => {
             variant="contained"
             style={{ marginTop: 20, marginBottom: 20 }}
             color="secondary"
+            className="botao_verde_claro"
             onClick={() => {
               openModal();
             }}

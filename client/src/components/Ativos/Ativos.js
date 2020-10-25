@@ -39,45 +39,49 @@ const columns = [
     label: "Quantidade",
     minWidth: 45,
     align: "left",
-    format: (value) => value.toLocaleString("en-US"),
+    format: (value) => value.toLocaleString("pt-BR"),
   },
   {
     id: "ca_cri_valor_medio",
     label: "Valor Médio",
     minWidth: 75,
     align: "left",
-    format: (value) => "R$ " + value.toLocaleString("en-US"),
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "valor_investido",
     label: "Valor Investido",
     minWidth: 60,
     align: "left",
-    format: (value) => {
-      value.toFixed(2);
-      return `R$ ${value}`;
-    },
+    // format: (value) => { 
+    //   value.toFixed(2);
+    //   return `R$ ${value}`;
+    // },
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "valor_atual",
     label: "Valor Atual",
     minWidth: 60,
     align: "left",
-    format: (value) => "R$ " + value.toFixed(2),
+    // format: (value) => "R$ " + value.toFixed(2),
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "lucro_prejuizo",
     label: "Lucro/Prejuízo",
     minWidth: 60,
     align: "left",
-    format: (value) => "R$ " + value.toFixed(2),
+    // format: (value) => "R$ " + value.toFixed(2),
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "evolucao",
     label: "Evolução",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2) + "%",
+    // format: (value) => value.toFixed(2) + "%",
+    format: (value) => value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%" ,
   },
 ];
 

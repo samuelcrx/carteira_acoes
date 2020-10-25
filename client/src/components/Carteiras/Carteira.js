@@ -33,27 +33,36 @@ import TrocarSenhar from "./TrocarSenha";
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
-  { id: "valor_investido", label: "Valor Investido", minWidth: 100 },
+  { 
+    id: "valor_investido", 
+    label: "Valor Investido", 
+    minWidth: 100, 
+    align: "left",
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+  },    
   {
     id: "valor_atual",
     label: "Valor Atual",
     minWidth: 100,
     align: "left",
-    format: (value) => value.toLocaleString("en-US"),
+    // format: (value) => value.toLocaleString("en-US"),
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "lucro_prejuizo",
     label: "Lucro/Prejuízo",
     minWidth: 75,
     align: "left",
-    format: (value) => value.toLocaleString("en-US"),
+    // format: (value) => value.toLocaleString("en-US"),
+    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
   },
   {
     id: "evolucao",
     label: "Evolução",
     minWidth: 60,
     align: "left",
-    format: (value) => value.toFixed(2),
+    // format: (value) => value.toFixed(2),
+    format: (value) => value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%" ,
   },
 ];
 
@@ -167,7 +176,7 @@ const Carteira = (props) => {
           <Button
             variant="contained"
             style={{ marginTop: 20, marginBottom: 20 }}
-            color="secondary"
+            className="botao_verde_claro"
             onClick={() => {
               openModal();
             }}
