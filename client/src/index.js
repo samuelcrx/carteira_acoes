@@ -21,6 +21,7 @@ import Cotacao from "./components/Cotacao/Cotacao";
 import Perfil from "./components/Perfil/Perfil";
 import TrocarSenha from "./components/Perfil/TrocarSenha";
 import RecuperarSenha from "./components/RecuperarSenha";
+import Chart from "./components/Chart/Chart";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -34,6 +35,7 @@ ReactDOM.render(
             <Route path="/edita-carteira" component={EditModal} />
             <Route path="/ativos/:carteiraId" component={AtivosTable} />
             <Route path="/acoes" component={Acoes} />
+            <Route path="/chart" component={Chart} />
             <Route
               path="/lancamentos-ativos/:carteiraId/:acaoCodigo"
               component={LancamentoAtivos}
