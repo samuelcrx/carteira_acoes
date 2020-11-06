@@ -3,12 +3,23 @@ const Carteiras = require("../models/Carteiras");
 const CarteiraItens = require("../models/CarteiraItens");
 const AcoesCotacoes = require("../models/AcoesCotacoes");
 const Acao = require("../models/Acoes");
+const { Op } = require("sequelize");
 
 module.exports = {
   async index(req, res) {
     const { userId } = req.params;
+    const { term } = req.query;
 
-    const data = await Carteiras.findAll({ where: { ca_usu_codigo: userId } });
+    const data = await Carteiras.findAll({
+      where: {
+        ca_usu_codigo: userId,
+        ca_crt_descricao: term
+          ? {
+              [Op.like]: `%${term}%`,
+            }
+          : { [Op.like]: "%" },
+      },
+    });
 
     for (let carteira of data) {
       carteira.dataValues.valor_atual = 0;
@@ -23,7 +34,6 @@ module.exports = {
         where: { ca_crt_codigo: carteira.dataValues.id },
       });
       if (itens) {
-        console.log("aqui mesmo");
         for (let item of itens) {
           const cotacoes = await AcoesCotacoes.findOne({
             attributes: ["ca_acc_valor", "ca_aco_codigo", "createdAt"],
@@ -32,9 +42,7 @@ module.exports = {
           });
 
           if (cotacoes) {
-            console.log("cotou ");
             if (item != null) {
-              console.log("item nao é nulo");
               if (cotacoes.dataValues.ca_acc_valor) {
                 item.dataValues.ca_cotacao = cotacoes.dataValues.ca_acc_valor;
               } else {
@@ -46,7 +54,6 @@ module.exports = {
           }
 
           if (item.dataValues.ca_cri_quantidade) {
-            // console.log('aqui foi cotaddd ', item.dataValues)
             carteira.dataValues.valor_atual +=
               item.dataValues.ca_cri_quantidade * item.dataValues.ca_cotacao;
 

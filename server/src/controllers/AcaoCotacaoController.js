@@ -1,6 +1,8 @@
 const AcaoCotacao = require("../models/AcoesCotacoes");
+const CarteiraItens = require("../models/CarteiraItens");
 const User = require("../models/User");
 const Acao = require("../models/Acoes");
+import app from "../app";
 
 module.exports = {
   async index(req, res) {
@@ -27,13 +29,11 @@ module.exports = {
 
   async store(req, res) {
     const { acao_id, ca_acc_valor } = req.body;
+    const { carteiraId, email } = req.query;
 
     const { ca_usu_codigo } = req.params;
 
     const ca_aco_codigo = acao_id.id;
-  
-    console.log("param", req.body);
-    console.log("id", req.params);
 
     const acaoCotacao = await AcaoCotacao.create({
       ca_usu_codigo,
@@ -41,7 +41,16 @@ module.exports = {
       ca_acc_valor,
     });
 
-    return res.json({});
+    const carteiraItem = await CarteiraItens.findOne({
+      where: { ca_crt_codigo: carteiraId, ca_aco_codigo },
+    })
+
+    console.log('Iteeem ', carteiraItem.dataValues)
+    if((ca_acc_valor <= carteiraItem.dataValues.ca_crt_min) || (ca_acc_valor >= carteiraItem.dataValues.ca_crt_max)) {
+      app.email.sendCotacao(email, ca_acc_valor , acao_id.ca_aco_ticker); 
+    }
+
+    return res.json(acaoCotacao);
   },
 
   async show(req, res) {

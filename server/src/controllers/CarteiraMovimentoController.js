@@ -2,10 +2,12 @@ const CarteiraMovimento = require("../models/CarteiraMovimento");
 const Carteira = require("../models/Carteiras");
 const CarteiraItens = require("../models/CarteiraItens");
 const Acao = require("../models/Acoes");
+const { Op } = require('sequelize')
 
 module.exports = {
   async index(req, res) {
     const { carteiraId, acaoCodigo } = req.params;
+    const { term } = req.query;
     const carteiraMovimentos = await CarteiraMovimento.findAll({
       include: [
         {
@@ -16,7 +18,7 @@ module.exports = {
         {
           model: Acao,
           as: "acao_id",
-          attributes: ["id", "ca_aco_ticker"],
+          attributes: ["id", "ca_aco_ticker"]
         },
       ],
       attributes: [
@@ -28,8 +30,19 @@ module.exports = {
         "ca_crm_quantidade",
         "updatedAt",
       ],
-      where: { ca_crt_codigo: carteiraId, ca_aco_codigo: acaoCodigo },
-      order: [["id", "ASC"], ["createdAt", "ASC"]]
+      where: {
+        ca_crt_codigo: carteiraId,
+        ca_aco_codigo: acaoCodigo,
+        ca_crm_compra_venda: term
+          ? {
+              [Op.like]: `%${term}%`,
+            }
+          : { [Op.like]: "%" },
+      },
+      order: [
+        ["id", "ASC"],
+        ["createdAt", "ASC"],
+      ],
     });
 
     return res.json(carteiraMovimentos);
@@ -41,7 +54,7 @@ module.exports = {
       ca_crm_compra_venda,
       ca_crm_quantidade,
       ca_crm_valor,
-      acao_id
+      acao_id,
     } = req.body;
 
     const ca_aco_codigo = acao_id.id;
@@ -56,15 +69,21 @@ module.exports = {
 
     const percorreMovimentacao = await CarteiraMovimento.findAll({
       where: { ca_crt_codigo: ca_crt_codigo, ca_aco_codigo: ca_aco_codigo },
-      order: [["id", "ASC"], ["createdAt", "ASC"]],
+      order: [
+        ["id", "ASC"],
+        ["createdAt", "ASC"],
+      ],
     });
 
-    let valor_medio   = 0;
+    let valor_medio = 0;
     let qtdEmCarteira = 0;
     for (let movimento of percorreMovimentacao) {
       console.log(movimento.dataValues);
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
-        valor_medio   = (valor_medio * qtdEmCarteira + movimento.ca_crm_quantidade * movimento.ca_crm_valor) / (qtdEmCarteira + movimento.ca_crm_quantidade);
+        valor_medio =
+          (valor_medio * qtdEmCarteira +
+            movimento.ca_crm_quantidade * movimento.ca_crm_valor) /
+          (qtdEmCarteira + movimento.ca_crm_quantidade);
         qtdEmCarteira = qtdEmCarteira + movimento.ca_crm_quantidade;
       } else {
         qtdEmCarteira = qtdEmCarteira - movimento.ca_crm_quantidade;
@@ -79,7 +98,7 @@ module.exports = {
       const ca_cri_quantidade = qtdEmCarteira;
       const ca_cri_valor_medio = valor_medio;
 
-      console.log('Ativo ', ativo)
+      console.log("Ativo ", ativo);
 
       const updateAtivo = await CarteiraItens.update(
         { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio },
@@ -96,7 +115,7 @@ module.exports = {
         ca_cri_valor_medio,
       });
 
-      console.log('Ativo ', ativo)
+      console.log("Ativo ", ativo);
     }
 
     return res.json(carteiraMovimentada);
@@ -135,7 +154,7 @@ module.exports = {
       ca_crt_codigo,
       ca_crm_quantidade,
       ca_crm_valor,
-      acao_id     
+      acao_id,
     } = req.body;
     const { id } = req.params;
 
@@ -154,11 +173,14 @@ module.exports = {
       order: [["createdAt", "ASC"]],
     });
 
-    let valor_medio   = 0;
+    let valor_medio = 0;
     let qtdEmCarteira = 0;
-    for (let movimento of percorreMovimentacao) {      
+    for (let movimento of percorreMovimentacao) {
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
-        valor_medio   = (valor_medio * qtdEmCarteira + movimento.ca_crm_quantidade * movimento.ca_crm_valor) / (qtdEmCarteira + movimento.ca_crm_quantidade);
+        valor_medio =
+          (valor_medio * qtdEmCarteira +
+            movimento.ca_crm_quantidade * movimento.ca_crm_valor) /
+          (qtdEmCarteira + movimento.ca_crm_quantidade);
         qtdEmCarteira = qtdEmCarteira + movimento.ca_crm_quantidade;
       } else {
         qtdEmCarteira = qtdEmCarteira - movimento.ca_crm_quantidade;

@@ -6,24 +6,8 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import {
-  lancamentosActions,
-  carteiraItensActions,
-  cotacoesActions,
-} from "../../redux/actions";
+import { carteiraItensActions } from "../../redux/actions";
 import classNames from "classnames";
-import { addCarteira } from "../../api/carteira";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import api from "../../api/connectionProxy";
-import ReactSelect from "react-select/async";
-import TextField from "@material-ui/core/TextField/TextField";
-import {
-  formatContentSelectValueSingle,
-  filterOptionsFunction,
-} from "../../utils";
-import * as API from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -135,7 +119,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     padding: 4,
     color: "rgb(207, 203, 203)",
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   descriptionText: {
     fontFamily: "Nunito",
@@ -184,90 +173,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditModal = (props) => {
+const LembreteModal = (props) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [filter, setFilter] = React.useState();
-  const [term, setTerm] = React.useState();
-
-  async function loadAcoes() {
-    const response = await api.http.get(`/acoes/${filter}`);
-
-    setFilter(response.data);
-
-    loadAcoes();
-  }
-
-  const loadAcoesBusca = useCallback(async (term) => {
-    const response = await api.http
-      .get("/acoes", {
-        params: {
-          term,
-        },
-      })
-      .then((acoes) => {
-        const options = acoes.data.map((acao) => ({
-          value: acao.id,
-          label: acao.ca_aco_ticker,
-        }));
-        return options;
-      })
-      .catch(() => {
-      });
-    return response;
-  }, []);
-
-  const saveTerm = (selectedOption) => {
-    setTerm(selectedOption);
-    handleChangeCotacao({
-      ...cotacao,
-      ca_aco_codigo: selectedOption.value,
-      acao_id: {
-        id: selectedOption.value,
-        ca_aco_ticker: selectedOption.label,
-      },
-    });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const {
-    modalOpen,
-    closeModal,
+    modalLembreteOpen,
+    closeModalLembrete,
     resetState,
-    cotacao,
-    fetchCotacoes,
-    handleChangeCotacao,
-    editCotacao,
-    addCotacao,
     userId,
-    acoCodigo,
-    carteiraId,
-    user
+    item,
+    addItemLembrete,
+    editItemLembrete,
+    handleChangeItem,
+    create,
   } = props;
+  console.log(item);
 
-  const onSubmit = async (cotacao, carteiraId) => {
-    if (!cotacao.id) {
-      try {
-        await addCotacao(cotacao, userId, carteiraId, user.ca_usu_login);
-        handleChangeCotacao({ ...cotacao, ca_acc_valor: 0 });
-        closeModal();
-      } catch (error) {
-        alert(error);
-      }
+  console.log(create);
+
+  const onSubmit = async (item) => {
+    if (create) {
+      await addItemLembrete(item);
+      closeModalLembrete();
     } else {
-      try {
-        const data = await editCotacao(cotacao);
-          resetState();
-      } catch (error) {
-        alert(error);
-      }
+      await editItemLembrete(item);
+      closeModalLembrete();
     }
   };
 
@@ -277,29 +207,28 @@ const EditModal = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={modalOpen}
+        open={modalLembreteOpen}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={modalOpen}>
+        <Fade in={modalLembreteOpen}>
           {/* <div className={classes.paper}> */}
           <div className={classes.container}>
             <div className={classes.subContainer}>
               <div className={classes.titleContainer}>
                 <p className={classes.titleText}>
-                  {cotacao.id ? "Editar Cotação" : "Nova Cotação"}
+                  {!create ? "Editar Lembrete" : "Criar Lembrete"}
                 </p>
               </div>
               <div className={classes.btContainer}>
                 <Button
                   className={classNames(classes.btBack, "botao_verde_escuro")}
                   onClick={() => {
+                    closeModalLembrete();
                     resetState();
-                    fetchCotacoes(userId, acoCodigo);
-                    closeModal();
                   }}
                 >
                   Voltar
@@ -308,12 +237,7 @@ const EditModal = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    handleChangeCotacao({
-                      ...cotacao,
-                      ca_aco_codigo: cotacao.acao_id.id,
-                    });
-                    onSubmit(cotacao, carteiraId);
-                    // resetState();
+                    onSubmit(item);
                   }}
                 >
                   Salvar
@@ -326,39 +250,38 @@ const EditModal = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.containerCheck}>
-                          <div>
-                            <FormLabel className={classes.descriptionText}>
-                              Ticker
-                            </FormLabel>
-                            <ReactSelect
-                              noOptionsMessage={() => "Nenhuma ação encontrada"}
-                              autoFocus
-                              loadOptions={loadAcoesBusca}
-                              name="Ticker"
-                              defaultOptions
-                              onChange={saveTerm}
-                              value={formatContentSelectValueSingle(
-                                cotacao.acao_id
-                              )}
-                              styles={{ maxWidth: "85px" }}
-                            ></ReactSelect>
-                          </div>
                           <div className={classes.empresa}>
                             <FormLabel className={classes.descriptionText}>
-                              Valor
+                              Valor de Compra
                             </FormLabel>
                             <FormControl
                               className={classes.descInput}
                               type="Number"
                               placeholder="Digite o valor"
                               onChange={(e) => {
-                                handleChangeCotacao({
-                                  ...cotacao,
-                                  ca_acc_valor:
-                                    parseFloat(e.target.value) || 0.0,
+                                handleChangeItem({
+                                  ...item,
+                                  ca_crt_min: parseFloat(e.target.value),
                                 });
                               }}
-                              value={cotacao.ca_acc_valor}
+                              value={item.ca_crt_min}
+                            />
+                          </div>
+                          <div className={classes.empresa}>
+                            <FormLabel className={classes.descriptionText}>
+                              Valor de Venda
+                            </FormLabel>
+                            <FormControl
+                              className={classes.descInput}
+                              type="Number"
+                              placeholder="Digite o valor"
+                              onChange={(e) => {
+                                handleChangeItem({
+                                  ...item,
+                                  ca_crt_max: parseFloat(e.target.value),
+                                });
+                              }}
+                              value={item.ca_crt_max}
                             />
                           </div>
                         </div>
@@ -377,35 +300,29 @@ const EditModal = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: state.cotacao.modalOpen,
-  cotacao: state.cotacao.cotacao,
+  modalLembreteOpen: state.itens.modalLembreteOpen,
+  item: state.itens.item,
   user: state.auth.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchItens: (id) => {
-      dispatch(carteiraItensActions.fetchItens(id));
+    handleChangeItem: (item) => {
+      dispatch(carteiraItensActions.handleChangeItem(item));
     },
-    handleChangeCotacao: (cotacao) => {
-      dispatch(cotacoesActions.handleChangeCotacao(cotacao));
+    addItemLembrete: (item) => {
+      dispatch(carteiraItensActions.addItemLembrete(item));
     },
-    addCotacao: (cotacao, ca_usu_codigo, carteiraId, email) => {
-      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId, email));
+    editItemLembrete: (item) => {
+      dispatch(carteiraItensActions.editItemLembrete(item));
     },
-    editCotacao: (cotacao) => {
-      dispatch(cotacoesActions.editCotacao(cotacao));
-    },
-    closeModal: () => {
-      dispatch(cotacoesActions.closeModal());
+    closeModalLembrete: () => {
+      dispatch(carteiraItensActions.closeModalLembrete());
     },
     resetState: () => {
-      dispatch(cotacoesActions.resetState());
-    },
-    fetchCotacoes: (userId, acoCodigo) => {
-      dispatch(cotacoesActions.fetchCotacoes(userId, acoCodigo));
+      dispatch(carteiraItensActions.resetState());
     },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditModal);
+export default connect(mapStateToProps, mapDispatchToProps)(LembreteModal);

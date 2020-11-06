@@ -8,6 +8,7 @@ export const FETCH_CARTEIRAS_ERROR = "FETCH_CARTEIRAS_ERROR";
 export const OPEN_MODAL = "OPEN_MODAL";
 export const CLOSE_MODAL = "CLOSE_MODAL";
 export const CHANGE_CARTEIRA = "CHANGE_CARTEIRA";
+export const CHANGE_CARTEIRA_TERM = "CHANGE_CARTEIRA_TERM";
 export const DELETE_CARTEIRA = "DELETE_CARTEIRA";
 export const ADD_CARTEIRA = "ADD_CARTEIRA";
 export const EDIT_CARTEIRA = "EDIT_CARTEIRA";
@@ -29,6 +30,11 @@ export const openModal = () => {
 export const handleChangeCarteira = (carteira) => {
   return (dispatch) => {
     dispatch({ type: CHANGE_CARTEIRA, carteira });
+  };
+};
+export const handleChangeCarteiraTerm = (term) => {
+  return (dispatch) => {
+    dispatch({ type: CHANGE_CARTEIRA_TERM, term });
   };
 };
 
@@ -112,11 +118,11 @@ export const changeOrderDirection = (direction) => {
   };
 };
 
-export const fetchCarteiras = (userId) => {
+export const fetchCarteiras = (userId, term) => {
   return (dispatch) => {
     dispatch({ type: FETCHING_CARTEIRAS });
     return API.carteira
-      .getCarteiras(userId)
+      .getCarteiras(userId, term)
       .then((res = {}) => {
         dispatch({
           type: FETCH_CARTEIRAS,

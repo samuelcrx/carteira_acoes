@@ -1,8 +1,12 @@
 import api from "./connectionProxy";
 import { formatContentSelectValue } from '../utils'
 
-export const getLancamentos = (carteiraId, acaoCodigo) => {
-  return api.http.get(`/movimentacao/${carteiraId}/${acaoCodigo}`);
+export const getLancamentos = (carteiraId, acaoCodigo, term) => {
+  return api.http.get(`/movimentacao/${carteiraId}/${acaoCodigo}`, {
+    params: {
+      term
+    }
+  });
 };
 
 export const getLancamento = (id) => {

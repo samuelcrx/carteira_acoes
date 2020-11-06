@@ -53,9 +53,14 @@ const columns = [
     align: "left",
     // format: (value) => {
     //   value.toFixed(2);
-    //   return `R$ ${value}`;    
+    //   return `R$ ${value}`;
     //},
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
 ];
 
@@ -125,7 +130,7 @@ const useStyles = makeStyles({
 const AtivosTable = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const { carteiraId, acaoCodigo } = props.match.params;
   // const { dados } = props.location.state
@@ -150,12 +155,16 @@ const AtivosTable = (props) => {
     fetchLancamento,
     resetState,
     modalOpen,
-    status
+    status,
+    handleChangeLancamentoTerm,
+    buscaTerm,
   } = props;
 
+  const busca = handleChangeLancamentoTerm;
+
   useEffect(() => {
-    fetchLancamentos(carteiraId, acaoCodigo);
-  }, [acaoCodigo, carteiraId, fetchLancamentos, status]);
+    fetchLancamentos(carteiraId, acaoCodigo, buscaTerm);
+  }, [acaoCodigo, carteiraId, fetchLancamentos, status, buscaTerm]);
 
   const rows = (lancamentos.data || []).map((lancamento) => {
     return createData(
@@ -172,7 +181,7 @@ const AtivosTable = (props) => {
 
   return (
     <>
-      <Header title={"Lançamentos"} />
+      <Header title={"Lançamentos"} busca={busca} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -255,14 +264,13 @@ const AtivosTable = (props) => {
                             </Tooltip>
                           </IconButton>
 
-                          <IconButton>
+                          <IconButton
+                            onClick={() => {
+                              deleteLancamento(row.id);
+                            }}
+                          >
                             <Tooltip title="Deletar">
-                              <Delete
-                                onClick={() => {
-                                  deleteLancamento(row.id);
-                                  fetchLancamentos(carteiraId, acaoCodigo);
-                                }}
-                              />
+                              <Delete />
                             </Tooltip>
                           </IconButton>
                         </TableCell>
@@ -295,6 +303,7 @@ const AtivosTable = (props) => {
 const mapStateToProps = (state) => ({
   lancamentos: state.lancamentos.lancamentos,
   lancamento: state.lancamentos.lancamento,
+  buscaTerm: state.lancamentos.buscaTerm,
   modalOpen: state.lancamentos.modalOpen,
   status: state.lancamentos.refreshAtivos,
   token: state.auth.token,
@@ -307,8 +316,10 @@ const mapDispatchToProps = (dispatch) => {
     fetchLancamento: (id) => {
       dispatch(lancamentosActions.fetchLancamento(id));
     },
-    fetchLancamentos: (carteiraId, acaoCodigo) => {
-      dispatch(lancamentosActions.fetchLancamentos(carteiraId, acaoCodigo));
+    fetchLancamentos: (carteiraId, acaoCodigo, term) => {
+      dispatch(
+        lancamentosActions.fetchLancamentos(carteiraId, acaoCodigo, term)
+      );
     },
     deleteLancamento: (id) => {
       dispatch(lancamentosActions.deleteLancamento(id));
@@ -318,6 +329,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(lancamentosActions.resetState());
+    },
+    handleChangeLancamentoTerm: (term) => {
+      dispatch(lancamentosActions.handleChangeLancamentoTerm(term));
     },
   };
 };

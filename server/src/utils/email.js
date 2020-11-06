@@ -53,13 +53,10 @@ class Email {
     }
 
     sendCotacao(destiny, valorAcao, ticker) {
-        console.log('email ', destiny)
-        console.log('Nova senha ', valorAcao, ticker)
-
         this.transporter.sendMail({
             from: this.developer,
             to: destiny,
-            subject: 'Recuperação de senha',
+            subject: 'Aviso de Cotação',
             html: `
                 <center>
                   <h1 style="color: red;"> Alerta! </h1>

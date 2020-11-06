@@ -18,6 +18,10 @@ const {
   NEW_FORM_ITEM,
   ITEM_FORM_ERROR,
   RESET_STATE,
+  CHANGE_ITEM_TERM,
+  OPEN_MODAL_LEMBRETE,
+  CLOSE_MODAL_LEMBRETE,
+  CHANGE_STATUS,
 } = carteiraItensActions;
 
 const initialState = {
@@ -25,49 +29,25 @@ const initialState = {
   loadingCarteiras: false,
   fetchCarteiraError: false,
   fetchCarteirasError: false,
+  buscaTerm: "",
   itens: [],
-  // order: {
-  //   column: "nome",
-  //   direction: 1,
-  // },
   item: {
-    id: '',
-    ca_crt_codigo: '',
-    ca_aco_codigo: '',
+    id: "",
+    ca_crt_codigo: "",
+    ca_aco_codigo: "",
     ca_cri_quantidade: 0,
-    ca_cri_valor_medio: '',
-    acao_id: '',
-    ca_cotacao: 0
+    ca_cri_valor_medio: "",
+    acao_id: "",
+    ca_cotacao: 0,
+    ca_crt_min: 0,
+    ca_crt_max: 0,
   },
   subjectFormErrors: {},
   subjectFormTouched: false,
   modalOpen: false,
+  modalLembreteOpen: false,
+  status: false,
 };
-
-// const carteiraschema = {
-//   add: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   },
-//   edit: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   }
-// }
-
-// const SubjectValidate = new ValidateFormObject(carteiraschema)
 
 const itens = (state = initialState, action = {}) => {
   switch (action.type) {
@@ -96,38 +76,6 @@ const itens = (state = initialState, action = {}) => {
         loadingItem: true,
         fetchItemError: false,
       };
-    // case CHANGE_ORDER_COLUMN:
-    //   return {
-    //     ...state,
-    //     order: {
-    //       direction: 1,
-    //       column: action.column,
-    //     },
-    //   };
-    // case CHANGE_ORDER_DIRECTION:
-    //   return {
-    //     ...state,
-    //     order: {
-    //       ...state.order,
-    //       direction: action.direction,
-    //     },
-    //   };
-    // case CHANGE_PAGE:
-    //   return {
-    //     ...state,
-    //     carteirasPagination: {
-    //       ...state.carteirasPagination,
-    //       page: action.page,
-    //     },
-    //   };
-    // case CHANGE_PER_PAGE:
-    //   return {
-    //     ...state,
-    //     carteirasPagination: {
-    //       ...state.carteirasPagination,
-    //       rowsPerPage: action.perPage,
-    //     },
-    //   };
     case FETCH_ITENS:
       return {
         ...state,
@@ -151,10 +99,14 @@ const itens = (state = initialState, action = {}) => {
         loadingItens: false,
       };
     case CHANGE_ITEM:
-      // formSchemaType = action.subject._id ? 'edit' : 'add'
       return {
         ...state,
-        item: action.item
+        item: action.item,
+      };
+    case CHANGE_ITEM_TERM:
+      return {
+        ...state,
+        buscaTerm: action.term,
       };
     case ITEM_FORM_ERROR:
       const formErrors = {};
@@ -178,36 +130,17 @@ const itens = (state = initialState, action = {}) => {
     case DELETE_ITEM:
       return {
         ...state,
-        loadingItens: false,
-        fetchItemError: false,
-        itens: state.itens.map((item) => {
-          if (item.id === (action.item || {}).id) {
-            return action.item;
-          }
-          return item;
-        }),
+        status: true,
       };
     case ADD_ITEM:
       return {
         ...state,
-        loadingItens: false,
-        fetchItemError: false,
-        loadingItem: false,
-        itens: [...state.itens, action.item],
+        status: true,
       };
     case EDIT_ITEM:
       return {
         ...state,
-        itens: state.itens.map((item) => {
-          if (item.id === action.item.id) {
-            return action.item;
-          }
-          return item;
-        }),
-        loadingItens: false,
-        fetchItemError: false,
-        loadingItem: false,
-        fetchItensError: false,
+        status: true,
       };
     case FORM_TOUCHED:
       return {
@@ -224,8 +157,27 @@ const itens = (state = initialState, action = {}) => {
         ...state,
         modalOpen: false,
       };
+    case OPEN_MODAL_LEMBRETE:
+      return {
+        ...state,
+        modalLembreteOpen: true,
+      };
+    case CLOSE_MODAL_LEMBRETE:
+      return {
+        ...state,
+        modalLembreteOpen: false,
+        status: true,
+      };
+    case CHANGE_STATUS:
+      return {
+        ...state,
+        status: true,
+      };
     case RESET_STATE:
-      return initialState;
+      return {
+        ...state,
+        item: initialState.item,
+      };
     default:
       return state;
   }

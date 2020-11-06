@@ -12,8 +12,13 @@ export const editCotacao = (cotacao) => {
   return api.http.put(`/cotacoes/${cotacao.id}`, cotacao);
 };
 
-export const addCotacao = (cotacao, ca_usu_codigo) => {
-  return api.http.post(`/cotacoes/${ca_usu_codigo}`, cotacao);
+export const addCotacao = (cotacao, ca_usu_codigo, carteiraId, email) => {
+  return api.http.post(`/cotacoes/${ca_usu_codigo}`, cotacao, {
+    params: {
+      carteiraId,
+      email
+    }
+  });
 };
 
 export const updateCotacao = (cotacao) => {

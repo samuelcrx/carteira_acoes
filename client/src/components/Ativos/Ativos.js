@@ -30,6 +30,9 @@ import { useHistory } from "react-router-dom";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 import lancamentos from "../../redux/reducers/lancamentos";
+import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
+import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
+import LembreteModal from './LembreteModal'
 
 const columns = [
   { id: "ticker", label: "Ticker", minWidth: 60 },
@@ -46,18 +49,28 @@ const columns = [
     label: "Valor Médio",
     minWidth: 75,
     align: "left",
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "valor_investido",
     label: "Valor Investido",
     minWidth: 60,
     align: "left",
-    // format: (value) => { 
+    // format: (value) => {
     //   value.toFixed(2);
     //   return `R$ ${value}`;
     // },
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "valor_atual",
@@ -65,7 +78,12 @@ const columns = [
     minWidth: 60,
     align: "left",
     // format: (value) => "R$ " + value.toFixed(2),
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "lucro_prejuizo",
@@ -73,7 +91,12 @@ const columns = [
     minWidth: 60,
     align: "left",
     // format: (value) => "R$ " + value.toFixed(2),
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "evolucao",
@@ -81,7 +104,11 @@ const columns = [
     minWidth: 60,
     align: "left",
     // format: (value) => value.toFixed(2) + "%",
-    format: (value) => value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%" ,
+    format: (value) =>
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + "%",
   },
 ];
 
@@ -92,7 +119,9 @@ function createData(
   ca_cri_quantidade,
   ca_cri_valor_medio,
   acao_id,
-  ca_cotacao
+  ca_cotacao,
+  ca_crt_min,
+  ca_crt_max
 ) {
   const ticker = acao_id.ca_aco_ticker;
   const empresa = acao_id.ca_aco_nome;
@@ -113,6 +142,8 @@ function createData(
     lucro_prejuizo,
     evolucao,
     acao_id,
+    ca_crt_min,
+    ca_crt_max,
   };
 }
 
@@ -158,9 +189,9 @@ const useStyles = makeStyles({
 const AtivosTable = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const carteiraId = props.match.params.carteiraId;
-  // const [status, setStatus] = useState(false)
+  const [create, setCreate] = useState(false)
 
   const history = useHistory();
 
@@ -181,13 +212,18 @@ const AtivosTable = (props) => {
     lancamento,
     cotacao,
     handleChangeCotacao,
-    status
+    status,
+    handleChangeItemTerm,
+    buscaTerm,
+    openModalLembrete,
+    fetchItemLembrete
   } = props;
 
+  const busca = handleChangeItemTerm;
+
   useEffect(() => {
-    fetchItens(carteiraId);
-    // handleChangeLancamento({ ...lancamento, ca_crt_codigo: carteiraId });
-  }, [carteiraId, fetchItens, status]);
+    fetchItens(carteiraId, buscaTerm);
+  }, [carteiraId, fetchItens, status, buscaTerm]);
 
   const rows = (itens.data || []).map((item) => {
     return createData(
@@ -197,13 +233,15 @@ const AtivosTable = (props) => {
       item.ca_cri_quantidade,
       item.ca_cri_valor_medio,
       item.acao_id,
-      item.ca_cotacao
+      item.ca_cotacao,
+      item.ca_crt_min,
+      item.ca_crt_max
     );
   });
 
   return (
     <>
-      <Header title={"Lista de Ativos da carteira"} />
+      <Header title={"Lista de Ativos da carteira"} busca={busca} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -275,6 +313,29 @@ const AtivosTable = (props) => {
                           );
                         })}
                         <TableCell align="left">
+                          { !row.ca_crt_min && !row.ca_crt_max ? 
+                          <IconButton onClick={async () => {
+                            setCreate(true)
+                            await fetchItemLembrete(row.id)
+                            openModalLembrete()
+                          }}>
+                            <Tooltip title="Criar Lembrete C/V">
+                              <NotificationsNoneIcon />
+                            </Tooltip>
+                          </IconButton>
+                          :
+                          null
+                          }
+                          <IconButton onClick={async () => {
+                            setCreate(false)
+                            await fetchItemLembrete(row.id)
+                            openModalLembrete()
+                          }}>
+                            <Tooltip title="Editar Lembrete C/V">
+                              <NotificationsActiveIcon />
+                            </Tooltip>
+                          </IconButton>
+
                           <IconButton
                             onClick={() => {
                               handleChangeLancamento({
@@ -315,7 +376,7 @@ const AtivosTable = (props) => {
               </TableBody>
             </Table>
           ) : (
-            <p className={classes.inativa}>Carteiras ainda sem ativos</p>
+            <p className={classes.inativa}>Nenhum ativo encontrado D=</p>
           )}
         </TableContainer>
         <TablePagination
@@ -328,7 +389,8 @@ const AtivosTable = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <EditModal carteiraId={carteiraId} edit={true}/>
+      <EditModal carteiraId={carteiraId} edit={true} />
+      <LembreteModal create={create}/>
     </>
   );
 };
@@ -336,10 +398,9 @@ const AtivosTable = (props) => {
 const mapStateToProps = (state) => ({
   itens: state.itens.itens,
   item: state.itens.item,
+  buscaTerm: state.itens.buscaTerm,
   lancamento: state.lancamentos.lancamento,
-  status: state.lancamentos.refreshAtivos,
-  cotacao: state.cotacao.cotacao,
-  modalOpen: state.itens.modalOpen,
+  status: state.itens.status,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,
@@ -347,11 +408,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchItem: (id) => {
-      dispatch(carteiraItensActions.fetchItem(id));
+    fetchItemLembrete: (id) => {
+      dispatch(carteiraItensActions.fetchItemLembrete(id));
     },
-    fetchItens: (id) => {
-      dispatch(carteiraItensActions.fetchItens(id));
+    fetchItens: (id, term) => {
+      dispatch(carteiraItensActions.fetchItens(id, term));
     },
     deleteItem: (id) => {
       dispatch(carteiraItensActions.deleteItem(id));
@@ -364,6 +425,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeCotacao: (cotacao) => {
       dispatch(cotacoesActions.handleChangeCotacao(cotacao));
+    },
+    handleChangeItemTerm: (term) => {
+      dispatch(carteiraItensActions.handleChangeItemTerm(term));
+    },
+    openModalLembrete: () => {
+      dispatch(carteiraItensActions.openModalLembrete());
     },
   };
 };

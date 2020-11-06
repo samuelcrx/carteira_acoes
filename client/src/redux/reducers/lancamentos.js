@@ -14,7 +14,7 @@ const {
   DELETE_LANCAMENTO,
   ADD_LANCAMENTO,
   EDIT_LANCAMENTO,
-  FORM_TOUCHED,
+  CHANGE_LANCAMENTO_TERM,
   NEW_FORM_LANCAMENTO,
   LANCAMENTO_FORM_ERROR,
   RESET_STATE,
@@ -27,10 +27,7 @@ const initialState = {
   fetchLancamnetoError: false,
   fetchLancamentosError: false,
   lancamentos: [],
-  // order: {
-  //   column: "nome",
-  //   direction: 1,
-  // },
+  buscaTerm: '',
   lancamento: {
     id: "",
     createdAt: "",
@@ -48,35 +45,9 @@ const initialState = {
   modalOpen: false,
 };
 
-// const carteiraschema = {
-//   add: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   },
-//   edit: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   }
-// }
-
-// const SubjectValidate = new ValidateFormObject(carteiraschema)
-
 const lancamentos = (state = initialState, action = {}) => {
   switch (action.type) {
     case FETCH_LANCAMENTO:
-      // let formSchemaType = (action.carteira || {})._id ? "edit" : "add";
       return {
         ...state,
         lancamento: action.lancamento,
@@ -119,10 +90,14 @@ const lancamentos = (state = initialState, action = {}) => {
         loadingLancamentos: false,
       };
     case CHANGE_LANCAMENTO:
-      // formSchemaType = action.subject._id ? 'edit' : 'add'
       return {
         ...state,
         lancamento: action.lancamento,
+      };
+    case CHANGE_LANCAMENTO_TERM:
+      return {
+        ...state,
+        buscaTerm: action.term
       };
     case LANCAMENTO_FORM_ERROR:
       const formErrors = {};
@@ -133,19 +108,11 @@ const lancamentos = (state = initialState, action = {}) => {
       return {
         ...state,
         lancamento: { ...initialState.lancamento },
-        // carteiraFormErrors: SubjectValidate.validate({}),
-        // subjectFormTouched: false
       };
     case DELETE_LANCAMENTO:
       return {
         ...state,
-        loadingItens: false,
-        fetchItemError: false,
-        // lancamentos: state.lancamentos.map((lancamento) => {
-        //   if (lancamento.id === (action.lancamento || {}).id) {
-        //     return action.lancamento;
-        //   }
-        //   return lancamento;
+        refreshAtivos: true
       };
     case ADD_LANCAMENTO:
       return {
@@ -157,11 +124,6 @@ const lancamentos = (state = initialState, action = {}) => {
         ...state,
         refreshAtivos: true
       };
-    // case FORM_TOUCHED:
-    //   return {
-    //     ...state,
-    //     subjectFormTouched: true,
-    //   };
     case OPEN_MODAL:
       return {
         ...state,

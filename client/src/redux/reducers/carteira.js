@@ -22,6 +22,7 @@ const {
   CHANGE_ORDER_COLUMN,
   CHANGE_ORDER_DIRECTION,
   RESET_STATE,
+  CHANGE_CARTEIRA_TERM
 } = carteiraActions;
 
 const initialState = {
@@ -29,6 +30,7 @@ const initialState = {
   loadingCarteiras: false,
   fetchCarteiraError: false,
   fetchCarteirasError: false,
+  buscaTerm: '',
   carteiras: [],
   order: {
     column: "nome",
@@ -149,15 +151,14 @@ const carteira = (state = initialState, action = {}) => {
         loadingCarteiras: false,
       };
     case CHANGE_CARTEIRA:
-      // formSchemaType = action.subject._id ? 'edit' : 'add'
       return {
         ...state,
-        carteira: action.carteira,
-
-        // subjectFormErrors: SubjectValidate.validate({
-        //   formObject: action.subject,
-        //   formSchemaType
-        // })
+        carteira: action.carteira
+      };
+    case CHANGE_CARTEIRA_TERM:
+      return {
+        ...state,
+        buscaTerm: action.term
       };
     case CARTEIRA_FORM_ERROR:
       const formErrors = {};
@@ -174,9 +175,7 @@ const carteira = (state = initialState, action = {}) => {
     case NEW_FORM_CARTEIRA:
       return {
         ...state,
-        carteira: { ...initialState.carteira },
-        // carteiraFormErrors: SubjectValidate.validate({}),
-        // subjectFormTouched: false
+        carteira: { ...initialState.carteira }
       };
     case DELETE_CARTEIRA:
       return {

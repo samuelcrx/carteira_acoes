@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import { connect } from "react-redux";
-import { authActions, userActions } from "../redux/actions";
+import { authActions, userActions, messageActions } from "../redux/actions";
 import Typography from "@material-ui/core/Typography";
 const Logo = require("../assets/logo.jpg");
 
@@ -40,7 +40,6 @@ const Login = (props) => {
         const data = await userLogin({ ca_usu_login, ca_usu_cripto });
         if (data.token) {
           if(data.user.reset_password){
-            console.log('Aqui')
             openModalSenha();
           }
           history.push("/carteiras");
@@ -134,9 +133,9 @@ const mapDispatchToProps = (dispatch) => {
     openModalSenha: () => {
       dispatch(userActions.openModal());
     },
-    // changeMessage: ({ message, anchorOrigin }) => {
-    //   dispatch(messageAction({ message, anchorOrigin }));
-    // },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
+    },
   };
 };
 

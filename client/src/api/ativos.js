@@ -1,11 +1,19 @@
 import api from "./connectionProxy";
 
-export const getItens = (carteiraId) => {
-  return api.http.get(`/itens/${carteiraId}`);
+export const getItens = (carteiraId, term) => {
+  return api.http.get(`/itens/${carteiraId}`, {
+    params: {
+      term
+    }
+  });
 };
 
 export const getItem = (id) => {
   return api.http.get(`/itens/${id}`);
+};
+
+export const getItemLembrete = (id) => {
+  return api.http.get(`/itens/lembretes/${id}`);
 };
 
 export const deleteItem = (id) => {
@@ -18,4 +26,12 @@ export const editItem = (item) => {
 
 export const addItem = (item) => {
   return api.http.post("/itens", item);
+};
+
+export const addLembrete = (item) => {
+  console.log('Id ', item)
+  return api.http.put(`/itens/create/${item.id}`, item);
+};
+export const updateLembrete = (item) => {
+  return api.http.put(`/itens/update/${item.id}`, item);
 };

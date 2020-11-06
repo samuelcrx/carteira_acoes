@@ -8,6 +8,7 @@ export const FETCH_LANCAMENTOS_ERROR = 'FETCH_LANCAMENTOS_ERROR'
 export const OPEN_MODAL = 'OPEN_MODAL'
 export const CLOSE_MODAL = 'CLOSE_MODAL'
 export const CHANGE_LANCAMENTO = 'CHANGE_LANCAMENTO'
+export const CHANGE_LANCAMENTO_TERM = 'CHANGE_LANCAMENTO_TERM'
 export const DELETE_LANCAMENTO = 'DELETE_LANCAMENTO'
 export const ADD_LANCAMENTO = 'ADD_LANCAMENTO'
 export const EDIT_LANCAMENTO = 'EDIT_LANCAMENTO'
@@ -29,6 +30,11 @@ export const openModal = () => {
 export const handleChangeLancamento = lancamento => {
   return dispatch => {
     dispatch({ type: CHANGE_LANCAMENTO, lancamento })
+  }
+}
+export const handleChangeLancamentoTerm = term => {
+  return dispatch => {
+    dispatch({ type: CHANGE_LANCAMENTO_TERM, term })
   }
 }
 
@@ -71,7 +77,7 @@ export const deleteLancamento = id => {
     return API.lancamentos
       .deleteLancamento(id)
       .then(({ data: lancamento }) => {
-        dispatch({ type: DELETE_LANCAMENTO, lancamento })
+        dispatch({ type: DELETE_LANCAMENTO })
       })
       .catch(err => {
         const { response = {} } = err
@@ -98,11 +104,11 @@ export const changeOrderDirection = direction => {
   }
 }
 
-export const fetchLancamentos = (carteiraId, acaoCodigo) => {
+export const fetchLancamentos = (carteiraId, acaoCodigo, term) => {
   return dispatch => {
     dispatch({ type: FETCHING_LANCAMENTOS })
     return API.lancamentos
-      .getLancamentos(carteiraId, acaoCodigo)
+      .getLancamentos(carteiraId, acaoCodigo, term)
       .then((res = {}) => {
         dispatch({
           type: FETCH_LANCAMENTOS,
@@ -141,7 +147,6 @@ export const addLancamento = (lancamento) => {
     return API.lancamentos
       .addLancamento(lancamento)
       .then((data) => {
-        console.log('Recebi Lanc ', data)
         dispatch({ type: ADD_LANCAMENTO })
         return data
       })

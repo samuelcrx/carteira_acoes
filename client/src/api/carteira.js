@@ -1,7 +1,11 @@
 import api from "./connectionProxy";
 
-export const getCarteiras = (userId) => {
-  return api.http.get(`/carteiras/${userId}`);
+export const getCarteiras = (userId, term) => {
+  return api.http.get(`/carteiras/${userId}`, {
+    params: {
+      term
+    }
+  });
 };
 
 export const getCarteira = (id) => {

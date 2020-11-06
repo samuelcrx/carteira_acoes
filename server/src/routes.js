@@ -53,8 +53,10 @@ routes.delete("/cotacoes/:id", AcaoCotacaoController.delete);
 routes.get("/itens/:carteiraId", CarteiraItensController.index);
 routes.post("/itens", CarteiraItensController.store);
 routes.get("/itens/:id", CarteiraItensController.show);
+routes.get("/itens/lembretes/:id", CarteiraItensController.showLembrete);
 routes.put("/itens/:id", CarteiraItensController.update);
-routes.put("/itensvalor/:id", CarteiraItensController.updateValor);
+routes.put("/itens/create/:id", CarteiraItensController.updateValor);
+routes.put("/itens/update/:id", CarteiraItensController.updateValor);
 routes.delete("/itens/:id", CarteiraItensController.delete);
 
 // Rotas de carteira movimentação

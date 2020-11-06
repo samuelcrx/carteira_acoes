@@ -2,10 +2,13 @@ const CarteiraItens = require("../models/CarteiraItens");
 const Carteira = require("../models/Carteiras");
 const Acao = require("../models/Acoes");
 const AcoesCotacoes = require("../models/AcoesCotacoes");
+const { Op } = require("sequelize");
 
 module.exports = {
   async index(req, res) {
     const { carteiraId } = req.params;
+    const { term } = req.query;
+    console.log("Teor ", term);
     const carteiraItens = await CarteiraItens.findAll({
       include: [
         {
@@ -17,6 +20,24 @@ module.exports = {
           model: Acao,
           as: "acao_id",
           attributes: ["id", "ca_aco_ticker", "ca_aco_nome"],
+          where: {
+            [Op.or]: [
+              {
+                ca_aco_ticker: term
+                  ? {
+                      [Op.like]: `${term}%`,
+                    }
+                  : { [Op.like]: "%" },
+              },
+              {
+                ca_aco_nome: term
+                  ? {
+                      [Op.like]: `%${term}%`,
+                    }
+                  : { [Op.like]: "%" },
+              },
+            ],
+          },
         },
       ],
       where: { ca_crt_codigo: carteiraId },
@@ -42,7 +63,6 @@ module.exports = {
           item.dataValues.ca_cotacao = 0;
         }
       }
-
       return res.json(carteiraItens);
     } else {
       return res.json(carteiraItens);
@@ -50,6 +70,24 @@ module.exports = {
   },
 
   async store(req, res) {
+    const {
+      ca_crt_codigo,
+      ca_aco_codigo,
+      ca_cri_quantidade,
+      ca_cri_valor_medio,
+    } = req.body;
+
+    const carteiraItem = await CarteiraItens.create({
+      ca_crt_codigo,
+      ca_aco_codigo,
+      ca_cri_quantidade,
+      ca_cri_valor_medio,
+    });
+
+    return res.json(carteiraItem);
+  },
+
+  async storeMaxMin(req, res) {
     const {
       ca_crt_codigo,
       ca_aco_codigo,
@@ -99,6 +137,15 @@ module.exports = {
     }
   },
 
+  async showLembrete(req, res) {
+    const { id } = req.params;
+    const lembrete = await CarteiraItens.findOne({
+      where: { id: id },
+    });
+
+    return res.json(lembrete);
+  },
+
   async update(req, res) {
     const { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio } = req.body;
     const { id } = req.params;
@@ -112,11 +159,11 @@ module.exports = {
   },
 
   async updateValor(req, res) {
-    const { ca_cri_valor_medio } = req.body;
+    const { ca_crt_min, ca_crt_max } = req.body;
     const { id } = req.params;
 
     const carteiraItem = await CarteiraItens.update(
-      { ca_cri_valor_medio },
+      { ca_crt_min, ca_crt_max },
       { where: { id: id } }
     );
 

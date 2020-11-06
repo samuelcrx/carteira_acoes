@@ -103,12 +103,15 @@ const useStyles = makeStyles({
     width: "100%",
     padding: 2,
   },
+  btnVoltar: {
+    color: "#fff",
+  },
 });
 
 const Cotacao = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const { openModal, cotacao, resetState } = props;
   const history = useHistory();
@@ -295,7 +298,7 @@ const Cotacao = (props) => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 25, 50]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -304,7 +307,7 @@ const Cotacao = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <EditModal userId={user.id} acoCodigo={acoCodigo} />
+      <EditModal userId={user.id} acoCodigo={acoCodigo} carteiraId={carteiraId}/>
     </>
   );
 };
@@ -341,8 +344,8 @@ const mapDispatchToProps = (dispatch) => {
     handleChangeCotacao: (cotacao) => {
       dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
-    addCotacao: (cotacao, ca_usu_codigo) => {
-      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo));
+    addCotacao: (cotacao, ca_usu_codigo, carteiraId) => {
+      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId));
     },
   };
 };

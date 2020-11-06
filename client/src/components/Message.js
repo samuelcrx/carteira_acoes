@@ -7,7 +7,7 @@ class Message extends Component {
   render() {
     const { message, clearMessage, messageDuration = 5000, anchorOrigin = {} } = this.props
     const { vertical = 'top' } = anchorOrigin
-    const { horizontal = 'center' } = anchorOrigin
+    const { horizontal = 'right' } = anchorOrigin
     clearTimeout(window.manoleMessage)
     window.manoleMessage = setTimeout(() => {
       clearMessage()

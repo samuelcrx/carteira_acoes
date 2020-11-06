@@ -21,8 +21,6 @@ const {
 } = cotacoesActions;
 
 const initialState = {
-  // loadingCarteira: false,
-  // loadingCarteiras: false,
   restartTable: false,
   fetchCotacaoError: false,
   fetchCotacoesError: false,
@@ -41,29 +39,20 @@ const initialState = {
   modalOpen: false,
 };
 
-// const SubjectValidate = new ValidateFormObject(carteiraschema)
-
 const cotacao = (state = initialState, action = {}) => {
   switch (action.type) {
     case FETCH_COTACAO:
       return {
         ...state,
         cotacao: action.cotacao,
-        // loadingCarteira: false,
-        // fetchCarteiraError: false,
-        // carteiraFormTouched: false
       };
     case FETCHING_COTACOES:
       return {
         ...state,
-        // loadingCarteiras: true,
-        // fetchCarteiraError: false,
       };
     case FETCHING_COTACAO:
       return {
         ...state,
-        // loadingCarteira: true,
-        // fetchCarteiraError: false,
       };
     case FETCH_COTACOES:
       return {
@@ -88,29 +77,19 @@ const cotacao = (state = initialState, action = {}) => {
         loadingCarteiras: false,
       };
     case CHANGE_COTACAO:
-      // formSchemaType = action.subject._id ? 'edit' : 'add'
       return {
         ...state,
         cotacao: action.cotacao,
       };
     case COTACAO_FORM_ERROR:
       const formErrors = {};
-      // formSchemaType = state.subject._id ? 'edit' : 'add'
-      // formErrors[action.field] = { valid: false, errorMessage: action.message }
       return {
         ...state,
-        // subjectFormErrors: SubjectValidate.validate({
-        //   formObject: state.subject,
-        //   invalidFields: formErrors,
-        //   formSchemaType
-        // })
       };
     case NEW_FORM_COTACAO:
       return {
         ...state,
         cotacao: { ...initialState.cotacao },
-        // carteiraFormErrors: SubjectValidate.validate({}),
-        // subjectFormTouched: false
       };
     case ADD_COTACAO:
       return {

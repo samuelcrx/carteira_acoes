@@ -28,25 +28,34 @@ import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fetchCarteira } from "../../redux/actions/carteiras";
 import { useHistory } from "react-router-dom";
-import Perfil from "../Perfil/Perfil";
 import TrocarSenhar from "./TrocarSenha";
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
-  { 
-    id: "valor_investido", 
-    label: "Valor Investido", 
-    minWidth: 100, 
+  {
+    id: "valor_investido",
+    label: "Valor Investido",
+    minWidth: 100,
     align: "left",
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-  },    
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+  },
   {
     id: "valor_atual",
     label: "Valor Atual",
     minWidth: 100,
     align: "left",
     // format: (value) => value.toLocaleString("en-US"),
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "lucro_prejuizo",
@@ -54,7 +63,12 @@ const columns = [
     minWidth: 75,
     align: "left",
     // format: (value) => value.toLocaleString("en-US"),
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   {
     id: "evolucao",
@@ -62,7 +76,11 @@ const columns = [
     minWidth: 60,
     align: "left",
     // format: (value) => value.toFixed(2),
-    format: (value) => value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%" ,
+    format: (value) =>
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + "%",
   },
 ];
 
@@ -127,10 +145,12 @@ const useStyles = makeStyles({
 const Carteira = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const history = useHistory();
 
-  const { openModal, modalOpen, loadingCarteiras, user2 } = props;
+  const { openModal, modalOpen, loadingCarteiras, user2, handleChangeCarteiraTerm, buscaTerm } = props;
+
+  const busca = handleChangeCarteiraTerm;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -154,8 +174,8 @@ const Carteira = (props) => {
   } = props;
 
   useEffect(() => {
-    fetchCarteiras(user.id);
-  }, [fetchCarteiras, user.id]);
+    fetchCarteiras(user.id, buscaTerm);
+  }, [fetchCarteiras, user.id, buscaTerm]);
 
   const rows = (carteiras.data || []).map((item) => {
     return createData(
@@ -169,8 +189,7 @@ const Carteira = (props) => {
 
   return (
     <>
-      <Perfil />
-      <Header title={"Lista de carteiras de ações"} />
+      <Header title={"Lista de carteiras de ações"} busca={busca} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -276,7 +295,7 @@ const Carteira = (props) => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -294,6 +313,7 @@ const Carteira = (props) => {
 const mapStateToProps = (state) => ({
   carteiras: state.carteira.carteiras,
   carteira: state.carteira.carteira,
+  buscaTerm: state.carteira.buscaTerm,
   lancamento: state.lancamentos.lancamento,
   modalOpen: state.carteira.modalOpen,
   user: state.auth.user,
@@ -309,8 +329,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchCarteira: (id) => {
       dispatch(carteiraActions.fetchCarteira(id));
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
+    fetchCarteiras: (userId, term) => {
+      dispatch(carteiraActions.fetchCarteiras(userId, term));
     },
     deleteCarteira: (id) => {
       dispatch(carteiraActions.deleteCarteira(id));
@@ -320,6 +340,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeLancamento: (lancamento) => {
       dispatch(lancamentosActions.handleChangeLancamento(lancamento));
+    },
+    handleChangeCarteiraTerm: (term) => {
+      dispatch(carteiraActions.handleChangeCarteiraTerm(term));
     },
   };
 };

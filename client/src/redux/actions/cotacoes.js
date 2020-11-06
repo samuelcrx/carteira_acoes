@@ -97,12 +97,12 @@ export const resetState = () => {
   };
 };
 
-export const addCotacao = (cotacao, ca_usu_codigo) => {
+export const addCotacao = (cotacao, ca_usu_codigo, carteiraId, email) => {
   return (dispatch) => {
     dispatch({ type: FETCHING_COTACOES });
     dispatch({ type: FETCHING_COTACAO });
     return API.cotacoes
-      .addCotacao(cotacao, ca_usu_codigo)
+      .addCotacao(cotacao, ca_usu_codigo, carteiraId, email)
       .then(({ data }) => {
         dispatch({ type: ADD_COTACAO });
       })
