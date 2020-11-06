@@ -129,6 +129,7 @@ body {
 .botao_verde_escuro {
   /* Funco do Botão */
   background: #0f7979 !important;
+  color: rgb(255, 248, 248) !important;
 }
 
 .botao_verde_escuro:hover {
@@ -140,22 +141,26 @@ body {
 .botao_roxo {
   /* Funco do Botão */
   background: #727cf5;
+  color: rgb(255, 248, 248) !important;
 }
 
 .botao_roxo:hover {
   /* Funco do Botão */
   background: #727cf5bd !important;
   transition: background 0.2s !important;
+  color: rgb(255, 248, 248) !important;
 }
 
 .botao_vermelho {
   /* Funco do Botão */
   background: #fa5c7c;
+  color: rgb(255, 248, 248) !important;
 }
 .botao_vermelho:hover {
   /* Funco do Botão */
   background: #fa5c7cd0 !important;
   transition: background 0.2s !important;
+  color: rgb(255, 248, 248) !important;
 }
 
 .telas_blocos {

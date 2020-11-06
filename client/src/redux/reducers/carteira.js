@@ -22,7 +22,8 @@ const {
   CHANGE_ORDER_COLUMN,
   CHANGE_ORDER_DIRECTION,
   RESET_STATE,
-  CHANGE_CARTEIRA_TERM
+  CHANGE_CARTEIRA_TERM,
+  CHANGE_STATUS
 } = carteiraActions;
 
 const initialState = {
@@ -47,32 +48,8 @@ const initialState = {
   subjectFormErrors: {},
   subjectFormTouched: false,
   modalOpen: false,
+  status: false
 };
-
-// const carteiraschema = {
-//   add: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   },
-//   edit: {
-//     nome: {
-//       unique: true,
-//       required: true,
-//       minValue: 3
-//     },
-//     key: {
-//       unique: true
-//     }
-//   }
-// }
-
-// const SubjectValidate = new ValidateFormObject(carteiraschema)
 
 const carteira = (state = initialState, action = {}) => {
   switch (action.type) {
@@ -190,24 +167,14 @@ const carteira = (state = initialState, action = {}) => {
     case ADD_CARTEIRA:
       return {
         ...state,
-        loadingCarteiras: false,
-        fetchCarteiraError: false,
-        loadingCarteira: false,
-        carteiras: [...state.carteiras, action.carteira],
+        status: true,
+        modalOpen: false
       };
     case EDIT_CARTEIRA:
       return {
         ...state,
-        carteiras: state.carteiras.map((carteira) => {
-          if (carteira.id === action.carteira.id) {
-            return action.carteira;
-          }
-          return carteira;
-        }),
-        loadingCarteiras: false,
-        fetchCarteiraError: false,
-        loadingCarteira: false,
-        fetchCarteirasError: false,
+        status: true,
+        modalOpen: false
       };
     case FORM_TOUCHED:
       return {
@@ -223,6 +190,12 @@ const carteira = (state = initialState, action = {}) => {
       return {
         ...state,
         modalOpen: false,
+        status: true
+      };
+    case CHANGE_STATUS:
+      return {
+        ...state,
+        status: true,
       };
     case RESET_STATE:
       return initialState;

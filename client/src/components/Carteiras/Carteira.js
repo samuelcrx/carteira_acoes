@@ -147,8 +147,17 @@ const Carteira = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const history = useHistory();
+  const searchShow = true;
 
-  const { openModal, modalOpen, loadingCarteiras, user2, handleChangeCarteiraTerm, buscaTerm } = props;
+  const {
+    openModal,
+    modalOpen,
+    loadingCarteiras,
+    user2,
+    handleChangeCarteiraTerm,
+    buscaTerm,
+    status,
+  } = props;
 
   const busca = handleChangeCarteiraTerm;
 
@@ -170,12 +179,12 @@ const Carteira = (props) => {
     fetchCarteira,
     lancamento,
     handleChangeLancamento,
-    openModalSenha,
+    openModalSenha
   } = props;
 
   useEffect(() => {
     fetchCarteiras(user.id, buscaTerm);
-  }, [fetchCarteiras, user.id, buscaTerm]);
+  }, [fetchCarteiras, user.id, status, buscaTerm]);
 
   const rows = (carteiras.data || []).map((item) => {
     return createData(
@@ -189,7 +198,7 @@ const Carteira = (props) => {
 
   return (
     <>
-      <Header title={"Lista de carteiras de ações"} busca={busca} />
+      <Header title={"Lista de carteiras de ações"} busca={busca} searchShow={searchShow}/>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -313,6 +322,7 @@ const Carteira = (props) => {
 const mapStateToProps = (state) => ({
   carteiras: state.carteira.carteiras,
   carteira: state.carteira.carteira,
+  status: state.carteira.status,
   buscaTerm: state.carteira.buscaTerm,
   lancamento: state.lancamentos.lancamento,
   modalOpen: state.carteira.modalOpen,

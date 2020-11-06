@@ -9,8 +9,6 @@ import { connect } from "react-redux";
 import { carteiraActions } from "../../redux/actions";
 import classNames from "classnames";
 import Carteira from "./Carteira";
-import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -159,21 +157,22 @@ const EditModal = (props) => {
     handleChangeCarteira,
     user,
     fetchCarteiras,
+    addCarteira,
     editCarteira,
   } = props;
 
-  const onSubmit = (carteira, ca_usu_codigo) => {
+  const onSubmit = async (carteira, ca_usu_codigo) => {
     if (!carteira.id) {
-      addCarteira(carteira, ca_usu_codigo)
-        .then((data) => {
-          fetchCarteiras(ca_usu_codigo);
-        })
-        .catch((err) => {
-          alert("EROU");
-        });
+
+      try {
+        await addCarteira(carteira, ca_usu_codigo);
+        resetState();
+      } catch (error) {
+        console.log(error)
+      }
     } else {
-      editCarteira(carteira);
-      fetchCarteiras(ca_usu_codigo);
+      await editCarteira(carteira);
+      resetState();
     }
   };
 
@@ -211,7 +210,7 @@ const EditModal = (props) => {
                   type={"submit"}
                   onClick={() => {
                     onSubmit(carteira, user.id);
-                    resetState()
+                    resetState();
                   }}
                 >
                   Salvar

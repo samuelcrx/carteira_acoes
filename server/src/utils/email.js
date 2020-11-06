@@ -53,6 +53,7 @@ class Email {
     }
 
     sendCotacao(destiny, valorAcao, ticker) {
+        const value = valorAcao.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 })
         this.transporter.sendMail({
             from: this.developer,
             to: destiny,
@@ -62,7 +63,7 @@ class Email {
                   <h1 style="color: red;"> Alerta! </h1>
                   <p> O valor da Ação ${ticker} atingiu o valor alvo de: <div style="border: 2px solid black;
                   width: fit-content; padding: 20px; background: rgb(54,54,54);
-                  color: white; font-size: 25; letter-spacing: 5px;"> ${valorAcao} </div> </p>
+                  color: white; font-size: 25; letter-spacing: 5px;"> R$ ${value} </div> </p>
                 </center>
             `
         },
@@ -72,7 +73,6 @@ class Email {
                 console.error(error);
                 return;
             } else {
-                console.log('Email enviado.');
                 console.log(info);
             }
         });

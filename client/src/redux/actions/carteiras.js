@@ -20,6 +20,7 @@ export const CHANGE_PER_PAGE = "CHANGE_PER_PAGE";
 export const CHANGE_ORDER_COLUMN = "CHANGE_ORDER_COLUMN";
 export const CHANGE_ORDER_DIRECTION = "CHANGE_ORDER_DIRECTION";
 export const RESET_STATE = "RESET_STATE";
+export const CHANGE_STATUS = "CHANGE_STATUS";
 
 export const openModal = () => {
   return (dispatch) => {
@@ -144,6 +145,7 @@ export const fetchCarteiras = (userId, term) => {
 
 export const closeModal = () => {
   return (dispatch) => {
+    dispatch({ type: RESET_STATE });
     dispatch({ type: CLOSE_MODAL });
   };
 };
@@ -161,7 +163,7 @@ export const addCarteira = (carteira, ca_usu_codigo) => {
     return API.carteira
       .addCarteira(carteira, ca_usu_codigo)
       .then(({ data }) => {
-        dispatch({ type: ADD_CARTEIRA, carteira: data });
+        dispatch({ type: ADD_CARTEIRA });
       })
       .catch((err) => {
         const { response = {} } = err;
@@ -179,13 +181,10 @@ export const addCarteira = (carteira, ca_usu_codigo) => {
 
 export const editCarteira = (carteira) => {
   return (dispatch) => {
-    dispatch({ type: FETCHING_CARTEIRAS });
-    dispatch({ type: FETCHING_CARTEIRA });
     return API.carteira
       .editCarteira(carteira)
       .then(({ data }) => {
-        // dispatch({ type: EDIT_CARTEIRA, carteira: carteira });
-        dispatch({ type: CLOSE_MODAL });
+        dispatch({ type: EDIT_CARTEIRA });
       })
       .catch((err) => {
         const { response = {} } = err;

@@ -210,20 +210,19 @@ const AtivosTable = (props) => {
     openModal,
     handleChangeLancamento,
     lancamento,
-    cotacao,
-    handleChangeCotacao,
     status,
     handleChangeItemTerm,
     buscaTerm,
     openModalLembrete,
-    fetchItemLembrete
+    fetchItemLembrete,
+    statusLancamento
   } = props;
 
   const busca = handleChangeItemTerm;
 
   useEffect(() => {
     fetchItens(carteiraId, buscaTerm);
-  }, [carteiraId, fetchItens, status, buscaTerm]);
+  }, [carteiraId, fetchItens, status, buscaTerm, statusLancamento]);
 
   const rows = (itens.data || []).map((item) => {
     return createData(
@@ -401,6 +400,7 @@ const mapStateToProps = (state) => ({
   buscaTerm: state.itens.buscaTerm,
   lancamento: state.lancamentos.lancamento,
   status: state.itens.status,
+  statusLancamento: state.lancamentos.refreshAtivos,
   token: state.auth.token,
   err: state.auth.err,
   loading: state.auth.loading,

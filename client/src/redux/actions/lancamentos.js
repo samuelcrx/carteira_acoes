@@ -73,7 +73,6 @@ export const setLancamentoFormTouched = () => {
 
 export const deleteLancamento = id => {
   return dispatch => {
-    dispatch({ type: FETCHING_LANCAMENTOS })
     return API.lancamentos
       .deleteLancamento(id)
       .then(({ data: lancamento }) => {
@@ -142,8 +141,6 @@ export const resetState = () => {
 
 export const addLancamento = (lancamento) => {
   return dispatch => {
-    dispatch({ type: FETCHING_LANCAMENTOS })
-    dispatch({ type: FETCHING_LANCAMENTO })
     return API.lancamentos
       .addLancamento(lancamento)
       .then((data) => {
@@ -166,11 +163,10 @@ export const addLancamento = (lancamento) => {
 
 export const editLancamento = lancamento => {
   return dispatch => {
-    dispatch({ type: FETCHING_LANCAMENTOS })
-    dispatch({ type: FETCHING_LANCAMENTO })
     return API.lancamentos
       .editLancamento(lancamento)
       .then(({ data }) => {
+        dispatch({ type: ADD_LANCAMENTO })
         dispatch({ type: EDIT_LANCAMENTO })
       })
       .catch(err => {
