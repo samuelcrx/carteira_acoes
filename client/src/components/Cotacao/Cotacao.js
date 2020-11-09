@@ -157,7 +157,7 @@ const Cotacao = (props) => {
 
   return (
     <>
-      <Header title={"Lista das cotações de ações"} />
+      <Header title={"Lista das cotações de ações"} search={true}/>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button

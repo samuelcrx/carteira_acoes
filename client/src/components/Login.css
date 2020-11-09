@@ -16,6 +16,7 @@
   border-radius: 8px;
   background-color: #37404a;
   padding: 4px;
+  margin-top: 30px;
 }
 
 .posicaoLogin {
@@ -149,8 +150,10 @@
 
 .InputPass {
   /* Campo 2 */
-  width: 292px;
-  height: 35px;
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
   color: rgb(124, 121, 121);
   /* Fundo Campos */
 

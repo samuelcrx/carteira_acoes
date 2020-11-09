@@ -3,6 +3,9 @@ const Carteira = require("../models/Carteiras");
 const Acao = require("../models/Acoes");
 const AcoesCotacoes = require("../models/AcoesCotacoes");
 const { Op } = require("sequelize");
+const generateReport = require("../PDF/generateReport");
+const pdf = require("html-pdf");
+const { resolve } = require("path");
 
 module.exports = {
   async index(req, res) {
@@ -135,6 +138,29 @@ module.exports = {
     } else {
       res.json({});
     }
+  },
+
+  async report(req, res) {
+    const { rows, columns } = req.query;
+
+    const { conteudo, options } = generateReport(rows, "Ativos");
+
+    pdf
+      .create(conteudo, options)
+      .toFile(
+        resolve(__dirname, "..", "relatorios", "ativos.pdf"),
+        (err, res) => {
+          if (err) {
+            console.log("Erro na geração");
+          } else {
+            console.log("sucesso", res);
+          }
+        }
+      );
+
+    const pdfUrl = "http://localhost:3333/pdf/ativos.pdf";
+
+    return res.json(pdfUrl);
   },
 
   async showLembrete(req, res) {

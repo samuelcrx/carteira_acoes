@@ -43,13 +43,22 @@ body {
 
 .InputLogin {
   /* Campo 01 */
-  width: 292px;
-  height: 35px;
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
   color: rgb(124, 121, 121);
   /* Fundo Campos */
 
   background: #37404a;
   border-radius: 4px;
+}
+
+.InputPass {
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
 }
 
 .FormNome {
@@ -310,7 +319,6 @@ body {
   color: rgb(255 255 255 / 87%) !important;
 }
 
-
 ::-webkit-input-placeholder {
   color: rgb(207, 203, 203);
 }
@@ -323,12 +331,12 @@ body {
 }
 
 .css-yk16xz-control {
-  background-color: #37404A !important;
+  background-color: #37404a !important;
   color: black;
 }
 
 .css-2613qy-menu {
-  background-color: #37404A !important;
+  background-color: #37404a !important;
   color: black;
 }
 

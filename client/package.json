@@ -11,6 +11,7 @@
     "axios": "^0.20.0",
     "cookies-js": "^1.2.3",
     "dotenv": "^8.2.0",
+    "html-pdf": "^2.2.0",
     "material-table": "^1.69.0",
     "moment": "^2.29.0",
     "react": "^16.13.1",
@@ -47,5 +48,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/node": "^7.12.6",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.1"
   }
 }

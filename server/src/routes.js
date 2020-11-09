@@ -66,4 +66,7 @@ routes.get("/movimentacao/:id", CarteiraMovimentoController.show);
 routes.put("/movimentacao/:id", CarteiraMovimentoController.update);
 routes.delete("/movimentacao/:id", CarteiraMovimentoController.delete);
 
+//Gerar relatório em PDF dos Ativos
+routes.get("/relatorio/", CarteiraItensController.report);
+
 module.exports = routes;

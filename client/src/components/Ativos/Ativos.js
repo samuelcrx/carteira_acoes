@@ -32,9 +32,11 @@ import EqualizerIcon from "@material-ui/icons/Equalizer";
 import lancamentos from "../../redux/reducers/lancamentos";
 import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
-import LembreteModal from './LembreteModal'
+import LembreteModal from "./LembreteModal";
+import generateReport from "../../PDF/listaAcoesCarteira";
+import * as API from "../../api";
 
-const columns = [
+let columns = [
   { id: "ticker", label: "Ticker", minWidth: 60 },
   { id: "empresa", label: "Empresa", minWidth: 135 },
   {
@@ -61,10 +63,6 @@ const columns = [
     label: "Valor Investido",
     minWidth: 60,
     align: "left",
-    // format: (value) => {
-    //   value.toFixed(2);
-    //   return `R$ ${value}`;
-    // },
     format: (value) =>
       "R$ " +
       value.toLocaleString("pt-BR", {
@@ -77,7 +75,6 @@ const columns = [
     label: "Valor Atual",
     minWidth: 60,
     align: "left",
-    // format: (value) => "R$ " + value.toFixed(2),
     format: (value) =>
       "R$ " +
       value.toLocaleString("pt-BR", {
@@ -90,7 +87,6 @@ const columns = [
     label: "Lucro/Prejuízo",
     minWidth: 60,
     align: "left",
-    // format: (value) => "R$ " + value.toFixed(2),
     format: (value) =>
       "R$ " +
       value.toLocaleString("pt-BR", {
@@ -103,7 +99,6 @@ const columns = [
     label: "Evolução",
     minWidth: 60,
     align: "left",
-    // format: (value) => value.toFixed(2) + "%",
     format: (value) =>
       value.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
@@ -111,6 +106,7 @@ const columns = [
       }) + "%",
   },
 ];
+const dataColumns = columns;
 
 function createData(
   id,
@@ -191,7 +187,8 @@ const AtivosTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const carteiraId = props.match.params.carteiraId;
-  const [create, setCreate] = useState(false)
+  const [create, setCreate] = useState(false);
+  const [pdf, setPdf] = useState("");
 
   const history = useHistory();
 
@@ -215,7 +212,8 @@ const AtivosTable = (props) => {
     buscaTerm,
     openModalLembrete,
     fetchItemLembrete,
-    statusLancamento
+    statusLancamento,
+    getReport,
   } = props;
 
   const busca = handleChangeItemTerm;
@@ -237,6 +235,7 @@ const AtivosTable = (props) => {
       item.ca_crt_max
     );
   });
+  console.log("Aqui viu ", rows || []);
 
   return (
     <>
@@ -268,6 +267,22 @@ const AtivosTable = (props) => {
           >
             Novo Lançamento
           </Button>
+          <Button
+            variant="contained"
+            style={{ marginTop: 20, marginBottom: 20, marginLeft: 20 }}
+            className="botao_verde_claro"
+            onClick={async () => {
+              const { data } = await API.itens.getReport(rows, columns);
+
+              setPdf(data);
+            }}
+          >
+            Gerar Relatório
+          </Button>
+            <a href={pdf} download={true}>
+              Teste de link
+              </a>
+
           {rows.length ? (
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -311,25 +326,27 @@ const AtivosTable = (props) => {
                             </TableCell>
                           );
                         })}
-                        <TableCell align="left">
-                          { !row.ca_crt_min && !row.ca_crt_max ? 
-                          <IconButton onClick={async () => {
-                            setCreate(true)
-                            await fetchItemLembrete(row.id)
-                            openModalLembrete()
-                          }}>
-                            <Tooltip title="Criar Lembrete C/V">
-                              <NotificationsNoneIcon />
-                            </Tooltip>
-                          </IconButton>
-                          :
-                          null
-                          }
-                          <IconButton onClick={async () => {
-                            setCreate(false)
-                            await fetchItemLembrete(row.id)
-                            openModalLembrete()
-                          }}>
+                        <TableCell align="left" style={{ textAlign: "center" }}>
+                          {!row.ca_crt_min && !row.ca_crt_max ? (
+                            <IconButton
+                              onClick={async () => {
+                                setCreate(true);
+                                await fetchItemLembrete(row.id);
+                                openModalLembrete();
+                              }}
+                            >
+                              <Tooltip title="Criar Lembrete C/V">
+                                <NotificationsNoneIcon />
+                              </Tooltip>
+                            </IconButton>
+                          ) : null}
+                          <IconButton
+                            onClick={async () => {
+                              setCreate(false);
+                              await fetchItemLembrete(row.id);
+                              openModalLembrete();
+                            }}
+                          >
                             <Tooltip title="Editar Lembrete C/V">
                               <NotificationsActiveIcon />
                             </Tooltip>
@@ -389,7 +406,7 @@ const AtivosTable = (props) => {
         />
       </Paper>
       <EditModal carteiraId={carteiraId} edit={true} />
-      <LembreteModal create={create}/>
+      <LembreteModal create={create} />
     </>
   );
 };
@@ -431,6 +448,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     openModalLembrete: () => {
       dispatch(carteiraItensActions.openModalLembrete());
+    },
+    getReport: (rows, columns) => {
+      dispatch(carteiraItensActions.getReport(rows, columns));
     },
   };
 };

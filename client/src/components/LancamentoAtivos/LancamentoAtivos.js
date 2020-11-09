@@ -181,7 +181,7 @@ const AtivosTable = (props) => {
 
   return (
     <>
-      <Header title={"Lançamentos"} busca={busca} />
+      <Header title={"Lançamentos"} busca={busca} search={true}/>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button

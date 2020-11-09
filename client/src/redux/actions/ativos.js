@@ -264,6 +264,28 @@ export const fetchItem = (id) => {
   };
 };
 
+export const getReport = (rows, columns) => {
+  return async (dispatch) => {
+    return await API.itens
+      .getReport(rows, columns)
+      .then(({ data }) => {
+        console.log('url ', data)
+        return data
+      })
+      .catch((err) => {
+        const { response = {} } = err;
+        const { data = {} } = response;
+        const { message } = data;
+
+        dispatch({
+          type: FETCH_ITEM_ERROR,
+          err: message || "Serviço indisponível",
+        });
+        return Promise.reject(err);
+      });
+  };
+};
+
 export const fetchItemLembrete = (id) => {
   return (dispatch) => {
     dispatch({ type: FETCHING_ITEM, clear: true });

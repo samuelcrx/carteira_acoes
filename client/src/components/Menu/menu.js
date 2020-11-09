@@ -78,7 +78,7 @@ const Header = (props) => {
     setAnchorEl(null);
   };
 
-  const { title, logout, openModalProfile, busca } = props;
+  const { title, logout, openModalProfile, busca, search } = props;
   console.log('01 ', props)
 
   const history = useHistory();
@@ -103,6 +103,7 @@ const Header = (props) => {
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
+          {!search ?
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -119,6 +120,8 @@ const Header = (props) => {
               }}
             />
           </div>
+          : null
+          }
           <div>
             <IconButton
               aria-label="account of current user"

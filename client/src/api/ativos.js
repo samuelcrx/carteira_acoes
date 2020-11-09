@@ -12,6 +12,15 @@ export const getItem = (id) => {
   return api.http.get(`/itens/${id}`);
 };
 
+export const getReport = (rows, columns) => {
+  return api.http.get("/relatorio/", {
+    params: {
+      rows,
+      columns
+    }
+  });
+};
+
 export const getItemLembrete = (id) => {
   return api.http.get(`/itens/lembretes/${id}`);
 };
