@@ -24,7 +24,7 @@ routes.put("/recuperacaoSenha", recoveryPassword.recovery);
 // Rotas do usuario
 routes.get("/users", UserController.index);
 routes.get("/users/:id", UserController.show);
-routes.put("/users/:id", UserController.update);
+routes.put("/user", UserController.update);
 routes.put("/updatePassword/:id", UserController.updatePassword);
 routes.delete("/users/:id", UserController.delete);
 

@@ -197,12 +197,10 @@ export const addUser = user => {
 
 export const editUser = user => {
   return dispatch => {
-    dispatch({ type: FETCHING_USERS })
-    dispatch({ type: FETCHING_USER })
     return API.user
       .editUser(user)
       .then(({ data }) => {
-        dispatch({ type: EDIT_USER, user: data })
+        console.log('Ditou certo ', data)
       })
       .catch(err => {
         const { response = {} } = err

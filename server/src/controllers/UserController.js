@@ -33,12 +33,14 @@ module.exports = {
   },
 
   async update(req, res) {
-    const { ca_usu_nome } = req.body;
-    const { id } = req.params;
+    const { ca_usu_nome, ca_usu_login } = req.body;
 
-    const user = await User.update({ ca_usu_nome }, { where: { id: id } });
+    const userEdit = await User.update(
+      { ca_usu_nome, ca_usu_login },
+      { where: { ca_usu_login } }
+    );
 
-    return res.json(user);
+    return res.json(userEdit);
   },
 
   async updatePassword(req, res) {
@@ -65,7 +67,6 @@ module.exports = {
   },
 
   async login(req, res) {
-    
     const schema = Yup.object().shape({
       ca_usu_login: Yup.string().email().required(),
       ca_usu_cripto: Yup.string().required(),

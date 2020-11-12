@@ -22,7 +22,7 @@ export const deleteUser = (id) => {
 };
 
 export const editUser = (user) => {
-  return api.http.put(`/users/${user._id}`, user);
+  return api.http.put("/user", user);
 };
 
 export const restoreUser = (id) => {

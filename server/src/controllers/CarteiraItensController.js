@@ -6,6 +6,7 @@ const { Op } = require("sequelize");
 const generateReport = require("../PDF/generateReport");
 const pdf = require("html-pdf");
 const { resolve } = require("path");
+const { gerarRelatorio } = require('../utils/createFile')
 
 module.exports = {
   async index(req, res) {
@@ -141,26 +142,21 @@ module.exports = {
   },
 
   async report(req, res) {
-    const { rows, columns } = req.query;
+    const { rows } = req.query;
 
     const { conteudo, options } = generateReport(rows, "Ativos");
 
-    pdf
-      .create(conteudo, options)
-      .toFile(
-        resolve(__dirname, "..", "relatorios", "ativos.pdf"),
-        (err, res) => {
-          if (err) {
-            console.log("Erro na geração");
-          } else {
-            console.log("sucesso", res);
-          }
-        }
-      );
-
-    const pdfUrl = "http://localhost:3333/pdf/ativos.pdf";
-
-    return res.json(pdfUrl);
+    const resultFile = await gerarRelatorio(conteudo, options)
+    console.log(resultFile)
+    
+    if (!resultFile) {
+      res.send(resultFile)
+    } else {
+      console.log('dois 2')
+      
+      const pdfUrl = "http://localhost:3333/pdf/ativos.pdf";
+      return res.send(pdfUrl);
+    }
   },
 
   async showLembrete(req, res) {

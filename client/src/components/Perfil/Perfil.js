@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 import { authActions, carteiraActions, userActions } from "../../redux/actions";
 import classNames from "classnames";
 
-
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -156,22 +155,22 @@ const Perfil = (props) => {
 
   const {
     resetState,
-    carteira,
-    handleChangeCarteira,
+    handleChangeUser,
     user,
     editUser,
     modalOpenProfile,
     closeModalProfile,
   } = props;
-  
-  const onSubmit = (user) => {
-    editUser(user)
-      .then((user) => {
-        alert("Usuario alterado com sucesso");
-      })
-      .catch((err) => {
-        alert("Erou");
-      });
+
+  console.log("Perfil", user);
+
+  const onSubmit = async (user) => {
+    try {
+      await editUser(user);
+      closeModalProfile();
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (
@@ -208,8 +207,10 @@ const Perfil = (props) => {
                   type={"submit"}
                   onClick={() => {
                     onSubmit(user);
-                    resetState();
                   }}
+                  disabled={
+                    !user.ca_usu_login && !user.ca_usu_nome ? true : false
+                  }
                 >
                   Salvar
                 </Button>
@@ -231,7 +232,7 @@ const Perfil = (props) => {
                             placeholder="Digite o nome"
                             value={user.ca_usu_nome}
                             onChange={(e) =>
-                              handleChangeCarteira({
+                              handleChangeUser({
                                 ...user,
                                 ca_usu_nome: e.target.value,
                               })
@@ -249,9 +250,9 @@ const Perfil = (props) => {
                             placeholder="Digite o login"
                             value={user.ca_usu_login}
                             onChange={(e) =>
-                              handleChangeCarteira({
-                                ...carteira,
-                                ca_crt_descricao: e.target.value,
+                              handleChangeUser({
+                                ...user,
+                                ca_usu_login: e.target.value,
                               })
                             }
                           />
@@ -272,24 +273,14 @@ const Perfil = (props) => {
 
 const mapStateToProps = (state) => ({
   modalOpenProfile: state.auth.modalOpenProfile,
-  carteira: state.carteira.carteira,
-  user: state.auth.user,
-  usuario: state.user.user
+  userAuth: state.auth.user,
+  user: state.user.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
-    },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
-    },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
-    },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
+    handleChangeUser: (user) => {
+      dispatch(userActions.handleChangeUser(user));
     },
     editUser: (user) => {
       dispatch(userActions.editUser(user));

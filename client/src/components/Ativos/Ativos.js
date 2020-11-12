@@ -26,14 +26,12 @@ import {
 } from "../../redux/actions";
 import EditModal from "../LancamentoAtivos/EditModal";
 import classNames from "classnames";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import TrendingUpIcon from "@material-ui/icons/TrendingUp";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
-import lancamentos from "../../redux/reducers/lancamentos";
 import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import LembreteModal from "./LembreteModal";
-import generateReport from "../../PDF/listaAcoesCarteira";
 import * as API from "../../api";
 
 let columns = [
@@ -196,6 +194,16 @@ const AtivosTable = (props) => {
     setPage(newPage);
   };
 
+  function abreTelaPDF(caminhoPDF) {
+    window.open(
+      caminhoPDF,
+      "",
+      "toolbar=no, location=no, status=no, menubar=yes, " +
+        "scrollbars=yes, resizable=no, width=680, " +
+        "height=650, left=180, top=50"
+    );
+  }
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -213,7 +221,7 @@ const AtivosTable = (props) => {
     openModalLembrete,
     fetchItemLembrete,
     statusLancamento,
-    getReport,
+    resetState,
   } = props;
 
   const busca = handleChangeItemTerm;
@@ -222,7 +230,7 @@ const AtivosTable = (props) => {
     fetchItens(carteiraId, buscaTerm);
   }, [carteiraId, fetchItens, status, buscaTerm, statusLancamento]);
 
-  const rows = (itens.data || []).map((item) => {
+  let rows = (itens.data || []).map((item) => {
     return createData(
       item.id,
       item.ca_crt_codigo,
@@ -235,7 +243,6 @@ const AtivosTable = (props) => {
       item.ca_crt_max
     );
   });
-  console.log("Aqui viu ", rows || []);
 
   return (
     <>
@@ -269,19 +276,37 @@ const AtivosTable = (props) => {
           </Button>
           <Button
             variant="contained"
-            style={{ marginTop: 20, marginBottom: 20, marginLeft: 20 }}
+            style={{ marginTop: 20, marginBottom: 20, marginLeft: 10 }}
             className="botao_verde_claro"
             onClick={async () => {
-              const { data } = await API.itens.getReport(rows, columns);
+              const dataRows = (itens.data || []).map((item) => {
+                return createData(
+                  item.id,
+                  item.ca_crt_codigo,
+                  item.ca_aco_codigo,
+                  item.ca_cri_quantidade,
+                  item.ca_cri_valor_medio,
+                  item.acao_id,
+                  item.ca_cotacao,
+                  item.ca_crt_min,
+                  item.ca_crt_max
+                );
+              });
+             
+              const { data } = await API.itens.getReport(dataRows, columns);
 
-              setPdf(data);
+              console.log(data);
+              // const caminhoPDF = 'http://localhost:3333/pdf/ativos.pdf';
+              const caminhoPDF = data;
+
+              abreTelaPDF(caminhoPDF);
             }}
           >
-            Gerar Relatório
+            Relatório
           </Button>
-            <a href={pdf} download={true}>
-              Teste de link
-              </a>
+          <a target="_blank" href={pdf} download={true}>
+            Teste de link
+          </a>
 
           {rows.length ? (
             <Table stickyHeader aria-label="sticky table">
@@ -451,6 +476,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getReport: (rows, columns) => {
       dispatch(carteiraItensActions.getReport(rows, columns));
+    },
+    resetState: () => {
+      dispatch(carteiraItensActions.resetState());
     },
   };
 };

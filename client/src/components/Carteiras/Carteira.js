@@ -159,6 +159,8 @@ const Carteira = (props) => {
     status,
   } = props;
 
+  console.log('user aqui >> ', user2)
+
   const busca = handleChangeCarteiraTerm;
 
   const handleChangePage = (event, newPage) => {
