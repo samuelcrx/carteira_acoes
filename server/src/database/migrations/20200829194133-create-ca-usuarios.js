@@ -30,6 +30,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      reset_password: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
     });
   },
 

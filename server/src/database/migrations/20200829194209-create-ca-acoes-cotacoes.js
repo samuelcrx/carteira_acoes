@@ -23,10 +23,6 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      ca_acc_data: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
       ca_acc_valor: {
         type: Sequelize.DOUBLE,
         allowNull: false,

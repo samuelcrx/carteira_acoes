@@ -1,13 +1,353 @@
+html {
+  background-color: #343a40;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+body {
+  background: #343a40;
+  z-index: 1;
+}
+
+.fundo_telas {
+  position: absolute;
+  background: #37404a;
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.25);
+}
+
+.login_label {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #8492a6;
+}
+
+.InputLogin {
+  /* Campo 01 */
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
+  color: rgb(124, 121, 121);
+  /* Fundo Campos */
+
+  background: #37404a;
+  border-radius: 4px;
+}
+
+.InputPass {
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
+}
+
+.FormNome {
+  text-align: center;
+}
+
+.SubContainer {
+  width: 100%;
+  max-width: 452px;
+  height: auto;
+  /* Fundo das Telas */
+  border-radius: 8px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #37404a;
+  padding: 4px;
+  border: 5px solid #78879787;
+}
+
+.login_campo {
+  background: #37404a;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  padding: 4px 2px 4px 2px;
+
+  border-radius: 4px;
+  border-color: white;
+}
+
+.login_link {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 25px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #8492a6;
+  text-decoration-line: underline;
+}
+
+.marginTop {
+  margin-top: 3%;
+}
+
+.botoes {
+  /* Fonte Botões */
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 16px;
+
+  color: #fff;
+
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  width: 100px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.botao_verde_claro {
+  /* Funco do Botão */
+  background: #0acf97 !important;
+  color: rgb(255, 248, 248) !important;
+}
+
+.botao_verde_escuro {
+  /* Funco do Botão */
+  background: #0f7979 !important;
+  color: rgb(255, 248, 248) !important;
+}
+
+.botao_verde_escuro:hover {
+  /* Funco do Botão */
+  background: #0f7979bd !important;
+  transition: background 0.2s !important;
+}
+
+.botao_roxo {
+  /* Funco do Botão */
+  background: #727cf5;
+  color: rgb(255, 248, 248) !important;
+}
+
+.botao_roxo:hover {
+  /* Funco do Botão */
+  background: #727cf5bd !important;
+  transition: background 0.2s !important;
+  color: rgb(255, 248, 248) !important;
+}
+
+.botao_vermelho {
+  /* Funco do Botão */
+  background: #fa5c7c;
+  color: rgb(255, 248, 248) !important;
+}
+.botao_vermelho:hover {
+  /* Funco do Botão */
+  background: #fa5c7cd0 !important;
+  transition: background 0.2s !important;
+  color: rgb(255, 248, 248) !important;
+}
+
+.telas_blocos {
+  background: #394451;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.25);
+}
+
+.telas_barra_titulos {
+  position: absolute;
+  height: 36px;
+  left: 16px;
+  top: 20px;
+
+  /* Barra de Títulos */
+  background: #3c4858;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  /* Label */
+  font-size: 14px;
+  line-height: 19px;
+  display: flex;
+  align-items: center;
+}
+
+.formulario_lable {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #8492a6;
+}
+
+.formulario_campo {
+  position: absolute;
+  height: 36px;
+  padding: 4px 2px 4px 2px;
+  color: #aab8c5;
+
+  background: #37404a;
+  border: 1px solid #4d5764;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.grid_cabecalho {
+  background: #2e353e;
+  border: 1px solid rgba(192, 192, 192, 0.2);
+  box-sizing: border-box;
+  height: 38px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 19px;
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #aab8c5;
+}
+
+.grid_campos {
+  position: absolute;
+  height: 46px;
+  background: #394451;
+  border: 1px 0px 1px 0px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.25);
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+  display: flex;
+  align-items: center;
+
+  color: #aab8c5;
+}
+
+.grid_campos_totalizadores {
+  position: absolute;
+  height: 46px;
+  background: #394451;
+  border: 1px 0px 1px 0px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.25);
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+
+  color: #aab8c5;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* CSS das tabelas */
+.MuiTableCell-body {
+  color: rgb(193, 193, 193) !important;
+}
+
+.MuiTable-stickyHeader {
+  border-top: 2px solid black;
+}
+
+.MuiTableCell-stickyHeader {
+  background-color: #3c4858 !important;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  color: rgb(193, 193, 193) !important;
+}
+
+.MuiSvgIcon-root {
+  color: rgb(193, 193, 193) !important;
+}
+
+.MuiTableBody-root {
+  background: radial-gradient(black, transparent) !important;
+}
+
+.MuiButton-containedSecondary {
+  background: #0acf97 !important;
+  padding: 4px;
+  font-family: Nunito !important;
+  font-weight: bold !important;
+}
+
+.MuiTablePagination-toolbar {
+  background-color: #3c4858 !important;
+  border-radius: 8px;
+}
+
+.MuiTablePagination-root {
+  color: rgb(255 255 255 / 87%) !important;
+}
+
+::-webkit-input-placeholder {
+  color: rgb(207, 203, 203);
+}
+
+.css-2b097c-container {
+  min-width: 140px;
+  max-width: 150px;
+  width: 100%;
+  /* color: rgb(207, 203, 203); */
+}
+
+.css-yk16xz-control {
+  background-color: #37404a !important;
+  color: black;
+}
+
+.css-2613qy-menu {
+  background-color: #37404a !important;
+  color: black;
+}
+
+.css-1uccc91-singleValue {
+  color: rgb(207, 203, 203) !important;
 }

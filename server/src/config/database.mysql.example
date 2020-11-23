@@ -1,0 +1,11 @@
+module.exports = {
+  dialect: 'mysql',
+  host: 'localhost',
+  username: 'root',
+  password: 'gonnacry',
+  database: 'carteira_acoes',
+  define: {
+    timestamps: true,
+    underscored: true
+  }
+};

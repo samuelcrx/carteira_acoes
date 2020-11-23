@@ -5,6 +5,7 @@ class ca_usuarios extends Model {
   static init(sequelize) {
     super.init({
       ca_usu_nome: DataTypes.STRING,
+      reset_password: DataTypes.BOOLEAN,
       ca_usu_login: {
         type: DataTypes.STRING,
         unique: true

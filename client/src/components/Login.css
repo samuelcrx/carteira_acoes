@@ -1,0 +1,225 @@
+.Container {
+  width: 100%;
+  height: auto;
+  max-height: 616px;
+  background: #343a40;
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+.SubContainer {
+  width: 100%;
+  max-width: 452px;
+  height: auto;
+  /* Fundo das Telas */
+  border-radius: 8px;
+  background-color: #37404a;
+  padding: 4px;
+  margin-top: 30px;
+}
+
+.posicaoLogin {
+  top: 50%;
+  position: sticky;
+}
+.posicaoRec {
+  top: 10%;
+  text-align: center;
+  position: sticky;
+}
+
+.Formulario {
+  text-align: center;
+  align-items: center;
+}
+
+.Logo {
+  width: 100%;
+  max-width: 292px;
+  max-height: 179px;
+  height: auto;
+  margin: auto;
+  margin-top: 43px;
+}
+
+.imagemLogo {
+  width: 100%;
+  border-radius: 98%;
+  box-shadow: white;
+}
+
+.FormLogin {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.TextLogin {
+  width: 60px;
+  height: 33px;
+
+  margin-left: 80px;
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  padding-bottom: 5px;
+
+  /* Label Campo Formulário */
+
+  color: #8492a6;
+}
+.TextRecSenha {
+  height: 33px;
+
+  margin-left: 80px;
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  padding-bottom: 5px;
+
+  /* Label Campo Formulário */
+
+  color: #8492a6;
+}
+.TextRecSenha2 {
+  height: 33px;
+
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  padding-bottom: 5px;
+
+  /* Label Campo Formulário */
+
+  color: #8492a6;
+}
+
+.TextPass {
+  /* Label Campo 02 */
+
+  width: 68px;
+  height: 33px;
+
+  margin-top: 19px;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 33px;
+  /* identical to box height */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 5px;
+  /* Label Campo Formulário */
+  margin-left: 80px;
+
+  color: #8492a6;
+}
+
+.InputPass {
+  /* Campo 2 */
+  width: 100%;
+  max-width: 292px;
+  height: auto;
+  min-height: 35px;
+  color: rgb(124, 121, 121);
+  /* Fundo Campos */
+
+  background: #37404a;
+  border-radius: 4px;
+}
+
+.ButtonLogin {
+  width: 100%;
+  max-width: 292px;
+  height: 36px;
+  margin-top: 28px;
+  color: white;
+  cursor: pointer;
+
+  /* Fundo Botão Salvar */
+
+  background: #0acf97;
+  border-radius: 8px;
+}
+.ButtonLogin02 {
+  width: 100%;
+  max-width: 292px;
+  height: 36px;
+  color: white;
+  cursor: pointer;
+
+  /* Fundo Botão Salvar */
+
+  background: #0acf97;
+  border-radius: 8px;
+}
+
+.ButtonLoginDisabled {
+  width: 100%;
+  max-width: 292px;
+  height: 36px;
+  margin-top: 28px;
+  color: white;
+
+  /* Fundo Botão Salvar */
+
+  background: #8492a6;
+  border-radius: 8px;
+}
+
+.LinkAuth {
+  text-align: end;
+}
+
+.TextSingin {
+  padding-right: 35px;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 25px;
+
+  text-decoration-line: underline;
+
+  opacity: 1;
+  transition: opacity 300ms ease;
+
+  color: #8492a6;
+}
+
+.TextSinginTouched {
+  opacity: 0.3;
+}

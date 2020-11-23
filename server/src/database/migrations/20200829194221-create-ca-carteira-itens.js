@@ -38,7 +38,15 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: true,
-      }
+      },
+      ca_crt_min: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+      },
+      ca_crt_max: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+      },
     });
   },
 

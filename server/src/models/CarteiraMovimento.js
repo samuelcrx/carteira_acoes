@@ -6,7 +6,7 @@ class ca_carteira_movimento extends Model {
       ca_crt_codigo: DataTypes.INTEGER, //Foreign Key 01
       ca_aco_codigo: DataTypes.INTEGER, // Foreign Key 02
       ca_crm_compra_venda: DataTypes.STRING(1),
-      ca_crm_data: DataTypes.DATE,
+      ca_crm_quantidade: DataTypes.INTEGER,
       ca_crm_valor: DataTypes.DOUBLE,
     }, {
       sequelize,
