@@ -200,7 +200,6 @@ export const editItem = (item) => {
   };
 };
 export const addItemLembrete = (item) => {
-  console.log('item ', item)
   return (dispatch) => {
     return API.itens
       .addLembrete(item)
@@ -269,7 +268,6 @@ export const getReport = (rows, columns) => {
     return await API.itens
       .getReport(rows, columns)
       .then(({ data }) => {
-        console.log('url ', data)
         return data
       })
       .catch((err) => {

@@ -64,7 +64,6 @@ module.exports = {
         }
       }
     }
-    // console.log(data)
     return res.json(data);
   },
 
@@ -106,7 +105,6 @@ module.exports = {
     Carteiras.destroy({
       where: { id },
     }).then((deletedData) => {
-      console.log(`Carteira deletada ${deletedData}`);
       res.json(deletedData);
     });
   },

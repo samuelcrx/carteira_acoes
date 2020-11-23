@@ -79,7 +79,6 @@ module.exports = {
     let valor_medio = 0;
     let qtdEmCarteira = 0;
     for (let movimento of percorreMovimentacao) {
-      console.log(movimento.dataValues);
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
         valor_medio =
           (valor_medio * qtdEmCarteira +
@@ -99,8 +98,6 @@ module.exports = {
       const ca_cri_quantidade = qtdEmCarteira;
       const ca_cri_valor_medio = valor_medio;
 
-      console.log("Ativo ", ativo);
-
       const updateAtivo = await CarteiraItens.update(
         { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio },
         { where: { id: ativo.dataValues.id } }
@@ -115,8 +112,6 @@ module.exports = {
         ca_cri_quantidade,
         ca_cri_valor_medio,
       });
-
-      console.log("Ativo ", ativo);
     }
 
     return res.json(carteiraMovimentada);
@@ -159,15 +154,10 @@ module.exports = {
     } = req.body;
     const { id } = req.params;
 
-    console.log(req.body);
-    // console.log(carteira_id);
-
     const updateMovimento = await CarteiraMovimento.update(
       { ca_crm_compra_venda, ca_crm_quantidade, ca_crm_valor },
       { where: { id: id } }
     );
-
-    console.log(updateMovimento);
 
     const percorreMovimentacao = await CarteiraMovimento.findAll({
       where: { ca_crt_codigo, ca_aco_codigo: acao_id.id },
@@ -218,7 +208,6 @@ module.exports = {
     const { id } = req.params;
 
     const carteira = await CarteiraMovimento.findOne({ where: { id: id } });
-    console.log("carteira ", carteira);
 
     const deletedItem = await CarteiraMovimento.destroy({
       where: { id },
@@ -238,7 +227,6 @@ module.exports = {
     let valor_medio = 0;
     let qtdEmCarteira = 0;
     for (let movimento of percorreMovimentacao) {
-      console.log(movimento.dataValues);
       if (movimento.dataValues.ca_crm_compra_venda == "C") {
         valor_medio =
           (valor_medio * qtdEmCarteira +
@@ -261,8 +249,6 @@ module.exports = {
       const ca_cri_quantidade = qtdEmCarteira;
       const ca_cri_valor_medio = valor_medio;
       const ca_aco_codigo = carteira.dataValues.ca_aco_codigo;
-
-      console.log("Ativo ", ativo);
 
       const updateAtivo = await CarteiraItens.update(
         { ca_aco_codigo, ca_cri_quantidade, ca_cri_valor_medio },

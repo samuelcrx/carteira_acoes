@@ -12,7 +12,6 @@ module.exports = {
   async index(req, res) {
     const { carteiraId } = req.params;
     const { term } = req.query;
-    console.log("Teor ", term);
     const carteiraItens = await CarteiraItens.findAll({
       include: [
         {
@@ -147,13 +146,10 @@ module.exports = {
     const { conteudo, options } = generateReport(rows, "Ativos");
 
     const resultFile = await gerarRelatorio(conteudo, options);
-    console.log(resultFile);
 
     if (!resultFile) {
       res.send(resultFile);
     } else {
-      console.log("dois 2");
-
       const pdfUrl = "http://localhost:3333/pdf/ativos.pdf";
       return res.send(pdfUrl);
     }
@@ -198,7 +194,6 @@ module.exports = {
     CarteiraItens.destroy({
       where: { id },
     }).then((deletedItem) => {
-      console.log(`Ação Cotação deletada ${deletedItem}`);
       res.json(deletedItem);
     });
   },

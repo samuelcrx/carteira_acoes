@@ -168,7 +168,6 @@ const AtivosTable = (props) => {
     id: acaoId,
     ca_aco_ticker: tickerName,
   };
-  console.log("Aquii euuu => ", acao_id_backup);
 
   useEffect(() => {
     lancamento.acao_id = acao_id_backup;
@@ -242,7 +241,6 @@ const AtivosTable = (props) => {
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    console.log("Row ", row);
                     return (
                       <TableRow
                         hover

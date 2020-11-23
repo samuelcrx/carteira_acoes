@@ -46,7 +46,6 @@ module.exports = {
       where: { ca_crt_codigo: carteiraId, ca_aco_codigo },
     });
 
-    console.log("Iteeem ", carteiraItem.dataValues);
     if (
       ca_acc_valor <= carteiraItem.dataValues.ca_crt_min ||
       ca_acc_valor >= carteiraItem.dataValues.ca_crt_max
@@ -92,7 +91,6 @@ module.exports = {
     AcaoCotacao.destroy({
       where: { id },
     }).then((deletedAction) => {
-      console.log(`Ação Cotação deletada ${deletedAction}`);
       res.json(deletedAction);
     });
   },
@@ -101,7 +99,6 @@ module.exports = {
     const { term } = req.query;
 
     const acaoPreco = await price.gerarPreco(term);
-    console.log(acaoPreco)
 
     return res.json(acaoPreco);
   },

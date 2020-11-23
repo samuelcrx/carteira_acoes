@@ -190,7 +190,6 @@ const LembreteModal = (props) => {
   } = props;
 
   const onSubmit = async (e) => {
-    e.preventDefault()
     if (create) {
       try {
         await addItemLembrete(item);

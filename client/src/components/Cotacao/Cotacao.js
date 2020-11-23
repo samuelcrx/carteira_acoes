@@ -239,9 +239,6 @@ const Cotacao = (props) => {
                 const message = "Cotação não encontrada.";
                 changeMessage({ message });
               }
-              console.log(cotacao);
-              // Insere a resposta da cotação no banco
-              // ###########################################################################
             }}
           >
             Busca Automática

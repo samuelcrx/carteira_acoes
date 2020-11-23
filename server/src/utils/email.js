@@ -23,8 +23,6 @@ class Email {
     }
 
     sendPassword(destiny, newPassword) {
-        console.log('email ', destiny)
-        console.log('Nova senha ', newPassword)
 
         this.transporter.sendMail({
             from: this.developer,
@@ -45,7 +43,7 @@ class Email {
                 console.error(error);
                 return;
             } else {
-                console.log('Email enviado.');
+                console.log('Email sendo enviado enviado...');
                 console.log(info);
             }
         });

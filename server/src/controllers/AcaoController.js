@@ -29,7 +29,6 @@ module.exports = {
       ca_aco_nome,
       ca_aco_ativo,
     });
-    console.log(acao);
 
     return res.json(acao);
   },
@@ -59,7 +58,6 @@ module.exports = {
     Acao.destroy({
       where: { id: id },
     }).then((deletedAction) => {
-      console.log(`Ação deletada ${deletedAction}`);
       res.json(deletedAction);
     });
   },
