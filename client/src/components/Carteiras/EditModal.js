@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import { carteiraActions, messageActions } from "../../redux/actions";
 import classNames from "classnames";
 import Carteira from "./Carteira";
 
@@ -159,20 +159,30 @@ const EditModal = (props) => {
     fetchCarteiras,
     addCarteira,
     editCarteira,
+    changeMessage,
   } = props;
 
   const onSubmit = async (carteira, ca_usu_codigo) => {
     if (!carteira.id) {
-
       try {
         await addCarteira(carteira, ca_usu_codigo);
+        const message = "Carteira criada com sucesso.";
+        changeMessage({ message });
         resetState();
       } catch (error) {
-        console.log(error)
+        const message = "Algo deu errado.";
+        changeMessage({ message });
       }
     } else {
-      await editCarteira(carteira);
-      resetState();
+      try {
+        await editCarteira(carteira);
+        const message = "Carteira editada com sucesso.";
+        changeMessage({ message });
+        resetState();
+      } catch (error) {
+        const message = "Algo deu errado.";
+        changeMessage({ message });
+      }
     }
   };
 
@@ -294,6 +304,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(carteiraActions.resetState());
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

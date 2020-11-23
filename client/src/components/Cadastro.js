@@ -14,7 +14,7 @@ const Cadastro = (props) => {
   const history = useHistory();
 
   const validateForm = () => {
-    return user.ca_usu_login.length > 0 && user.ca_usu_cripto.length > 0;
+    return user.ca_usu_login && user.ca_usu_cripto.length;
   };
 
   const onSubmit = async (e) => {

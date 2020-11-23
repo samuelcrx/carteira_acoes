@@ -5,8 +5,8 @@ export const FETCH_USER_ERROR = "FETCH_USER_ERROR";
 export const FETCH_USERS = "FETCH_USERS";
 export const FETCHING_USERS = "FETCHING_USERS";
 export const FETCH_USERS_ERROR = "FETCH_USERS_ERROR";
-export const OPEN_MODAL = "OPEN_MODAL";
-export const CLOSE_MODAL = "CLOSE_MODAL";
+export const OPEN_MODAL_SENHA = "OPEN_MODAL_SENHA";
+export const CLOSE_MODAL_SENHA = "CLOSE_MODAL_SENHA";
 export const OPEN_MODAL_PASS = "OPEN_MODAL_PASS";
 export const CLOSE_MODAL_PASS = "CLOSE_MODAL_PASS";
 export const CHANGE_USER = "CHANGE_USER";
@@ -27,7 +27,7 @@ export const RESET_STATE = "RESET_STATE";
 
 export const openModal = () => {
   return (dispatch) => {
-    dispatch({ type: OPEN_MODAL });
+    dispatch({ type: OPEN_MODAL_SENHA });
   };
 };
 
@@ -88,7 +88,7 @@ export const resetState = () => {
 
 export const closeModal = () => {
   return (dispatch) => {
-    dispatch({ type: CLOSE_MODAL });
+    dispatch({ type: CLOSE_MODAL_SENHA });
   };
 };
 

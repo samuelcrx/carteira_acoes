@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions, userActions } from "../../redux/actions";
+import { carteiraActions, userActions, mesageActions } from "../redux/actions";
 import classNames from "classnames";
 import { addCarteira } from "../../api/carteira";
 import { editCarteira } from "../../redux/actions/carteiras";
@@ -109,8 +109,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -147,9 +147,9 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 4,
     marginRight: 5,
   },
-  empresa:{
-    marginLeft: '40px'
-  }
+  empresa: {
+    marginLeft: "40px",
+  },
 }));
 
 const TrocarSenha = (props) => {
@@ -169,21 +169,24 @@ const TrocarSenha = (props) => {
     user,
     fetchCarteiras,
     editCarteira,
-    updatePassword
+    updatePassword,
+    changeMessage,
   } = props;
 
   const onSubmit = async (user) => {
     if (user.ca_usu_cripto === pass) {
       try {
-        const reset = await updatePassword(user);
+        await updatePassword(user);
+        const message = "Senha recuperada com sucesso.";
+        changeMessage({ message });
         closeModal();
-  
       } catch (error) {
-        alert(error)
-        
+        const message = "Algo deu errado na alteração da senha.";
+        changeMessage({ message });
       }
     } else {
-      alert("Senhas diferentes");
+      const message = "As senhas estão diferentes.";
+      changeMessage({ message });
     }
   };
 
@@ -225,37 +228,35 @@ const TrocarSenha = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.ticker}>
-                        <FormLabel className={classes.descriptionText}>
-                          Nova Senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="password"
-                          placeholder="Digite nova senha"
-                          value={user.ca_usu_cripto}
-                          onChange={(e) =>
-                            handleChangeUser({
-                              ...user,
-                              ca_usu_cripto: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Nova Senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="password"
+                            placeholder="Digite nova senha"
+                            value={user.ca_usu_cripto}
+                            onChange={(e) =>
+                              handleChangeUser({
+                                ...user,
+                                ca_usu_cripto: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                         <div className={classes.empresa}>
-                        <FormLabel className={classes.descriptionText}>
-                          Confirmar nova senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="password"
-                          placeholder="Confirme a nova senha"
-                          value={pass}
-                          onChange={(e) =>
-                            handleNewPassword(e.target.value)
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Confirmar nova senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="password"
+                            placeholder="Confirme a nova senha"
+                            value={pass}
+                            onChange={(e) => handleNewPassword(e.target.value)}
+                          />
                         </div>
                       </div>
                     </FormGroup>
@@ -298,6 +299,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(carteiraActions.resetState());
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

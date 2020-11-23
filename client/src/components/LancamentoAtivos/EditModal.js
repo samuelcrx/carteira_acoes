@@ -284,9 +284,15 @@ const EditModal = (props) => {
         ...lancamento,
         ca_crt_codigo: props.carteiraId,
       });
-      await editLancamento(lancamento);
-      // const refresh = await fetchLancamentos(lancamento.ca_crt_codigo, lancamento.acao_id.id);
-      closeModal();
+      try {
+        await editLancamento(lancamento);
+        const message = "Lançamento editado com sucesso.";
+        changeMessage({ message });
+        closeModal();
+      } catch (error) {
+        const message = "Algo deu errado ao tentar editar o lançamento.";
+        changeMessage({ message });
+      }
     }
   };
 

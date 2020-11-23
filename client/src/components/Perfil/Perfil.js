@@ -6,7 +6,12 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { authActions, carteiraActions, userActions } from "../../redux/actions";
+import {
+  authActions,
+  carteiraActions,
+  userActions,
+  messageActions,
+} from "../../redux/actions";
 import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
@@ -160,18 +165,19 @@ const Perfil = (props) => {
     user,
     modalOpenProfile,
     closeModalProfile,
-    userAuth
+    userAuth,
+    changeMessage,
   } = props;
 
   const onSubmit = async (user) => {
     try {
-
       await editUser(user);
+      const message = "Dados atualizados com sucesso.";
+      changeMessage({ message });
       closeModalProfile();
-
     } catch (error) {
-      
-      alert(error);
+      const message = "Algo deu errado ao tentar atualizar dados.";
+      changeMessage({ message });
     }
   };
 
@@ -206,7 +212,7 @@ const Perfil = (props) => {
                 </Button>
                 <Button
                   className={classNames(classes.btSave, "botao_roxo")}
-                  type='submit'
+                  type="submit"
                   onClick={() => {
                     onSubmit(user);
                   }}
@@ -223,7 +229,6 @@ const Perfil = (props) => {
                   <form className={classes.form}>
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
-
                         <div className={classes.ticker}>
                           <FormLabel className={classes.descriptionText}>
                             Nome
@@ -261,7 +266,6 @@ const Perfil = (props) => {
                             }
                           />
                         </div>
-                        
                       </div>
                     </FormGroup>
                   </form>
@@ -295,6 +299,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(carteiraActions.resetState());
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

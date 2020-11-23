@@ -38,11 +38,6 @@ const auth = (state = initialState, action = {}) => {
       };
     case AUTH_LOGOUT:
       return { ...initialState };
-    // case CLEAR_REFRESH_TOKEN:
-    //   return {
-    //     ...state,
-    //     refreshToken: false
-    //   }
     case LOADING_LOGIN:
       return {
         ...state,

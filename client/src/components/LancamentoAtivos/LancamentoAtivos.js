@@ -11,7 +11,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Header from "../Menu/menu";
 import Button from "@material-ui/core/Button";
 import CheckIcon from "@material-ui/icons/Check";
-// import ActionDelete from 'material-ui/svg-icons/action/delete'
 import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -19,7 +18,7 @@ import Delete from "@material-ui/icons/DeleteOutline";
 import Ativos from "@material-ui/icons/Assignment";
 import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
-import { lancamentosActions } from "../../redux/actions";
+import { lancamentosActions, messageActions } from "../../redux/actions";
 import EditModal from "./EditModal";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
@@ -85,7 +84,7 @@ function createData(
     compra_venda,
     ca_crm_quantidade,
     ca_crm_valor,
-    acao_id
+    acao_id,
   };
 }
 
@@ -159,20 +158,21 @@ const AtivosTable = (props) => {
     status,
     handleChangeLancamentoTerm,
     buscaTerm,
+    changeMessage
   } = props;
 
   const busca = handleChangeLancamentoTerm;
-  const acaoId = localStorage.getItem('acaoId');
-  const tickerName = localStorage.getItem('tickerName');
+  const acaoId = localStorage.getItem("acaoId");
+  const tickerName = localStorage.getItem("tickerName");
   const acao_id_backup = {
     id: acaoId,
-    ca_aco_ticker: tickerName
-  }
-console.log('Aquii euuu => ', acao_id_backup)
+    ca_aco_ticker: tickerName,
+  };
+  console.log("Aquii euuu => ", acao_id_backup);
 
   useEffect(() => {
     lancamento.acao_id = acao_id_backup;
-    lancamento.ca_crm_compra_venda = 'C';
+    lancamento.ca_crm_compra_venda = "C";
     fetchLancamentos(carteiraId, acaoCodigo, buscaTerm);
   }, [acaoCodigo, carteiraId, fetchLancamentos, status, buscaTerm]);
 
@@ -191,7 +191,7 @@ console.log('Aquii euuu => ', acao_id_backup)
 
   return (
     <>
-      <Header title={"Lançamentos"} busca={busca} search={true}/>
+      <Header title={"Lançamentos"} busca={busca} search={true} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -242,7 +242,7 @@ console.log('Aquii euuu => ', acao_id_backup)
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    console.log("Row ", row)
+                    console.log("Row ", row);
                     return (
                       <TableRow
                         hover
@@ -276,8 +276,17 @@ console.log('Aquii euuu => ', acao_id_backup)
                           </IconButton>
 
                           <IconButton
-                            onClick={() => {
-                              deleteLancamento(row.id);
+                            onClick={async () => {
+                              try {
+                                await deleteLancamento(row.id);
+                                const message =
+                                  "Lançamento deletado com sucesso.";
+                                changeMessage({ message });
+                              } catch (error) {
+                                const message =
+                                  "Algo deu errado ao tentar deletar o Lançamento.";
+                                changeMessage({ message });
+                              }
                             }}
                           >
                             <Tooltip title="Deletar">
@@ -343,6 +352,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeLancamentoTerm: (term) => {
       dispatch(lancamentosActions.handleChangeLancamentoTerm(term));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

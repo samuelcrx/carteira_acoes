@@ -5,8 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import "./Login.css";
 import "./RecuperarSenha.css";
 import { connect } from "react-redux";
-import { authActions } from "../redux/actions";
-import Typography from "@material-ui/core/Typography";
+import { authActions, messageActions } from "../redux/actions";
 const Logo = require("../assets/logo.jpg");
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +23,7 @@ const RecuperarSenha = (props) => {
   const [sended, setSended] = useState(false);
 
   const validateForm = () => {
-    return email.length > 3;
+    return email;
   };
 
   const onSubmit = async (e) => {
@@ -32,10 +31,13 @@ const RecuperarSenha = (props) => {
 
     if (email) {
       try {
-        const emails = await props.resetPasswordByEmail(email);
+        await props.resetPasswordByEmail(email);
         setSended(true);
+        const message = "Senha enviada com sucesso.";
+        props.changeMessage({ message });
       } catch (error) {
-        alert(error);
+        const message = "Algo deu errado.";
+        props.changeMessage({ message });
       }
     }
   };
@@ -114,6 +116,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     resetPasswordByEmail: (email) => {
       return dispatch(authActions.resetPasswordByEmail(email));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

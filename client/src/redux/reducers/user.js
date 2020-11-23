@@ -4,8 +4,8 @@ const {
   FETCH_USER,
   OPEN_MODAL_PASS,
   CLOSE_MODAL_PASS,
-  OPEN_MODAL,
-  CLOSE_MODAL,
+  OPEN_MODAL_SENHA,
+  CLOSE_MODAL_SENHA,
   CHANGE_USER,
   CHANGE_PASS,
   ADD_USER,
@@ -13,7 +13,7 @@ const {
   // RESET_STATE
 } = userActions;
 
-const { RECORD_USER } = authActions;
+const { RECORD_USER, AUTH_LOGOUT } = authActions;
 
 const initialState = {
   loadingUser: false,
@@ -30,13 +30,13 @@ const initialState = {
   },
   userFormErrors: {},
   userFormTouched: false,
-  modalOpen: false,
+  modalOpenSenha: false,
   modalOpenPass: false,
   updatePasswordForm: {
     oldPassword: "",
     newPassword: "",
   },
-  newPass: ''
+  newPass: "",
 };
 const user = (state = initialState, action = {}) => {
   switch (action.type) {
@@ -60,15 +60,19 @@ const user = (state = initialState, action = {}) => {
         ...state,
         modalOpenPass: false,
       };
-    case OPEN_MODAL:
+    case OPEN_MODAL_SENHA:
       return {
         ...state,
-        modalOpen: true,
+        modalOpenSenha: true,
       };
-    case CLOSE_MODAL:
+    case CLOSE_MODAL_SENHA:
       return {
         ...state,
-        modalOpen: false,
+        modalOpenSenha: false,
+      };
+    case AUTH_LOGOUT:
+      return {
+        ...initialState,
       };
     case FETCH_USER:
       return {

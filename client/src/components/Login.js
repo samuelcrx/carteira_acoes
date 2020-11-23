@@ -24,7 +24,7 @@ const Login = (props) => {
   const [singinTouched, setSinginTouched] = useState(false);
 
   const validateForm = () => {
-    return login.length > 0 && password.length > 0;
+    return login && password;
   };
 
   const { userLogin, user, openModalSenha, changeMessage } = props;

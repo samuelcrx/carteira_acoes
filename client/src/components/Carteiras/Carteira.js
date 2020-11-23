@@ -28,7 +28,6 @@ import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import { fetchCarteira } from "../../redux/actions/carteiras";
 import { useHistory } from "react-router-dom";
-import TrocarSenhar from "./TrocarSenha";
 
 const columns = [
   { id: "ca_crt_descricao", label: "Descrição", minWidth: 135 },
@@ -325,7 +324,6 @@ const Carteira = (props) => {
         />
       </Paper>
       <EditModal />
-      {/* <TrocarSenhar /> */}
     </>
   );
 };

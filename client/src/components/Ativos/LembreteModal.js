@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraItensActions } from "../../redux/actions";
+import { carteiraItensActions, messageActions } from "../../redux/actions";
 import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
@@ -186,15 +186,31 @@ const LembreteModal = (props) => {
     editItemLembrete,
     handleChangeItem,
     create,
+    changeMessage
   } = props;
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault()
     if (create) {
-      await addItemLembrete(item);
-      closeModalLembrete();
+      try {
+        await addItemLembrete(item);
+        const message = "Lembrete cadastrado com sucesso.";
+        changeMessage({ message });
+        closeModalLembrete();
+      } catch (error) {
+        const message = "Algo deu errado.";
+        changeMessage({ message });
+      }
     } else {
-      await editItemLembrete(item);
-      closeModalLembrete();
+      try {
+        await editItemLembrete(item);
+        const message = "Lembrete editado com sucesso.";
+        changeMessage({ message });
+        closeModalLembrete();
+      } catch (error) {
+        const message = "Algo deu errado.";
+        changeMessage({ message });
+      }
     }
   };
 
@@ -318,6 +334,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     resetState: () => {
       dispatch(carteiraItensActions.resetState());
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

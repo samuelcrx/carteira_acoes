@@ -16,6 +16,7 @@ import Perfil from "../Perfil/Perfil";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import TrocarSenha from "../Perfil/TrocarSenha";
+import NovaSenha from "./NovaSenha";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,6 +97,7 @@ const Header = (props) => {
     <div className={classes.root}>
       <Perfil />
       <TrocarSenha />
+      <NovaSenha />
       <AppBar position="static" style={{ background: "#3c4858" }}>
         <Toolbar>
           <IconButton

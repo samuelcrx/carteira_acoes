@@ -6,7 +6,7 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { userActions } from "../../redux/actions";
+import { userActions, messageActions } from "../../redux/actions";
 import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
@@ -165,18 +165,23 @@ const TrocarSenha = (props) => {
     updatePassword,
     handleChangeUser,
     user,
+    changeMessage,
   } = props;
 
   const onSubmit = async () => {
     if (user.ca_usu_cripto === pass) {
       try {
         await updatePassword(user);
+        const message = "Senha alterada com sucesso.";
+        changeMessage({ message });
         closeModalPass();
       } catch (error) {
-        alert(error);
+        const message = "Não foi possivel atualizar senha.";
+        changeMessage({ message });
       }
     } else {
-      alert("Senhas diferentes");
+      const message = "Senhas não coincidem.";
+      changeMessage({ message });
     }
   };
 
@@ -286,6 +291,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeUser: (user) => {
       dispatch(userActions.handleChangeUser(user));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

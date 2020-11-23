@@ -21,7 +21,6 @@ import Cotacao from "./components/Cotacao/Cotacao";
 import Perfil from "./components/Perfil/Perfil";
 import TrocarSenha from "./components/Perfil/TrocarSenha";
 import RecuperarSenha from "./components/RecuperarSenha";
-import Table from "./components/Carteiras/Tabela";
 import Message from "./components/Message";
 
 ReactDOM.render(
@@ -33,7 +32,6 @@ ReactDOM.render(
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/cadastro" component={Cadastro} />
-            <Route path="/table" component={Table} />
             <Route path="/carteiras" component={Carteira} />
             <Route path="/edita-carteira" component={EditModal} />
             <Route path="/ativos/:carteiraId" component={AtivosTable} />

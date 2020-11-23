@@ -6,7 +6,11 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions, userActions } from "../../redux/actions";
+import {
+  carteiraActions,
+  userActions,
+  messageActions,
+} from "../../redux/actions";
 import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
@@ -107,8 +111,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -145,12 +149,12 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 4,
     marginRight: 5,
   },
-  empresa:{
-    marginLeft: '40px'
-  }
+  empresa: {
+    marginLeft: "40px",
+  },
 }));
 
-const TrocarSenha = (props) => {
+const NovaSenha = (props) => {
   const classes = useStyles();
   const [pass, setPass] = React.useState("");
 
@@ -159,26 +163,29 @@ const TrocarSenha = (props) => {
   };
 
   const {
-    modalOpen,
+    modalOpenSenha,
     closeModal,
     resetState,
     handleChangeUser,
     user,
-    updatePassword
+    updatePassword,
+    changeMessage,
   } = props;
 
   const onSubmit = async (user) => {
     if (user.ca_usu_cripto === pass) {
       try {
-        const reset = await updatePassword(user);
+        await updatePassword(user);
+        const message = "Senha alterada com sucesso.";
+        changeMessage({ message });
         closeModal();
-  
       } catch (error) {
-        alert(error)
-        
+        const message = "Algo deu errado ao tentar alterar a senha.";
+        changeMessage({ message });
       }
     } else {
-      alert("Senhas diferentes");
+      const message = "Senhas não coincidem.";
+      changeMessage({ message });
     }
   };
 
@@ -188,14 +195,14 @@ const TrocarSenha = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={modalOpen}
+        open={modalOpenSenha}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={modalOpen}>
+        <Fade in={modalOpenSenha}>
           {/* <div className={classes.paper}> */}
           <div className={classes.container}>
             <div className={classes.subContainer}>
@@ -220,37 +227,34 @@ const TrocarSenha = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.ticker}>
-                        <FormLabel className={classes.descriptionText}>
-                          Nova Senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="password"
-                          placeholder="Digite nova senha"
-                          value={user.ca_usu_cripto}
-                          onChange={(e) =>
-                            handleChangeUser({
-                              ...user,
-                              ca_usu_cripto: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Nova Senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="password"
+                            placeholder="Digite nova senha"
+                            value={user.ca_usu_cripto}
+                            onChange={(e) =>
+                              handleChangeUser({
+                                ...user,
+                                ca_usu_cripto: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                         <div className={classes.empresa}>
-                        <FormLabel className={classes.descriptionText}>
-                          Confirmar nova senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="password"
-                          placeholder="Confirme a nova senha"
-                          value={pass}
-                          onChange={(e) =>
-                            handleNewPassword(e.target.value)
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Confirmar nova senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            type="password"
+                            placeholder="Confirme a nova senha"
+                            value={pass}
+                            onChange={(e) => handleNewPassword(e.target.value)}
+                          />
                         </div>
                       </div>
                     </FormGroup>
@@ -267,7 +271,7 @@ const TrocarSenha = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: state.user.modalOpen,
+  modalOpenSenha: state.user.modalOpenSenha,
   user: state.user.user,
 });
 
@@ -285,7 +289,10 @@ const mapDispatchToProps = (dispatch) => {
     resetState: () => {
       dispatch(carteiraActions.resetState());
     },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
+    },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TrocarSenha);
+export default connect(mapStateToProps, mapDispatchToProps)(NovaSenha);
