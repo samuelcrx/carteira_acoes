@@ -10,6 +10,7 @@ import {
   lancamentosActions,
   carteiraItensActions,
   cotacoesActions,
+  messageActions
 } from "../../redux/actions";
 import classNames from "classnames";
 import { addCarteira } from "../../api/carteira";
@@ -135,7 +136,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     padding: 4,
     color: "rgb(207, 203, 203)",
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
   },
   descriptionText: {
     fontFamily: "Nunito",
@@ -212,8 +218,7 @@ const EditModal = (props) => {
         }));
         return options;
       })
-      .catch(() => {
-      });
+      .catch(() => {});
     return response;
   }, []);
 
@@ -249,7 +254,8 @@ const EditModal = (props) => {
     userId,
     acoCodigo,
     carteiraId,
-    user
+    user,
+    changeMessage
   } = props;
 
   const onSubmit = async (cotacao, carteiraId) => {
@@ -257,6 +263,8 @@ const EditModal = (props) => {
       try {
         await addCotacao(cotacao, userId, carteiraId, user.ca_usu_login);
         handleChangeCotacao({ ...cotacao, ca_acc_valor: 0 });
+        const message = "Cotação registrada com sucesso.";
+        changeMessage({ message });
         closeModal();
       } catch (error) {
         alert(error);
@@ -264,7 +272,9 @@ const EditModal = (props) => {
     } else {
       try {
         const data = await editCotacao(cotacao);
-          resetState();
+        const message = "Cotação editada com sucesso.";
+        changeMessage({ message });
+        resetState();
       } catch (error) {
         alert(error);
       }
@@ -354,8 +364,7 @@ const EditModal = (props) => {
                               onChange={(e) => {
                                 handleChangeCotacao({
                                   ...cotacao,
-                                  ca_acc_valor:
-                                    parseFloat(e.target.value) || 0.0,
+                                  ca_acc_valor: parseFloat(e.target.value),
                                 });
                               }}
                               value={cotacao.ca_acc_valor}
@@ -391,7 +400,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
     addCotacao: (cotacao, ca_usu_codigo, carteiraId, email) => {
-      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId, email));
+      dispatch(
+        cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId, email)
+      );
     },
     editCotacao: (cotacao) => {
       dispatch(cotacoesActions.editCotacao(cotacao));
@@ -404,6 +415,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchCotacoes: (userId, acoCodigo) => {
       dispatch(cotacoesActions.fetchCotacoes(userId, acoCodigo));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

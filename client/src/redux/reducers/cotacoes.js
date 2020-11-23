@@ -18,6 +18,7 @@ const {
   NEW_FORM_COTACAO,
   COTACAO_FORM_ERROR,
   RESET_STATE,
+  REFRESH
 } = cotacoesActions;
 
 const initialState = {
@@ -90,6 +91,11 @@ const cotacao = (state = initialState, action = {}) => {
       return {
         ...state,
         cotacao: { ...initialState.cotacao },
+      };
+    case REFRESH:
+      return {
+        ...state,
+        restartTable: false
       };
     case ADD_COTACAO:
       return {

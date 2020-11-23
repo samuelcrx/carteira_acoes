@@ -20,12 +20,14 @@ import Delete from "@material-ui/icons/DeleteOutline";
 import Ativos from "@material-ui/icons/Assignment";
 import ContentAdd from "@material-ui/icons/Add";
 import { connect } from "react-redux";
-import { cotacoesActions } from "../../redux/actions";
+import { cotacoesActions, messageActions } from "../../redux/actions";
 import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
 import classNames from "classnames";
+import "moment/locale/pt-br";
 import moment from "moment";
-import apiAcoes from '../../api/apiAcoes';
+import apiAcoes from "../../api/apiAcoes";
+import api from "../../api/connectionProxy";
 import { json } from "body-parser";
 
 const columns = [
@@ -33,21 +35,26 @@ const columns = [
   // { id: "data", label: "Data", minWidth: 100 },
   // { id: "ca_acc_valor", label: "Valor", minWidth: 100 },
 
-  { 
-    id: "data", 
-    label: "Data", 
+  {
+    id: "data",
+    label: "Data",
     minWidth: 100,
     //format: (value) => value.toLocaleString("pt-BR"),
     //format: (value) => Intl.DateTimeFormat("pt-BR").format(value),
-    format: (value) => new Intl.DateTimeFormat('pt-br').format(new Date(value), ),
-   },
-  { 
-    id: "ca_acc_valor", 
-    label: "Valor", 
-    minWidth: 100, 
+    format: (value) => new Intl.DateTimeFormat("pt-br").format(new Date(value)),
+  },
+  {
+    id: "ca_acc_valor",
+    label: "Valor",
+    minWidth: 100,
     align: "left",
-    format: (value) => "R$ " + value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-  },    
+    format: (value) =>
+      "R$ " +
+      value.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+  },
 ];
 
 function createData(
@@ -112,6 +119,7 @@ const Cotacao = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [automatico, setAutomatico] = React.useState(false);
 
   const { openModal, cotacao, resetState } = props;
   const history = useHistory();
@@ -132,17 +140,25 @@ const Cotacao = (props) => {
     fetchCotacao,
     handleChangeCotacao,
     restartTable,
-    addCotacao
+    addCotacao,
+    changeMessage,
   } = props;
-  
+
   const { acoCodigo, carteiraId } = props.match.params;
   const { acao_id } = props.location.state;
 
   useEffect(() => {
-
+    setAutomatico(false);
     fetchCotacoes(user.id, acoCodigo);
+  }, [acoCodigo, fetchCotacoes, user.id, restartTable, automatico]);
 
-  }, [acoCodigo, fetchCotacoes, user.id, restartTable]);
+  const getPreco = async (term) => {
+    return await api.http.get("/precos", {
+      params: {
+        term,
+      },
+    });
+  };
 
   const rows = (cotacoes.data || []).map((item) => {
     return createData(
@@ -157,7 +173,7 @@ const Cotacao = (props) => {
 
   return (
     <>
-      <Header title={"Lista das cotações de ações"} search={true}/>
+      <Header title={"Lista das cotações de ações"} search={true} />
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <Button
@@ -196,49 +212,36 @@ const Cotacao = (props) => {
             style={{ margin: 10 }}
             className="botao_verde_claro"
             onClick={async () => {
-              
-              // Primeira forma   
-                // API HG Brasil
-                // const response = await apiAcoes.get(acao_id.ca_aco_ticker);
+              handleChangeCotacao({
+                ...cotacao,
+                acao_id: acao_id,
+              });
 
-                // API Via CEP
-                const response = await apiAcoes.get('13870377/json/');    
-                console.log(response.data.logradouro);
+              const response = await getPreco(acao_id.ca_aco_ticker);
 
-                // API GITHUB
-                // const response = await apiAcoes.get('rtorru');    
-                // console.log(response.data.id);
-              // Primeira forma
+              // Insere a resposta da cotação no banco ou gera mensagem de invalido
 
-              // Segunda Forma
-                // const request = require('request');
-                // request('https://api.hgbrasil.com/finance/stock_price?key=02100a87&symbol=itsa4', { json: true }, (err, res, body) => {
-                //   if (err) { return console.log(err); }
-                //   console.log(body.length);
-                //   console.log(res.id);
-                // });
-                // console.log(request);
-              // Segunda Forma
-            
-              // ###########################################################################
-              // Insere a resposta da cotação no banco
-                // console.log(cotacao);
-                // const valorCotacao  = 32;
-                // cotacao.ca_usu_codigo = user.id
-                // cotacao.acao_id       = acao_id
-                // cotacao.ca_acc_valor  = parseFloat(valorCotacao) || 0
-
-                // // console.log(cotacao);
-                // try {
-                //   await addCotacao(cotacao, user.id);
-                //   resetState();
-                // } catch (error) {
-                //   alert(error);
-                // }
-                // console.log(cotacao);
+              if (response.data > 0) {
+                let valorCotacao = response.data;
+                cotacao.ca_usu_codigo = user.id;
+                cotacao.acao_id = acao_id;
+                cotacao.ca_acc_valor = parseFloat(valorCotacao);
+                try {
+                  await addCotacao(cotacao, user.id, carteiraId, user.ca_usu_login);
+                  setAutomatico(false);
+                  const message = "Cotação registrada com sucesso.";
+                  changeMessage({ message });
+                } catch (error) {
+                  const message = "Algo deu errado, tente novamente.";
+                  changeMessage({ message });
+                }
+              } else {
+                const message = "Cotação não encontrada.";
+                changeMessage({ message });
+              }
+              console.log(cotacao);
               // Insere a resposta da cotação no banco
               // ###########################################################################
-
             }}
           >
             Busca Automática
@@ -307,7 +310,11 @@ const Cotacao = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <EditModal userId={user.id} acoCodigo={acoCodigo} carteiraId={carteiraId}/>
+      <EditModal
+        userId={user.id}
+        acoCodigo={acoCodigo}
+        carteiraId={carteiraId}
+      />
     </>
   );
 };
@@ -344,8 +351,11 @@ const mapDispatchToProps = (dispatch) => {
     handleChangeCotacao: (cotacao) => {
       dispatch(cotacoesActions.handleChangeCotacao(cotacao));
     },
-    addCotacao: (cotacao, ca_usu_codigo, carteiraId) => {
-      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId));
+    addCotacao: (cotacao, ca_usu_codigo, carteiraId, email) => {
+      dispatch(cotacoesActions.addCotacao(cotacao, ca_usu_codigo, carteiraId, email));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

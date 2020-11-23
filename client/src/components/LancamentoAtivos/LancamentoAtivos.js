@@ -85,6 +85,7 @@ function createData(
     compra_venda,
     ca_crm_quantidade,
     ca_crm_valor,
+    acao_id
   };
 }
 
@@ -161,8 +162,17 @@ const AtivosTable = (props) => {
   } = props;
 
   const busca = handleChangeLancamentoTerm;
+  const acaoId = localStorage.getItem('acaoId');
+  const tickerName = localStorage.getItem('tickerName');
+  const acao_id_backup = {
+    id: acaoId,
+    ca_aco_ticker: tickerName
+  }
+console.log('Aquii euuu => ', acao_id_backup)
 
   useEffect(() => {
+    lancamento.acao_id = acao_id_backup;
+    lancamento.ca_crm_compra_venda = 'C';
     fetchLancamentos(carteiraId, acaoCodigo, buscaTerm);
   }, [acaoCodigo, carteiraId, fetchLancamentos, status, buscaTerm]);
 
@@ -232,6 +242,7 @@ const AtivosTable = (props) => {
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
+                    console.log("Row ", row)
                     return (
                       <TableRow
                         hover

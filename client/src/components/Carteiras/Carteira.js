@@ -22,7 +22,7 @@ import { connect } from "react-redux";
 import {
   carteiraActions,
   lancamentosActions,
-  userActions,
+  messageActions,
 } from "../../redux/actions";
 import EditModal from "./EditModal";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -159,8 +159,6 @@ const Carteira = (props) => {
     status,
   } = props;
 
-  console.log('user aqui >> ', user2)
-
   const busca = handleChangeCarteiraTerm;
 
   const handleChangePage = (event, newPage) => {
@@ -181,12 +179,16 @@ const Carteira = (props) => {
     fetchCarteira,
     lancamento,
     handleChangeLancamento,
-    openModalSenha
+    openModalSenha,
+    changeMessage
   } = props;
+
+  const [refresh, setRefresh] = React.useState(false);
 
   useEffect(() => {
     fetchCarteiras(user.id, buscaTerm);
-  }, [fetchCarteiras, user.id, status, buscaTerm]);
+    setRefresh(false);
+  }, [fetchCarteiras, user.id, status, buscaTerm, refresh]);
 
   const rows = (carteiras.data || []).map((item) => {
     return createData(
@@ -289,9 +291,16 @@ const Carteira = (props) => {
                         </IconButton>
 
                         <IconButton
-                          onClick={() => {
-                            deleteCarteira(row.id);
-                            fetchCarteiras(user.id);
+                          onClick={async () => {
+                            try {
+                              await deleteCarteira(row.id);
+                              await setRefresh(true);
+                              const message = "Carteira deletada com sucesso.";
+                              changeMessage({ message });
+                            } catch (error) {
+                              const message = "Algo deu errado.";
+                              changeMessage({ message });
+                            }
                           }}
                         >
                           <Tooltip title="Deletar">
@@ -355,6 +364,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handleChangeCarteiraTerm: (term) => {
       dispatch(carteiraActions.handleChangeCarteiraTerm(term));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

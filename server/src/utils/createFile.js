@@ -13,10 +13,8 @@ const report = {
         resol(__dirname, "..", "relatorios", "ativos.pdf"),
         (err, res) => {
           if (err) {
-            console.log("Erro na geração");
             reject(err)
           } else {
-            console.log("Foi ", res);
             resolve(res)
           }
         },

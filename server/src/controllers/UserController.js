@@ -28,16 +28,18 @@ module.exports = {
   async show(req, res) {
     const { id } = req.params;
     const usuario = await User.findByPk(id);
+    usuario.dataValues.ca_usu_cripto = "";
 
     res.json(usuario);
   },
 
   async update(req, res) {
-    const { ca_usu_nome, ca_usu_login } = req.body;
+    const { ca_usu_nome, ca_usu_login, id } = req.body;
 
     const userEdit = await User.update(
       { ca_usu_nome, ca_usu_login },
-      { where: { ca_usu_login } }
+
+      { where: { id } }
     );
 
     return res.json(userEdit);
@@ -61,7 +63,6 @@ module.exports = {
     User.destroy({
       where: { id },
     }).then((deletedUser) => {
-      console.log(`Usuario deletado ${deletedUser}`);
       res.json(deletedUser);
     });
   },

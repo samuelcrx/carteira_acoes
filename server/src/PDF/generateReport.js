@@ -1,4 +1,3 @@
-
 const format = (value) => {
   return value.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -16,16 +15,7 @@ const formatEvolucao = (value) => {
 };
 
 const generateReport = function (rows, archiveName) {
-  console.log("AQQQQ ", typeof rows);
   var options = { orientation: "landscape" };
-  var nome = "Rodrigo";
-  // var conteudo = `
-  //                       <h1 style='color: red'> Teste <h1>
-  //                       <hr>
-  //                       <p> Outro teste </p>
-  //                       <p> Nome: ${nome} </p>
-  //   `;
-
   var conteudo = `
     <html lang="pt-br">
         <head>
@@ -151,8 +141,7 @@ const generateReport = function (rows, archiveName) {
     </html>
     `;
 
-    return { conteudo, options };
-  
+  return { conteudo, options };
 };
 
 module.exports = generateReport;

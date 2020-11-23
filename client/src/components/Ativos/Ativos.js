@@ -295,8 +295,6 @@ const AtivosTable = (props) => {
              
               const { data } = await API.itens.getReport(dataRows, columns);
 
-              console.log(data);
-              // const caminhoPDF = 'http://localhost:3333/pdf/ativos.pdf';
               const caminhoPDF = data;
 
               abreTelaPDF(caminhoPDF);
@@ -304,9 +302,6 @@ const AtivosTable = (props) => {
           >
             Relatório
           </Button>
-          <a target="_blank" href={pdf} download={true}>
-            Teste de link
-          </a>
 
           {rows.length ? (
             <Table stickyHeader aria-label="sticky table">
@@ -365,6 +360,8 @@ const AtivosTable = (props) => {
                               </Tooltip>
                             </IconButton>
                           ) : null}
+                          {row.ca_crt_max || row.ca_crt_min ?
+                          (
                           <IconButton
                             onClick={async () => {
                               setCreate(false);
@@ -376,9 +373,13 @@ const AtivosTable = (props) => {
                               <NotificationsActiveIcon />
                             </Tooltip>
                           </IconButton>
+                          )
+                        : null }
 
                           <IconButton
                             onClick={() => {
+                              localStorage.setItem('acaoId', row.acao_id.id);
+                              localStorage.setItem('tickerName', row.acao_id.ca_aco_ticker);
                               handleChangeLancamento({
                                 ...lancamento,
                                 acao_id: row.acao_id,

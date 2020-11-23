@@ -6,10 +6,8 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { carteiraActions } from "../../redux/actions";
+import { userActions } from "../../redux/actions";
 import classNames from "classnames";
-import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -109,8 +107,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "auto",
     textAlign: "center",
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   descInput: {
     width: "auto",
@@ -147,37 +145,38 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 4,
     marginRight: 5,
   },
-  empresa:{
-    marginLeft: '40px'
-  }
+  empresa: {
+    marginLeft: "40px",
+  },
 }));
 
 const TrocarSenha = (props) => {
+  const [pass, setPass] = React.useState("");
+
+  const handleNewPassword = (pass) => {
+    setPass(pass);
+  };
+
   const classes = useStyles();
 
   const {
-    modalOpen,
-    closeModal,
-    resetState,
-    carteira,
-    handleChangeCarteira,
+    modalOpenPass,
+    closeModalPass,
+    updatePassword,
+    handleChangeUser,
     user,
-    fetchCarteiras,
-    editCarteira,
   } = props;
 
-  const onSubmit = (carteira, ca_usu_codigo) => {
-    if (!carteira.id) {
-      addCarteira(carteira, ca_usu_codigo)
-        .then((data) => {
-          fetchCarteiras(ca_usu_codigo);
-        })
-        .catch((err) => {
-          alert("EROU");
-        });
+  const onSubmit = async () => {
+    if (user.ca_usu_cripto === pass) {
+      try {
+        await updatePassword(user);
+        closeModalPass();
+      } catch (error) {
+        alert(error);
+      }
     } else {
-      editCarteira(carteira);
-      fetchCarteiras(ca_usu_codigo);
+      alert("Senhas diferentes");
     }
   };
 
@@ -187,14 +186,14 @@ const TrocarSenha = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={modalOpen}
+        open={modalOpenPass}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={modalOpen}>
+        <Fade in={modalOpenPass}>
           {/* <div className={classes.paper}> */}
           <div className={classes.container}>
             <div className={classes.subContainer}>
@@ -205,7 +204,8 @@ const TrocarSenha = (props) => {
                 <Button
                   className={classNames(classes.btBack, "botao_verde_escuro")}
                   onClick={() => {
-                    closeModal();
+                    handleChangeUser({ ...user, ca_usu_cripto: "" });
+                    closeModalPass();
                   }}
                 >
                   Voltar
@@ -214,8 +214,7 @@ const TrocarSenha = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    onSubmit(carteira, user.id);
-                    resetState()
+                    onSubmit();
                   }}
                 >
                   Salvar
@@ -228,40 +227,34 @@ const TrocarSenha = (props) => {
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
                         <div className={classes.ticker}>
-                        <FormLabel className={classes.descriptionText}>
-                          Nova Senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="text"
-                          placeholder="Digite nova senha"
-                          value={carteira.ca_crt_descricao}
-                          onChange={(e) =>
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_descricao: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Nova Senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            autoFocus
+                            type="password"
+                            placeholder="Digite a nova senha"
+                            value={user.ca_usu_cripto}
+                            onChange={(e) =>
+                              handleChangeUser({
+                                ...user,
+                                ca_usu_cripto: e.target.value,
+                              })
+                            }
+                          />
                         </div>
                         <div className={classes.empresa}>
-                        <FormLabel className={classes.descriptionText}>
-                          Confirmar nova senha
-                      </FormLabel>
-                        <FormControl
-                          className={classes.descInput}
-                          autoFocus
-                          type="text"
-                          placeholder="Confirme a nova senha"
-                          value={carteira.ca_crt_descricao}
-                          onChange={(e) =>
-                            handleChangeCarteira({
-                              ...carteira,
-                              ca_crt_descricao: e.target.value,
-                            })
-                          }
-                        />
+                          <FormLabel className={classes.descriptionText}>
+                            Confirmar Senha
+                          </FormLabel>
+                          <FormControl
+                            className={classes.descInput}
+                            type="password"
+                            placeholder="Repita a senha"
+                            value={pass}
+                            onChange={(e) => handleNewPassword(e.target.value)}
+                          />
                         </div>
                       </div>
                     </FormGroup>
@@ -278,33 +271,21 @@ const TrocarSenha = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  modalOpen: true,//state.carteira.modalOpen,
-  carteira: state.carteira.carteira,
-  user: state.auth.user,
+  modalOpenPass: state.user.modalOpenPass,
+  newPass: state.user.newPass,
+  user: state.user.user,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
+    closeModalPass: () => {
+      dispatch(userActions.closeModalPass());
     },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
+    updatePassword: (user) => {
+      dispatch(userActions.updatePassword(user));
     },
-    handleChangeCarteira: (carteira) => {
-      dispatch(carteiraActions.handleChangeCarteira(carteira));
-    },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
-    },
-    editCarteira: (carteira) => {
-      dispatch(carteiraActions.editCarteira(carteira));
-    },
-    closeModal: () => {
-      dispatch(carteiraActions.closeModal());
-    },
-    resetState: () => {
-      dispatch(carteiraActions.resetState());
+    handleChangeUser: (user) => {
+      dispatch(userActions.handleChangeUser(user));
     },
   };
 };

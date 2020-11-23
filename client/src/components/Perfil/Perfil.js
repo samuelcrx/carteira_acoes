@@ -155,20 +155,22 @@ const Perfil = (props) => {
 
   const {
     resetState,
+    editUser,
     handleChangeUser,
     user,
-    editUser,
     modalOpenProfile,
     closeModalProfile,
+    userAuth
   } = props;
-
-  console.log("Perfil", user);
 
   const onSubmit = async (user) => {
     try {
+
       await editUser(user);
       closeModalProfile();
+
     } catch (error) {
+      
       alert(error);
     }
   };
@@ -204,7 +206,7 @@ const Perfil = (props) => {
                 </Button>
                 <Button
                   className={classNames(classes.btSave, "botao_roxo")}
-                  type={"submit"}
+                  type='submit'
                   onClick={() => {
                     onSubmit(user);
                   }}
@@ -221,6 +223,7 @@ const Perfil = (props) => {
                   <form className={classes.form}>
                     <FormGroup className={classes.descForm} controlId="desc">
                       <div className={classes.inputCheck}>
+
                         <div className={classes.ticker}>
                           <FormLabel className={classes.descriptionText}>
                             Nome
@@ -239,9 +242,10 @@ const Perfil = (props) => {
                             }
                           />
                         </div>
+
                         <div className={classes.empresa}>
                           <FormLabel className={classes.descriptionText}>
-                            Login
+                            Email
                           </FormLabel>
                           <FormControl
                             className={classes.descInput}
@@ -257,6 +261,7 @@ const Perfil = (props) => {
                             }
                           />
                         </div>
+                        
                       </div>
                     </FormGroup>
                   </form>

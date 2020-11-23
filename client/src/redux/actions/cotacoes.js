@@ -16,6 +16,7 @@ export const FORM_TOUCHED = "FORM_TOUCHED";
 export const NEW_FORM_COTACAO = "NEW_FORM_COTACAO";
 export const CARTEIRA_FORM_ERROR = "CARTEIRA_FORM_ERROR";
 export const RESET_STATE = "RESET_STATE";
+export const REFRESH = "REFRESH";
 
 export const openModal = () => {
   return (dispatch) => {
@@ -105,6 +106,7 @@ export const addCotacao = (cotacao, ca_usu_codigo, carteiraId, email) => {
       .addCotacao(cotacao, ca_usu_codigo, carteiraId, email)
       .then(({ data }) => {
         dispatch({ type: ADD_COTACAO });
+        dispatch({ type: REFRESH });
       })
       .catch((err) => {
         const { response = {} } = err;
@@ -128,7 +130,7 @@ export const editCotacao = (cotacao) => {
       .editCotacao(cotacao)
       .then(({ data }) => {
         dispatch({ type: EDIT_COTACAO });
-        // dispatch({ type: CLOSE_MODAL });
+        dispatch({ type: REFRESH });
       })
       .catch((err) => {
         const { response = {} } = err;

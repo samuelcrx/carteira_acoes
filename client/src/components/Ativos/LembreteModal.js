@@ -187,11 +187,8 @@ const LembreteModal = (props) => {
     handleChangeItem,
     create,
   } = props;
-  console.log(item);
 
-  console.log(create);
-
-  const onSubmit = async (item) => {
+  const onSubmit = async () => {
     if (create) {
       await addItemLembrete(item);
       closeModalLembrete();
@@ -237,7 +234,7 @@ const LembreteModal = (props) => {
                   className={classNames(classes.btSave, "botao_roxo")}
                   type={"submit"}
                   onClick={() => {
-                    onSubmit(item);
+                    onSubmit();
                   }}
                 >
                   Salvar

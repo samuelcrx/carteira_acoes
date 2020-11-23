@@ -28,5 +28,6 @@ export default combineReducers({
   cotacao,
   itens,
   lancamentos,
+  message,
   user
 });

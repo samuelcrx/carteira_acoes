@@ -22,11 +22,13 @@ import Perfil from "./components/Perfil/Perfil";
 import TrocarSenha from "./components/Perfil/TrocarSenha";
 import RecuperarSenha from "./components/RecuperarSenha";
 import Table from "./components/Carteiras/Tabela";
+import Message from "./components/Message";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={<CircularProgress />} persistor={persistor}>
+        <Message />
         <BrowserRouter>
           <Switch>
             <Route path="/" exact component={Login} />

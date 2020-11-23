@@ -18,6 +18,7 @@ const {
   NEW_FORM_LANCAMENTO,
   LANCAMENTO_FORM_ERROR,
   RESET_STATE,
+  REFRESH
 } = lancamentosActions;
 
 const initialState = {
@@ -31,7 +32,7 @@ const initialState = {
   lancamento: {
     id: "",
     createdAt: "",
-    ca_crm_compra_venda: "",
+    ca_crm_compra_venda: "C",
     ca_aco_codigo: "",
     ca_crt_codigo: "",
     ca_crm_quantidade: 0,
@@ -123,6 +124,11 @@ const lancamentos = (state = initialState, action = {}) => {
       return {
         ...state,
         refreshAtivos: true
+      };
+    case REFRESH:
+      return {
+        ...state,
+        refreshAtivos: false
       };
     case OPEN_MODAL:
       return {

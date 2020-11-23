@@ -27,7 +27,7 @@ const Login = (props) => {
     return login.length > 0 && password.length > 0;
   };
 
-  const { userLogin, user, openModalSenha } = props;
+  const { userLogin, user, openModalSenha, changeMessage } = props;
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -39,14 +39,16 @@ const Login = (props) => {
       try {
         const data = await userLogin({ ca_usu_login, ca_usu_cripto });
         if (data.token) {
-          if(data.user.reset_password){
+          if (data.user.reset_password) {
             openModalSenha();
           }
           history.push("/carteiras");
+          const message = "Usuário autenticado com sucesso.";
+          changeMessage({ message });
         }
       } catch (error) {
-        alert(error)
-        
+        const message = "Usuário ou senha incorretos.";
+        changeMessage({ message });
       }
     }
   };
@@ -100,7 +102,6 @@ const Login = (props) => {
               Criar Conta
             </p>
           </Link>
-
           <Link to="/recuperar-senha">
             <Typography className={classes.resetPassLink} color={"primary"}>
               Esqueci minha senha

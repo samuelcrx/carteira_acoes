@@ -143,11 +143,6 @@ const carteira = (state = initialState, action = {}) => {
       // formErrors[action.field] = { valid: false, errorMessage: action.message }
       return {
         ...state,
-        // subjectFormErrors: SubjectValidate.validate({
-        //   formObject: state.subject,
-        //   invalidFields: formErrors,
-        //   formSchemaType
-        // })
       };
     case NEW_FORM_CARTEIRA:
       return {
@@ -157,12 +152,7 @@ const carteira = (state = initialState, action = {}) => {
     case DELETE_CARTEIRA:
       return {
         ...state,
-        carteiras: state.carteiras.map((carteira) => {
-          if (carteira._id === action.id) {
-            return action.id;
-          }
-          return carteira;
-        }),
+        status: true
       };
     case ADD_CARTEIRA:
       return {

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { userActions } from "../redux/actions";
+import { userActions, messageActions } from "../redux/actions";
 
 const Logo = require("../assets/logo.jpg");
 
 const Cadastro = (props) => {
   const [singinTouched, setSinginTouched] = useState(false);
 
-  const { user, handleChangeUser, cadastro } = props;
+  const { user, handleChangeUser, cadastro, changeMessage } = props;
 
   const history = useHistory();
 
@@ -17,10 +17,18 @@ const Cadastro = (props) => {
     return user.ca_usu_login.length > 0 && user.ca_usu_cripto.length > 0;
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    cadastro(user);
-    history.push("/");
+    try {
+      await cadastro(user);
+      const message = "Usuário cadastrado com sucesso.";
+      changeMessage({ message });
+      history.push("/");
+      
+    } catch (error) {
+      const message = "Algo deu errado.";
+      changeMessage({ message });
+    }
   };
 
   return (
@@ -29,7 +37,7 @@ const Cadastro = (props) => {
         <div className="Logo">
           <img src={Logo} alt="Logo" className="imagemLogo" />
         </div>
-        <form className="formulario" onSubmit={(e) => onSubmit(e)}>
+        <form className="formulario" onSubmit={onSubmit}>
           <FormGroup className="FormNome" controlId="nome">
             <FormLabel className="TextLogin">Nome</FormLabel>
             <FormControl
@@ -106,6 +114,9 @@ const mapDispatchToProps = (dispatch) => {
 
     handleChangeUser: (user) => {
       dispatch(userActions.handleChangeUser(user));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

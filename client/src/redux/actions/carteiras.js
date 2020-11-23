@@ -81,7 +81,8 @@ export const deleteCarteira = (id) => {
     dispatch({ type: FETCHING_CARTEIRAS });
     return API.carteira
       .deleteCarteira(id)
-      .then(({ data: carteira }) => {})
+      .then(({ data: carteira }) => {
+      })
       .catch((err) => {
         const { response = {} } = err;
         const { data = {} } = response;

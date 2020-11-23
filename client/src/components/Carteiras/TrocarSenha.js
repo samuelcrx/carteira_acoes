@@ -8,8 +8,6 @@ import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
 import { carteiraActions, userActions } from "../../redux/actions";
 import classNames from "classnames";
-import { addCarteira } from "../../api/carteira";
-import { editCarteira } from "../../redux/actions/carteiras";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -164,11 +162,8 @@ const TrocarSenha = (props) => {
     modalOpen,
     closeModal,
     resetState,
-    carteira,
     handleChangeUser,
     user,
-    fetchCarteiras,
-    editCarteira,
     updatePassword
   } = props;
 
@@ -278,17 +273,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCarteira: (id) => {
-      dispatch(carteiraActions.fetchCarteira(id));
-    },
-    fetchCarteiras: (userId) => {
-      dispatch(carteiraActions.fetchCarteiras(userId));
-    },
     handleChangeUser: (user) => {
       dispatch(userActions.handleChangeUser(user));
-    },
-    addCarteira: (carteira, ca_usu_codigo) => {
-      dispatch(carteiraActions.addCarteira(carteira, ca_usu_codigo));
     },
     updatePassword: (user) => {
       dispatch(userActions.updatePassword(user));

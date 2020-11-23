@@ -10,11 +10,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { connect } from "react-redux";
-import { authActions } from "../../redux/actions";
+import { authActions, userActions } from "../../redux/actions";
 import { useHistory } from "react-router-dom";
 import Perfil from "../Perfil/Perfil";
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
+import TrocarSenha from "../Perfil/TrocarSenha";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,40 +28,40 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   search: {
-    position: 'relative',
+    position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: "auto",
     },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   inputRoot: {
-    color: 'inherit',
+    color: "inherit",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
 }));
@@ -78,14 +79,23 @@ const Header = (props) => {
     setAnchorEl(null);
   };
 
-  const { title, logout, openModalProfile, busca, search } = props;
-  console.log('01 ', props)
+  const {
+    title,
+    logout,
+    openModalProfile,
+    busca,
+    search,
+    user,
+    fetchUser,
+    openModalPass,
+  } = props;
 
   const history = useHistory();
 
   return (
     <div className={classes.root}>
       <Perfil />
+      <TrocarSenha />
       <AppBar position="static" style={{ background: "#3c4858" }}>
         <Toolbar>
           <IconButton
@@ -103,25 +113,24 @@ const Header = (props) => {
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
-          {!search ?
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          {!search ? (
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ "aria-label": "search" }}
+                onChange={(e) => {
+                  busca(e.target.value);
+                }}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-              onChange={(e) => {
-                busca(e.target.value);
-              }}
-            />
-          </div>
-          : null
-          }
+          ) : null}
           <div>
             <IconButton
               aria-label="account of current user"
@@ -147,8 +156,22 @@ const Header = (props) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={openModalProfile}>Perfil</MenuItem>
-              <MenuItem onClick={handleClose}>Recuperar senha</MenuItem>
+              <MenuItem
+                onClick={async () => {
+                  await fetchUser(user.id);
+                  openModalProfile();
+                }}
+              >
+                Perfil
+              </MenuItem>
+              <MenuItem
+                onClick={async () => {
+                  await fetchUser(user.id);
+                  openModalPass();
+                }}
+              >
+                Trocar senha
+              </MenuItem>
             </Menu>
           </div>
         </Toolbar>
@@ -156,6 +179,10 @@ const Header = (props) => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -165,10 +192,16 @@ const mapDispatchToProps = (dispatch) => {
     openModalProfile: () => {
       dispatch(authActions.openModalProfile());
     },
+    openModalPass: () => {
+      dispatch(userActions.openModalPass());
+    },
     closeModalProfile: () => {
       dispatch(authActions.closeModalProfile());
+    },
+    fetchUser: (id) => {
+      dispatch(userActions.fetchUser(id));
     },
   };
 };
 
-export default connect(null, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

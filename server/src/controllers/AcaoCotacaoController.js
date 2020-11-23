@@ -3,6 +3,7 @@ const CarteiraItens = require("../models/CarteiraItens");
 const User = require("../models/User");
 const Acao = require("../models/Acoes");
 import app from "../app";
+import price from "../utils/getActionPrice";
 
 module.exports = {
   async index(req, res) {
@@ -43,11 +44,14 @@ module.exports = {
 
     const carteiraItem = await CarteiraItens.findOne({
       where: { ca_crt_codigo: carteiraId, ca_aco_codigo },
-    })
+    });
 
-    console.log('Iteeem ', carteiraItem.dataValues)
-    if((ca_acc_valor <= carteiraItem.dataValues.ca_crt_min) || (ca_acc_valor >= carteiraItem.dataValues.ca_crt_max)) {
-      app.email.sendCotacao(email, ca_acc_valor , acao_id.ca_aco_ticker); 
+    console.log("Iteeem ", carteiraItem.dataValues);
+    if (
+      ca_acc_valor <= carteiraItem.dataValues.ca_crt_min ||
+      ca_acc_valor >= carteiraItem.dataValues.ca_crt_max
+    ) {
+      app.email.sendCotacao(email, ca_acc_valor, acao_id.ca_aco_ticker);
     }
 
     return res.json(acaoCotacao);
@@ -92,4 +96,14 @@ module.exports = {
       res.json(deletedAction);
     });
   },
+
+  async prices(req, res) {
+    const { term } = req.query;
+
+    const acaoPreco = await price.gerarPreco(term);
+    console.log(acaoPreco)
+
+    return res.json(acaoPreco);
+  },
+
 };

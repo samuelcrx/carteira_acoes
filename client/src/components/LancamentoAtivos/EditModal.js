@@ -6,7 +6,11 @@ import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { connect } from "react-redux";
-import { lancamentosActions, carteiraItensActions } from "../../redux/actions";
+import {
+  lancamentosActions,
+  carteiraItensActions,
+  messageActions,
+} from "../../redux/actions";
 import classNames from "classnames";
 import { addCarteira } from "../../api/carteira";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -208,7 +212,8 @@ const EditModal = (props) => {
         return options;
       })
       .catch(() => {
-        console.log("Erro ao buscar niveis de ensino");
+        const message = "Erro ao buscar niveis de ensino.";
+        changeMessage({ message });
       });
     return response;
   }, []);
@@ -246,35 +251,43 @@ const EditModal = (props) => {
     fetchLancamentos,
     carteiraId,
     acaoCodigo,
-    edit
+    edit,
+    changeMessage,
   } = props;
 
   const onSubmit = async (lancamento) => {
-    console.log(lancamento)
-
     if (!lancamento.id) {
       try {
-        handleChangeLancamento({...lancamento, ca_crt_codigo: props.carteiraId});
+        lancamento.ca_crt_codigo = carteiraId;
         await addLancamento(lancamento);
+        const message = "Lançamento registrado com sucesso.";
+        changeMessage({ message });
         if (edit) {
-          resetState()
+          resetState();
         } else {
-          handleChangeLancamento({...lancamento, ca_crm_compra_venda: "", ca_crm_quantidade: 0, ca_crm_valor: 0})
+          handleChangeLancamento({
+            ...lancamento,
+            ca_crm_compra_venda: "",
+            ca_crm_quantidade: 0,
+            ca_crm_valor: 0,
+          });
         }
-        closeModal()
+        closeModal();
       } catch (error) {
-        alert(error)
-        
+        const message = "Algo deu errado ao registrar Lançamento.";
+        changeMessage({ message });
       }
-
     } else {
-
-      handleChangeLancamento({...lancamento, ca_crt_codigo: props.carteiraId});
-      console.log(lancamento)
+      const message = "Lançamento registrado com sucesso.";
+      changeMessage({ message });
+      handleChangeLancamento({
+        ...lancamento,
+        ca_crt_codigo: props.carteiraId,
+      });
       await editLancamento(lancamento);
       // const refresh = await fetchLancamentos(lancamento.ca_crt_codigo, lancamento.acao_id.id);
-        closeModal()
-      }
+      closeModal();
+    }
   };
 
   return (
@@ -312,7 +325,6 @@ const EditModal = (props) => {
                   type={"submit"}
                   onClick={() => {
                     onSubmit(lancamento, user.id);
-                    // resetState();
                   }}
                 >
                   Salvar
@@ -331,10 +343,10 @@ const EditModal = (props) => {
                             </FormLabel>
                             <ReactSelect
                               noOptionsMessage={() => "Nenhuma ação encontrada"}
-                              autoFocus
                               loadOptions={loadAcoesBusca}
                               name="Ticker"
                               defaultOptions
+                              isDisabled={!lancamento._id ? false : true}
                               onChange={saveTerm}
                               value={formatContentSelectValueSingle(
                                 lancamento.acao_id
@@ -342,6 +354,7 @@ const EditModal = (props) => {
                               styles={{ maxWidth: "85px" }}
                             ></ReactSelect>
                           </div>
+
                           <div className={classes.checks}>
                             <InputLabel
                               id="demo-controlled-open-select-label"
@@ -384,12 +397,16 @@ const EditModal = (props) => {
                             <FormControl
                               className={classes.descInput}
                               type="number"
+                              autoFocus
                               placeholder="Digite a quantidade"
                               value={lancamento.ca_crm_quantidade}
                               onChange={(e) =>
                                 handleChangeLancamento({
                                   ...lancamento,
-                                  ca_crm_quantidade: parseInt(e.target.value, 10),
+                                  ca_crm_quantidade: parseInt(
+                                    e.target.value,
+                                    10
+                                  ),
                                 })
                               }
                             />
@@ -407,7 +424,7 @@ const EditModal = (props) => {
                                 handleChangeLancamento({
                                   ...lancamento,
                                   ca_crm_valor: parseFloat(e.target.value),
-                                })
+                                });
                               }}
                             />
                           </div>
@@ -429,6 +446,7 @@ const EditModal = (props) => {
 const mapStateToProps = (state) => ({
   modalOpen: state.lancamentos.modalOpen,
   lancamento: state.lancamentos.lancamento,
+  ca_crt_codigo: state.lancamentos.lancamento.ca_crt_codigo,
   user: state.auth.user,
 });
 
@@ -457,6 +475,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchLancamentos: (carteiraId, acaoCodigo) => {
       dispatch(lancamentosActions.fetchLancamentos(carteiraId, acaoCodigo));
+    },
+    changeMessage: ({ message, anchorOrigin }) => {
+      dispatch(messageActions.changeMessage({ message, anchorOrigin }));
     },
   };
 };

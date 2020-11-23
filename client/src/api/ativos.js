@@ -38,7 +38,6 @@ export const addItem = (item) => {
 };
 
 export const addLembrete = (item) => {
-  console.log('Id ', item)
   return api.http.put(`/itens/create/${item.id}`, item);
 };
 export const updateLembrete = (item) => {

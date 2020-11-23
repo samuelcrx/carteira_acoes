@@ -4,7 +4,7 @@ const { CHANGE_MESSAGE, CLEAR_MESSAGE } = messageActions;
 const initialState = {
   message: "",
   messageDuration: 5000,
-  anchorOrigin: { vertical: "top", horizontal: "right" },
+  anchorOrigin: { vertical: "bottom", horizontal: "right" },
 };
 
 const message = (state = initialState, action = {}) => {

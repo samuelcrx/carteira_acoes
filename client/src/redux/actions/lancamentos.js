@@ -20,6 +20,7 @@ export const CHANGE_PER_PAGE = 'CHANGE_PER_PAGE'
 export const CHANGE_ORDER_COLUMN = 'CHANGE_ORDER_COLUMN'
 export const CHANGE_ORDER_DIRECTION = 'CHANGE_ORDER_DIRECTION'
 export const RESET_STATE = 'RESET_STATE'
+export const REFRESH = 'REFRESH'
 
 export const openModal = () => {
   return dispatch => {
@@ -145,6 +146,7 @@ export const addLancamento = (lancamento) => {
       .addLancamento(lancamento)
       .then((data) => {
         dispatch({ type: ADD_LANCAMENTO })
+        dispatch({ type: REFRESH })
         return data
       })
       .catch(err => {
@@ -166,8 +168,8 @@ export const editLancamento = lancamento => {
     return API.lancamentos
       .editLancamento(lancamento)
       .then(({ data }) => {
-        dispatch({ type: ADD_LANCAMENTO })
         dispatch({ type: EDIT_LANCAMENTO })
+        dispatch({ type: REFRESH })
       })
       .catch(err => {
         const { response = {} } = err
